@@ -1,5 +1,6 @@
 package Project1;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
@@ -44,5 +45,27 @@ public class BoidWorld {
 
     public ArrayList<Boid> getBoids() {
         return boids;
+    }
+
+    public ArrayList<Boid> getNeighbours(Boid me) {
+        ArrayList<Boid> neighbours = new ArrayList<>();
+        double[] myPosition = me.getPosition();
+
+        for (Boid other: this.boids) {
+            if (other == me) {
+                continue;
+            }
+
+            double[] otherPosition = other.getPosition();
+            double distanceX = otherPosition[0]-myPosition[0];
+            double distanceY = otherPosition[1]-myPosition[1];
+
+            if (Math.hypot(distanceX, distanceY) < Boid.flockingRadius) {
+                neighbours.add(other);
+            }
+        }
+
+        return neighbours;
+
     }
 }
