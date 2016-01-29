@@ -1,14 +1,11 @@
 package Project1;
 
-import javafx.animation.Animation;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 
 /**
@@ -33,8 +30,8 @@ public class BoidGui extends Application {
         Group boids = new Group();
         for (Boid b : myBoidWorld.getBoids()) {
             Circle circle = new Circle(10, Color.web("black", 1.0));
-            circle.setCenterX(b.getPosition()[0]);
-            circle.setCenterY(b.getPosition()[1]);
+            circle.setCenterX(b.getPositionAsArray()[0]);
+            circle.setCenterY(b.getPositionAsArray()[1]);
             boids.getChildren().add(circle);
         }
 
@@ -52,7 +49,7 @@ public class BoidGui extends Application {
                 gc.clearRect(0,0,800,600);
 
                 for (Boid b : myBoidWorld.getBoids()){
-                    double[] a = b.getPosition();
+                    double[] a = b.getPositionAsArray();
                     gc.fillOval(a[0], a[1], 20, 20);
                 }
 

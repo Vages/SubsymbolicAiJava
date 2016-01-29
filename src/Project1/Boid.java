@@ -9,7 +9,7 @@ public class Boid {
     private static int idCounter;
     public static double flockingRadius = 50;
 
-    private static float maxSpeed = 20;
+    private static float maxSpeed = 10;
     private final Vector worldDimensions;
     private Vector position;
     private Vector velocity;
@@ -36,10 +36,27 @@ public class Boid {
         ArrayList<Boid> neighbours = world.getNeighbours(this);
 
         Vector align = calculateAlignmentForce(neighbours);
+        Vector cohere = calculateCohesionForce(neighbours);
 
-        this.velocity = this.velocity.plus(align);
+        this.velocity = this.velocity.plus(align).plus(cohere);
         this.position = this.position.plus(this.velocity);
         this.position = this.position.elementWiseModulo(this.worldDimensions);
+    }
+
+    private Vector calculateCohesionForce(ArrayList<Boid> neighbours) {
+        Vector sumOfPositions = new Vector(new double[]{0, 0});
+
+        if (neighbours.size() == 0){
+            return sumOfPositions;
+        }
+
+        for (Boid n: neighbours) {
+            sumOfPositions = sumOfPositions.plus(n.getPosition());
+        }
+
+        sumOfPositions = sumOfPositions.times(1/neighbours.size());
+
+        return sumOfPositions.minus(this.getPosition()).times(0.01); // Must be prettified
     }
 
     private Vector calculateAlignmentForce(ArrayList<Boid> neighbours) {
@@ -58,8 +75,12 @@ public class Boid {
         return steer;
     }
 
-    public double[] getPosition() {
+    public double[] getPositionAsArray() {
         return this.position.getData();
+    }
+
+    public Vector getPosition() {
+        return position;
     }
 
     public Vector getVelocity() {
