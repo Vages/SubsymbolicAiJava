@@ -42,8 +42,7 @@ public class Vector {
 
         // defensive copy so that client can't alter our copy of data[]
         this.data = new double[N];
-        for (int i = 0; i < N; i++)
-            this.data[i] = data[i];
+        System.arraycopy(data, 0, this.data, 0, N);
     }
 
     // create a vector from either an array or a vararg list
@@ -147,6 +146,14 @@ public class Vector {
         return c;
     }
 
+    public Vector limit(double someNumber) {
+        double magnitude = this.magnitude();
+        if (magnitude <= someNumber) {
+            return this;
+        }
+
+        return this.times(someNumber/magnitude);
+    }
     // test client
     public static void main(String[] args) {
         double[] xdata = { 1.0, 2.0, 3.0, 4.0 };
