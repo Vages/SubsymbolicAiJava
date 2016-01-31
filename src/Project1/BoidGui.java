@@ -21,6 +21,7 @@ public class BoidGui extends Application {
 
     public void start(Stage theStage) {
         myBoidWorld = new BoidWorld(800, 600, 100);
+        int boidDiameter = 20;
 
         Group root = new Group();
         Scene theScene = new Scene(root);
@@ -50,7 +51,7 @@ public class BoidGui extends Application {
 
                 for (Boid b : myBoidWorld.getBoids()){
                     double[] a = b.getPositionAsArray();
-                    gc.fillOval(a[0], a[1], 20, 20);
+                    gc.fillOval(a[0]-boidDiameter/2, a[1]-boidDiameter/2, boidDiameter, boidDiameter);
                 }
 
                 myBoidWorld.update();
