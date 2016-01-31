@@ -1,6 +1,7 @@
 package Project1;
 
 import java.util.ArrayList;
+import java.util.TreeMap;
 
 /**
  * Created by eirikvageskar on 28.01.2016.
@@ -11,8 +12,10 @@ public class Boid {
     public static double separationRadius = 30;
     public static double separationForceFactor = 2;
     public static double cohesionFactor = 0.1;
+    public static final double MAX_SEE_AHEAD = 60;
+    public static double obstacleAvoidanceForce = 5;
 
-    private static float maxSpeed = 10;
+    private static float maxSpeed = 5;
     private final Vector worldDimensions;
     private Vector position;
     private Vector velocity;
@@ -41,14 +44,66 @@ public class Boid {
         Vector align = calculateAlignmentForce(neighbours);
         Vector cohere = calculateCohesionForce(neighbours);
         Vector separation = calculateSeparationForce(neighbours);
+        Vector obstacleAvoidance = calculateObstacleAvoidance();
 
         this.velocity = this.velocity.plus(align);
         this.velocity = this.velocity.plus(cohere);
         this.velocity = this.velocity.plus(separation);
+        this.velocity = this.velocity.plus(obstacleAvoidance);
         this.velocity = this.velocity.limit(maxSpeed);
 
         this.position = this.position.plus(this.velocity);
         this.position = this.position.elementWiseModulo(this.worldDimensions);
+    }
+
+    private Vector calculateObstacleAvoidance() {
+        double speedRatio = velocity.magnitude()/maxSpeed;
+        double aheadLength = speedRatio*MAX_SEE_AHEAD;
+        Vector ahead = velocity.direction().times(aheadLength);
+        Vector halfAhead = ahead.times(0.5);
+        Vector aheadPoint = position.plus(ahead);
+        Vector halfAheadPoint = position.plus(halfAhead);
+
+        TreeMap<Double, Obstacle> potentialObstacles = new TreeMap<>();
+
+        for (Obstacle o: world.getObstacles()) {
+
+            double distance = position.distanceTo(o.getPosition());
+            double sweepZone = o.getRadius() + aheadLength;
+            if (distance <= sweepZone) {
+                potentialObstacles.put(distance, o);
+            }
+        }
+
+        if (potentialObstacles.size() == 0) {
+            return new Vector(new double[]{0, 0});
+        }
+
+        for (Obstacle o: potentialObstacles.values()) {
+            Vector center = o.getPosition();
+            double radius = o.getRadius();
+            Vector aheadPointToCenter = aheadPoint.minus(center);
+            double dist = aheadPointToCenter.magnitude();
+
+            if (dist < radius) {
+                return aheadPointToCenter.direction().times(obstacleAvoidanceForce);
+            }
+
+            aheadPointToCenter = halfAheadPoint.minus(center);
+            dist = aheadPointToCenter.magnitude();
+            if (dist < radius) {
+                return aheadPointToCenter.direction().times(obstacleAvoidanceForce);
+            }
+
+            aheadPointToCenter = position.minus(center);
+            dist = aheadPointToCenter.magnitude();
+
+            if (dist < radius) {
+                return aheadPointToCenter.direction().times(obstacleAvoidanceForce);
+            }
+        }
+
+        return new Vector(new double[]{0, 0});
     }
 
     private Vector calculateSeparationForce(ArrayList<Boid> neighbours) {

@@ -20,13 +20,13 @@ public class BoidGui extends Application {
     }
 
     public void start(Stage theStage) {
-        myBoidWorld = new BoidWorld(800, 600, 100);
+        myBoidWorld = new BoidWorld(800, 600, 200);
 
         for (int i = 0; i < 5; i++) {
             myBoidWorld.addObstacle();
         }
 
-        int boidDiameter = 20;
+        int boidDiameter = 10;
 
         Group root = new Group();
         Scene theScene = new Scene(root);
@@ -53,7 +53,7 @@ public class BoidGui extends Application {
             @Override
             public void handle(long now) {
                 gc.clearRect(0,0,800,600);
-                gc.setLineWidth(5);
+                gc.setLineWidth(3);
 
                 for (Boid b : myBoidWorld.getBoids()){
                     double[] a = b.getPositionAsArray();
@@ -61,7 +61,7 @@ public class BoidGui extends Application {
                     Vector v = b.getVelocity();
                     Vector d = v.direction();
                     gc.fillOval(p.cartesian(0)-boidDiameter/2, p.cartesian(1)-boidDiameter/2, boidDiameter, boidDiameter);
-                    gc.strokeLine(p.cartesian(0), p.cartesian(1), p.cartesian(0)+d.cartesian(0)*15, p.cartesian(1)+d.cartesian(1)*15);
+                    gc.strokeLine(p.cartesian(0), p.cartesian(1), p.cartesian(0)-d.cartesian(0)*15, p.cartesian(1)-d.cartesian(1)*15);
                 }
 
 
