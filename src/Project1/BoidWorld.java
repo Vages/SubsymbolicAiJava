@@ -9,11 +9,14 @@ public class BoidWorld {
     private int sizeX;
     private int sizeY;
     private ArrayList<Boid> boids;
+    private ArrayList<Obstacle> obstacles;
+    int defaultObstacleRadius = 40;
 
     public BoidWorld(int sizeX, int sizeY, int initialBoids) {
         this.sizeX = sizeX;
         this.sizeY = sizeY;
         this.boids = new ArrayList<>();
+        this.obstacles = new ArrayList<>();
         for (int i = 0; i < initialBoids; i++) {
             this.addBoid();
         }
@@ -66,5 +69,13 @@ public class BoidWorld {
 
         return neighbours;
 
+    }
+
+    public void addObstacle() {
+        obstacles.add(new Obstacle(Math.random()*sizeX, Math.random()*sizeY, defaultObstacleRadius));
+    }
+
+    public ArrayList<Obstacle> getObstacles() {
+        return this.obstacles;
     }
 }
