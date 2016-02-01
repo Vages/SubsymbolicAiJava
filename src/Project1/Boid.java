@@ -1,42 +1,41 @@
 package Project1;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.TreeMap;
 
 public class Boid {
-    private static int idCounter;
-    public static double flockingRadius = 100;
-    public static double separationRadius = 30;
+    public static final double MAX_SEE_AHEAD = 70;
+    public static double alignmentFactor = 5;
     public static double separationForceFactor = 2;
     public static double cohesionFactor = 0.1;
-    public static final double MAX_SEE_AHEAD = 70;
+    public static double flockingRadius = 100;
+    public static double separationRadius = 30;
     public static double obstacleAvoidanceForce = 10;
     public static double maxNoiseForce = 2.25;
     public static double predatorAvoidanceRadius = 50;
     public static double predatorFleeForce = 10;
-
     protected static float maxSpeed = 5;
+    private static int idCounter;
     private final Vector worldDimensions;
     private Vector position;
     private Vector velocity;
     private BoidWorld world;
     private int id;
 
-    public static float getMaxSpeed() {
-        return maxSpeed;
-    }
-
-    public Boid(double[] position, double speed, BoidWorld world){
+    public Boid(double[] position, double speed, BoidWorld world) {
         this.position = new Vector(position);
 
         double angle = Math.random() * 2 * Math.PI;
         double[] velocity = {Math.cos(angle) * speed,
-                            Math.sin(angle) * speed};
+                Math.sin(angle) * speed};
         this.velocity = new Vector(velocity);
         this.world = world;
         this.worldDimensions = new Vector(world.getSize());
         this.id = idCounter++;
+    }
+
+    public static float getMaxSpeed() {
+        return maxSpeed;
     }
 
     public void update() {
@@ -71,7 +70,7 @@ public class Boid {
             return sumOfDirections;
         }
 
-        for (Predator p: predators) {
+        for (Predator p : predators) {
             Vector diff = this.position.minus(p.getPosition());
             if (diff.magnitude() < this.predatorAvoidanceRadius) {
                 sumOfDirections = sumOfDirections.plus(diff.direction());
@@ -88,14 +87,14 @@ public class Boid {
     }
 
     protected Vector calculateNoise() {
-        double angle = Math.random()*2*Math.PI;
-        double force = Math.random()*maxNoiseForce;
-        return new Vector(new double[]{Math.cos(angle)*force, Math.sin(angle)*force});
+        double angle = Math.random() * 2 * Math.PI;
+        double force = Math.random() * maxNoiseForce;
+        return new Vector(new double[]{Math.cos(angle) * force, Math.sin(angle) * force});
     }
 
     protected Vector calculateObstacleAvoidance() {
-        double speedRatio = velocity.magnitude()/maxSpeed;
-        double aheadLength = speedRatio*MAX_SEE_AHEAD;
+        double speedRatio = velocity.magnitude() / maxSpeed;
+        double aheadLength = speedRatio * MAX_SEE_AHEAD;
         Vector ahead = velocity.direction().times(aheadLength);
         Vector halfAhead = ahead.times(0.5);
         Vector aheadPoint = position.plus(ahead);
@@ -103,7 +102,7 @@ public class Boid {
 
         TreeMap<Double, Obstacle> potentialObstacles = new TreeMap<>();
 
-        for (Obstacle o: world.getObstacles()) {
+        for (Obstacle o : world.getObstacles()) {
 
             double distance = position.distanceTo(o.getPosition());
             double sweepZone = o.getRadius() + aheadLength;
@@ -116,7 +115,7 @@ public class Boid {
             return new Vector(new double[]{0, 0});
         }
 
-        for (Obstacle o: potentialObstacles.values()) {
+        for (Obstacle o : potentialObstacles.values()) {
             Vector center = o.getPosition();
             double radius = o.getRadius();
             Vector aheadPointToCenter = aheadPoint.minus(center);
@@ -146,18 +145,18 @@ public class Boid {
     private Vector calculateSeparationForce(ArrayList<Boid> neighbours) {
         Vector sumOfPositions = new Vector(new double[]{0, 0});
 
-        if (neighbours.size() == 0){
+        if (neighbours.size() == 0) {
             return sumOfPositions;
         }
 
-        for (Boid n: neighbours) {
+        for (Boid n : neighbours) {
 
             Vector diff = n.getPosition().minus(this.getPosition());
 
             int distance = diff.length();
             if (distance < Boid.separationRadius) {
                 diff = diff.direction();
-                diff = diff.times(separationForceFactor /Math.pow(distance, 2));
+                diff = diff.times(separationForceFactor / Math.pow(distance, 2));
                 sumOfPositions = sumOfPositions.minus(diff);
             }
 
@@ -169,15 +168,15 @@ public class Boid {
     protected Vector calculateCohesionForce(ArrayList<Boid> neighbours) {
         Vector sumOfPositions = new Vector(new double[]{0, 0});
 
-        if (neighbours.size() == 0){
+        if (neighbours.size() == 0) {
             return sumOfPositions;
         }
 
-        for (Boid n: neighbours) {
+        for (Boid n : neighbours) {
             sumOfPositions = sumOfPositions.plus(n.getPosition());
         }
 
-        sumOfPositions = sumOfPositions.times(1.0/neighbours.size());
+        sumOfPositions = sumOfPositions.times(1.0 / neighbours.size());
 
         Vector d_v = sumOfPositions.minus(this.getPosition());
 
@@ -187,15 +186,15 @@ public class Boid {
     protected Vector calculateAlignmentForce(ArrayList<Boid> neighbours) {
         Vector sumOfDirections = new Vector(new double[]{0, 0});
 
-        if (neighbours.size() == 0){
+        if (neighbours.size() == 0) {
             return sumOfDirections;
         }
 
-        for (Boid n: neighbours) {
+        for (Boid n : neighbours) {
             sumOfDirections = sumOfDirections.plus(n.getVelocity().direction());
         }
 
-        Vector force = sumOfDirections.direction().times(maxSpeed);
+        Vector force = sumOfDirections.direction().times(alignmentFactor);
         Vector steer = force.minus(this.velocity);
         return steer;
     }
@@ -215,5 +214,19 @@ public class Boid {
     protected Vector calculatePredatorSeparation(ArrayList<Predator> predators) {
         return new Vector(new double[]{0, 0});
     }
+
+    public static double getSeparationForceFactor() {
+        return separationForceFactor;
+    }
+
+    public static double getCohesionFactor() {
+        return cohesionFactor;
+    }
+
+    public static double getAlignmentFactor() {
+        return alignmentFactor;
+    }
+
+
 }
 
