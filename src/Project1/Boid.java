@@ -3,17 +3,15 @@ package Project1;
 import java.util.ArrayList;
 import java.util.TreeMap;
 
-/**
- * Created by eirikvageskar on 28.01.2016.
- */
 public class Boid {
     private static int idCounter;
     public static double flockingRadius = 100;
     public static double separationRadius = 30;
     public static double separationForceFactor = 2;
     public static double cohesionFactor = 0.1;
-    public static final double MAX_SEE_AHEAD = 60;
-    public static double obstacleAvoidanceForce = 5;
+    public static final double MAX_SEE_AHEAD = 70;
+    public static double obstacleAvoidanceForce = 10;
+    public static double maxNoiseForce = 2.25;
 
     private static float maxSpeed = 5;
     private final Vector worldDimensions;
@@ -45,15 +43,23 @@ public class Boid {
         Vector cohere = calculateCohesionForce(neighbours);
         Vector separation = calculateSeparationForce(neighbours);
         Vector obstacleAvoidance = calculateObstacleAvoidance();
+        Vector noise = calculateNoise();
 
         this.velocity = this.velocity.plus(align);
         this.velocity = this.velocity.plus(cohere);
         this.velocity = this.velocity.plus(separation);
         this.velocity = this.velocity.plus(obstacleAvoidance);
+        this.velocity = this.velocity.plus(noise);
         this.velocity = this.velocity.limit(maxSpeed);
 
         this.position = this.position.plus(this.velocity);
         this.position = this.position.elementWiseModulo(this.worldDimensions);
+    }
+
+    private Vector calculateNoise() {
+        double angle = Math.random()*2*Math.PI;
+        double force = Math.random()*maxNoiseForce;
+        return new Vector(new double[]{Math.cos(angle)*force, Math.sin(angle)*force});
     }
 
     private Vector calculateObstacleAvoidance() {
