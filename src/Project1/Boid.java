@@ -48,6 +48,7 @@ public class Boid {
         Vector separation = calculateSeparationForce(neighbours);
         Vector obstacleAvoidance = calculateObstacleAvoidance();
         Vector predatorAvoidance = calculatePredatorAvoidance(predators);
+        Vector predatorSeparation = calculatePredatorSeparation(predators);
         Vector noise = calculateNoise();
 
         this.velocity = this.velocity.plus(align);
@@ -55,6 +56,7 @@ public class Boid {
         this.velocity = this.velocity.plus(separation);
         this.velocity = this.velocity.plus(obstacleAvoidance);
         this.velocity = this.velocity.plus(predatorAvoidance);
+        this.velocity = this.velocity.plus(predatorSeparation);
         this.velocity = this.velocity.plus(noise);
         this.velocity = this.velocity.limit(maxSpeed);
 
@@ -208,6 +210,10 @@ public class Boid {
 
     public Vector getVelocity() {
         return velocity;
+    }
+
+    protected Vector calculatePredatorSeparation(ArrayList<Predator> predators) {
+        return new Vector(new double[]{0, 0});
     }
 }
 

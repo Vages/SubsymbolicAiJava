@@ -22,4 +22,30 @@ public class Predator extends Boid {
     protected Vector calculatePredatorAvoidance(ArrayList<Predator> predators) {
         return new Vector(new double[]{0, 0});
     }
+
+    protected Vector calculatePredatorSeparation(ArrayList<Predator> predators) {
+        Vector sumOfPositions = new Vector(new double[]{0, 0});
+
+        if (predators.size() <= 1){
+            return sumOfPositions;
+        }
+
+        for (Predator p: predators) {
+
+            if (p == this) {
+                continue;
+            }
+            Vector diff = p.getPosition().minus(this.getPosition());
+
+            int distance = diff.length();
+            if (distance < Boid.separationRadius) {
+                diff = diff.direction();
+                diff = diff.times(separationForceFactor /Math.pow(distance, 2));
+                sumOfPositions = sumOfPositions.minus(diff);
+            }
+
+        }
+
+        return sumOfPositions;
+    }
 }
