@@ -11,7 +11,7 @@ public class Boid {
     public static double flockingRadius = 100;
     public static double separationRadius = 30;
     public static double obstacleAvoidanceForce = 15;
-    public static double maxNoiseForce = 0;
+    public static double maxNoiseForce = 1;
     public static double predatorAvoidanceRadius = 50;
     public static double predatorFleeForce = 10;
     protected static float maxSpeed = 5;

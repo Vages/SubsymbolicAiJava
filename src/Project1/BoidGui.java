@@ -17,7 +17,7 @@ import java.util.ArrayList;
 
 public class BoidGui extends Application {
     int sizeX = 1024, sizeY = 800, boidDiameter = 10, predatorDiameter = 15;
-    private BoidWorld myBoidWorld = new BoidWorld(sizeX, sizeY, 200);
+    private BoidWorld myBoidWorld = new BoidWorld(sizeX, sizeY, 300);
 
     final Slider cohesionSlider = new Slider(0, 2*Boid.getCohesionFactor(), Boid.getCohesionFactor()),
             alignmentSlider = new Slider(0, 2*Boid.getAlignmentFactor(), Boid.getAlignmentFactor()),
