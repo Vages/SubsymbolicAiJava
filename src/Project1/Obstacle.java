@@ -1,8 +1,5 @@
 package Project1;
 
-/**
- * Created by eirikvageskar on 31.01.2016.
- */
 public class Obstacle {
     private Vector position;
     private double radius;
