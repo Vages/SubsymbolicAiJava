@@ -2,9 +2,6 @@ package Project1;
 
 import java.util.ArrayList;
 
-/**
- * Created by eirikvageskar on 28.01.2016.
- */
 public class BoidWorld {
     private int sizeX;
     private int sizeY;
@@ -77,5 +74,9 @@ public class BoidWorld {
 
     public ArrayList<Obstacle> getObstacles() {
         return this.obstacles;
+    }
+
+    public void addObstacle(double x, double y) {
+        obstacles.add(new Obstacle(x, y, defaultObstacleRadius));
     }
 }
