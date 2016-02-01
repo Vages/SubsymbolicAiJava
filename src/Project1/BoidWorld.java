@@ -7,12 +7,14 @@ public class BoidWorld {
     private int sizeY;
     private ArrayList<Boid> boids;
     private ArrayList<Obstacle> obstacles;
+    private ArrayList<Predator> predators;
     int defaultObstacleRadius = 40;
 
     public BoidWorld(int sizeX, int sizeY, int initialBoids) {
         this.sizeX = sizeX;
         this.sizeY = sizeY;
         this.boids = new ArrayList<>();
+        this.predators = new ArrayList<>();
         this.obstacles = new ArrayList<>();
         for (int i = 0; i < initialBoids; i++) {
             this.addBoid();
@@ -36,6 +38,7 @@ public class BoidWorld {
 
     public void update() {
         boids.forEach(Boid::update);
+        predators.forEach(Predator::update);
     }
 
     public double[] getSize() {
@@ -78,5 +81,21 @@ public class BoidWorld {
 
     public void addObstacle(double x, double y) {
         obstacles.add(new Obstacle(x, y, defaultObstacleRadius));
+    }
+
+    public void addPredator() {
+        double x = Math.random() * this.sizeX;
+        double y = Math.random() * this.sizeY;
+        Predator p = new Predator(new double[]{x, y}, Boid.getMaxSpeed(), this);
+        predators.add(p);
+    }
+
+    public ArrayList<Predator> getPredators() {
+        return predators;
+    }
+
+    public void addPredator(double x, double y) {
+        Predator p = new Predator(new double[]{x, y}, Boid.getMaxSpeed(), this);
+        predators.add(p);
     }
 }

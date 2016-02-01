@@ -1,5 +1,6 @@
 package Project1;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.TreeMap;
 
@@ -12,6 +13,8 @@ public class Boid {
     public static final double MAX_SEE_AHEAD = 70;
     public static double obstacleAvoidanceForce = 10;
     public static double maxNoiseForce = 2.25;
+    public static double predatorAvoidanceRadius = 50;
+    public static double predatorFleeForce = 10;
 
     private static float maxSpeed = 5;
     private final Vector worldDimensions;
@@ -38,17 +41,20 @@ public class Boid {
 
     public void update() {
         ArrayList<Boid> neighbours = world.getNeighbours(this);
+        ArrayList<Predator> predators = world.getPredators();
 
         Vector align = calculateAlignmentForce(neighbours);
         Vector cohere = calculateCohesionForce(neighbours);
         Vector separation = calculateSeparationForce(neighbours);
         Vector obstacleAvoidance = calculateObstacleAvoidance();
+        Vector predatorAvoidance = calculatePredatorAvoidance(predators);
         Vector noise = calculateNoise();
 
         this.velocity = this.velocity.plus(align);
         this.velocity = this.velocity.plus(cohere);
         this.velocity = this.velocity.plus(separation);
         this.velocity = this.velocity.plus(obstacleAvoidance);
+        this.velocity = this.velocity.plus(predatorAvoidance);
         this.velocity = this.velocity.plus(noise);
         this.velocity = this.velocity.limit(maxSpeed);
 
@@ -56,13 +62,36 @@ public class Boid {
         this.position = this.position.elementWiseModulo(this.worldDimensions);
     }
 
-    private Vector calculateNoise() {
+    protected Vector calculatePredatorAvoidance(ArrayList<Predator> predators) {
+        Vector sumOfDirections = new Vector(new double[]{0, 0});
+
+        if (predators.size() == 0) {
+            return sumOfDirections;
+        }
+
+        for (Predator p: predators) {
+            Vector diff = this.position.minus(p.getPosition());
+            if (diff.magnitude() < Boid.predatorAvoidanceRadius) {
+                sumOfDirections = sumOfDirections.plus(diff.direction());
+            }
+        }
+
+        if (sumOfDirections.magnitude() > 0) {
+            return sumOfDirections.direction().times(predatorFleeForce);
+        }
+
+        return sumOfDirections;
+
+        //return sumOfDirections.direction().times(predatorFleeForce);
+    }
+
+    protected Vector calculateNoise() {
         double angle = Math.random()*2*Math.PI;
         double force = Math.random()*maxNoiseForce;
         return new Vector(new double[]{Math.cos(angle)*force, Math.sin(angle)*force});
     }
 
-    private Vector calculateObstacleAvoidance() {
+    protected Vector calculateObstacleAvoidance() {
         double speedRatio = velocity.magnitude()/maxSpeed;
         double aheadLength = speedRatio*MAX_SEE_AHEAD;
         Vector ahead = velocity.direction().times(aheadLength);
@@ -135,7 +164,7 @@ public class Boid {
         return sumOfPositions;
     }
 
-    private Vector calculateCohesionForce(ArrayList<Boid> neighbours) {
+    protected Vector calculateCohesionForce(ArrayList<Boid> neighbours) {
         Vector sumOfPositions = new Vector(new double[]{0, 0});
 
         if (neighbours.size() == 0){
@@ -153,7 +182,7 @@ public class Boid {
         return d_v.times(cohesionFactor); // Must be prettified
     }
 
-    private Vector calculateAlignmentForce(ArrayList<Boid> neighbours) {
+    protected Vector calculateAlignmentForce(ArrayList<Boid> neighbours) {
         Vector sumOfDirections = new Vector(new double[]{0, 0});
 
         if (neighbours.size() == 0){
