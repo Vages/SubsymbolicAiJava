@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 public class Predator extends Boid {
 
+    protected static float maxSpeed = 8;
+    protected static float flockingRadius = 10;
     public Predator(double[] position, double speed, BoidWorld world) {
         super(position, speed, world);
     }

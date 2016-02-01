@@ -16,7 +16,7 @@ public class Boid {
     public static double predatorAvoidanceRadius = 50;
     public static double predatorFleeForce = 10;
 
-    private static float maxSpeed = 5;
+    protected static float maxSpeed = 5;
     private final Vector worldDimensions;
     private Vector position;
     private Vector velocity;
@@ -58,7 +58,7 @@ public class Boid {
         this.velocity = this.velocity.plus(predatorAvoidance);
         this.velocity = this.velocity.plus(predatorSeparation);
         this.velocity = this.velocity.plus(noise);
-        this.velocity = this.velocity.limit(maxSpeed);
+        this.velocity = this.velocity.limit(this.maxSpeed);
 
         this.position = this.position.plus(this.velocity);
         this.position = this.position.elementWiseModulo(this.worldDimensions);
@@ -73,7 +73,7 @@ public class Boid {
 
         for (Predator p: predators) {
             Vector diff = this.position.minus(p.getPosition());
-            if (diff.magnitude() < Boid.predatorAvoidanceRadius) {
+            if (diff.magnitude() < this.predatorAvoidanceRadius) {
                 sumOfDirections = sumOfDirections.plus(diff.direction());
             }
         }
