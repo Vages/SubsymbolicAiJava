@@ -4,14 +4,14 @@ import java.util.ArrayList;
 import java.util.TreeMap;
 
 public class Boid {
-    public static final double MAX_SEE_AHEAD = 70;
+    public static final double MAX_SEE_AHEAD = 80;
     public static double alignmentFactor = 5;
     public static double separationForceFactor = 2;
     public static double cohesionFactor = 0.1;
     public static double flockingRadius = 100;
     public static double separationRadius = 30;
-    public static double obstacleAvoidanceForce = 10;
-    public static double maxNoiseForce = 2.25;
+    public static double obstacleAvoidanceForce = 15;
+    public static double maxNoiseForce = 0;
     public static double predatorAvoidanceRadius = 50;
     public static double predatorFleeForce = 10;
     protected static float maxSpeed = 5;
@@ -36,6 +36,18 @@ public class Boid {
 
     public static float getMaxSpeed() {
         return maxSpeed;
+    }
+
+    public static void setCohesionFactor(double cohesionFactor) {
+        Boid.cohesionFactor = cohesionFactor;
+    }
+
+    public static void setAlignmentFactor(double alignmentFactor) {
+        Boid.alignmentFactor = alignmentFactor;
+    }
+
+    public static void setSeparationForceFactor(double separationForceFactor) {
+        Boid.separationForceFactor = separationForceFactor;
     }
 
     public void update() {
@@ -72,7 +84,7 @@ public class Boid {
 
         for (Predator p : predators) {
             Vector diff = this.position.minus(p.getPosition());
-            if (diff.magnitude() < this.predatorAvoidanceRadius) {
+            if (diff.magnitude() < Boid.predatorAvoidanceRadius) {
                 sumOfDirections = sumOfDirections.plus(diff.direction());
             }
         }
@@ -82,8 +94,6 @@ public class Boid {
         }
 
         return sumOfDirections;
-
-        //return sumOfDirections.direction().times(predatorFleeForce);
     }
 
     protected Vector calculateNoise() {
@@ -122,13 +132,23 @@ public class Boid {
             double dist = aheadPointToCenter.magnitude();
 
             if (dist < radius) {
-                return aheadPointToCenter.direction().times(obstacleAvoidanceForce);
+                Vector heading = center.minus(this.position);
+                Vector turnedHeading = new Vector(new double[]{-heading.cartesian(1), heading.cartesian(0)});
+                if (turnedHeading.dot(aheadPointToCenter) < 0){
+                    turnedHeading = turnedHeading.times(-1);
+                }
+                return turnedHeading.direction().times(obstacleAvoidanceForce);
             }
 
             aheadPointToCenter = halfAheadPoint.minus(center);
             dist = aheadPointToCenter.magnitude();
             if (dist < radius) {
-                return aheadPointToCenter.direction().times(obstacleAvoidanceForce);
+                Vector heading = center.minus(this.position);
+                Vector turnedHeading = new Vector(new double[]{-heading.cartesian(1), heading.cartesian(0)});
+                if (turnedHeading.dot(aheadPointToCenter) < 0){
+                    turnedHeading = turnedHeading.times(-1);
+                }
+                return turnedHeading.direction().times(obstacleAvoidanceForce);
             }
 
             aheadPointToCenter = position.minus(center);

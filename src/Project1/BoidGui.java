@@ -19,7 +19,9 @@ public class BoidGui extends Application {
     int sizeX = 1024, sizeY = 800, boidDiameter = 10, predatorDiameter = 15;
     private BoidWorld myBoidWorld = new BoidWorld(sizeX, sizeY, 200);
 
-    final Slider cohesionSlider = new Slider(0, 1, 1), alignmentSlider = new Slider(0, 1, 1), separationSlider = new Slider(0, 1, 1);
+    final Slider cohesionSlider = new Slider(0, 2*Boid.getCohesionFactor(), Boid.getCohesionFactor()),
+            alignmentSlider = new Slider(0, 2*Boid.getAlignmentFactor(), Boid.getAlignmentFactor()),
+            separationSlider = new Slider(0, 2*Boid.getSeparationForceFactor(), Boid.getSeparationForceFactor());
     final Label cohesionLabel = new Label("Cohesion: "), alignmentLabel = new Label("Alignment: "), separationLabel = new Label("Separation: ");
     public static void main(String[] args) {
         launch(args);
@@ -43,16 +45,25 @@ public class BoidGui extends Application {
 
         GridPane.setConstraints(cohesionLabel, 1, 0);
         GridPane.setConstraints(cohesionSlider, 2, 0);
+        cohesionSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+            Boid.setCohesionFactor(newValue.doubleValue());
+        });
         grid.getChildren().add(cohesionLabel);
         grid.getChildren().add(cohesionSlider);
 
         GridPane.setConstraints(alignmentLabel, 1, 1);
         GridPane.setConstraints(alignmentSlider, 2, 1);
+        alignmentSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+            Boid.setAlignmentFactor(newValue.doubleValue());
+        });
         grid.getChildren().add(alignmentLabel);
         grid.getChildren().add(alignmentSlider);
 
         GridPane.setConstraints(separationLabel, 1, 2);
         GridPane.setConstraints(separationSlider, 2, 2);
+        separationSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+            Boid.setSeparationForceFactor(newValue.doubleValue());
+        });
         grid.getChildren().add(separationLabel);
         grid.getChildren().add(separationSlider);
 
