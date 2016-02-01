@@ -6,6 +6,7 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 /**
@@ -20,11 +21,9 @@ public class BoidGui extends Application {
     }
 
     public void start(Stage theStage) {
-        myBoidWorld = new BoidWorld(800, 600, 200);
+        int sizeX = 1024, sizeY = 800;
+        myBoidWorld = new BoidWorld(sizeX, sizeY, 200);
 
-        for (int i = 0; i < 5; i++) {
-            myBoidWorld.addObstacle();
-        }
 
         int boidDiameter = 10;
 
@@ -44,16 +43,33 @@ public class BoidGui extends Application {
         root.getChildren().add(boids);
         */
 
-        Canvas canvas = new Canvas(800, 600);
+        Canvas canvas = new Canvas(sizeX, sizeY);
         root.getChildren().add(canvas);
+
+        canvas.setOnMouseClicked(
+                event-> {
+                    myBoidWorld.addObstacle(event.getX(), event.getY());
+                }
+        );
 
         GraphicsContext gc = canvas.getGraphicsContext2D();
 
         new AnimationTimer() {
             @Override
             public void handle(long now) {
-                gc.clearRect(0,0,800,600);
+                gc.clearRect(0,0,sizeX,sizeY);
                 gc.setLineWidth(3);
+
+                gc.setFill(new Color(0.5, 0.5, 0.5, 1));
+
+                for (Obstacle o: myBoidWorld.getObstacles()) {
+                    Vector p = o.getPosition();
+                    double r = o.getRadius();
+
+                    gc.fillOval(p.cartesian(0)-r, p.cartesian(1)-r, r*2, r*2);
+                }
+
+                gc.setFill(new Color(0,0,0,1));
 
                 for (Boid b : myBoidWorld.getBoids()){
                     double[] a = b.getPositionAsArray();
@@ -65,12 +81,6 @@ public class BoidGui extends Application {
                 }
 
 
-                for (Obstacle o: myBoidWorld.getObstacles()) {
-                    Vector p = o.getPosition();
-                    double r = o.getRadius();
-
-                    gc.fillOval(p.cartesian(0)-r, p.cartesian(1)-r, r*2, r*2);
-                }
 
 
                 myBoidWorld.update();
