@@ -98,4 +98,12 @@ public class BoidWorld {
         Predator p = new Predator(new double[]{x, y}, Boid.getMaxSpeed(), this);
         predators.add(p);
     }
+
+    public void killAllPredators(){
+        predators.clear();
+    }
+
+    public void removeAllObstacles() {
+        obstacles.clear();
+    }
 }

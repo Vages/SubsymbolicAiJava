@@ -2,10 +2,13 @@ package Project1;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.input.MouseButton;
@@ -16,13 +19,22 @@ import javafx.stage.Stage;
 import java.util.ArrayList;
 
 public class BoidGui extends Application {
-    int sizeX = 1024, sizeY = 800, boidDiameter = 10, predatorDiameter = 15;
+    int sizeX = 800, sizeY = 600, boidDiameter = 10, predatorDiameter = 15;
     private BoidWorld myBoidWorld = new BoidWorld(sizeX, sizeY, 300);
 
     final Slider cohesionSlider = new Slider(0, 2*Boid.getCohesionFactor(), Boid.getCohesionFactor()),
             alignmentSlider = new Slider(0, 2*Boid.getAlignmentFactor(), Boid.getAlignmentFactor()),
-            separationSlider = new Slider(0, 2*Boid.getSeparationForceFactor(), Boid.getSeparationForceFactor());
-    final Label cohesionLabel = new Label("Cohesion: "), alignmentLabel = new Label("Alignment: "), separationLabel = new Label("Separation: ");
+            separationSlider = new Slider(0, 2*Boid.getSeparationForceFactor(), Boid.getSeparationForceFactor()),
+            noiseSlider = new Slider(0, 3*Boid.getMaxNoiseForce(), Boid.getMaxNoiseForce());
+    final Label cohesionLabel = new Label("Cohesion: "),
+            alignmentLabel = new Label("Alignment: "),
+            separationLabel = new Label("Separation: "),
+            noiseLabel = new Label("Noise: ");
+    final Button killAllPredatorsButton = new Button("Kill all predators");
+    final Button removeAllObstaclesButton = new Button("Remove all obstacles");
+    final Button addTenBoidsButton = new Button("+10 boids");
+    final Button killTenBoidsButton = new Button("-10 boids");
+
     public static void main(String[] args) {
         launch(args);
     }
@@ -40,7 +52,7 @@ public class BoidGui extends Application {
         Canvas canvas = new Canvas(sizeX, sizeY);
 
         GridPane.setConstraints(canvas, 0, 0);
-        GridPane.setRowSpan(canvas, 4);
+        GridPane.setRowSpan(canvas, 8);
         grid.getChildren().add(canvas);
 
         GridPane.setConstraints(cohesionLabel, 1, 0);
@@ -67,13 +79,43 @@ public class BoidGui extends Application {
         grid.getChildren().add(separationLabel);
         grid.getChildren().add(separationSlider);
 
+        GridPane.setConstraints(addTenBoidsButton, 1, 3);
+        GridPane.setConstraints(killTenBoidsButton, 2, 3);
+        addTenBoidsButton.setOnAction(event -> {
+            for (int i = 0; i < 10; i++) {
+                myBoidWorld.addBoid();
+            }
+        });
+        killTenBoidsButton.setOnAction(event -> {
+            for (int i = 0; i < 10; i++) {
+                myBoidWorld.removeBoid();
+            }
+        });
+        grid.getChildren().add(addTenBoidsButton);
+        grid.getChildren().add(killTenBoidsButton);
+
+        GridPane.setConstraints(killAllPredatorsButton, 1, 4);
+        GridPane.setColumnSpan(killAllPredatorsButton, 2);
+        killAllPredatorsButton.setOnAction(event -> myBoidWorld.killAllPredators());
+        grid.getChildren().add(killAllPredatorsButton);
+
+        GridPane.setConstraints(removeAllObstaclesButton, 1, 5);
+        GridPane.setColumnSpan(removeAllObstaclesButton, 2);
+        removeAllObstaclesButton.setOnAction(removeAllObstaclesButton -> myBoidWorld.removeAllObstacles());
+        grid.getChildren().add(removeAllObstaclesButton);
+
+        GridPane.setConstraints(noiseLabel, 1, 6);
+        GridPane.setConstraints(noiseSlider, 2, 6);
+        noiseSlider.valueProperty().addListener((observable, oldValue, newValue) -> Boid.setMaxNoiseForce(newValue.doubleValue()));
+        grid.getChildren().add(noiseLabel);
+        grid.getChildren().add(noiseSlider);
 
 
         canvas.setOnMouseClicked(
                 event-> {
-                    if (event.getButton() == MouseButton.PRIMARY){
+                    if (event.getButton() == MouseButton.SECONDARY){
                         myBoidWorld.addObstacle(event.getX(), event.getY());
-                    } else if (event.getButton() == MouseButton.SECONDARY) {
+                    } else if (event.getButton() == MouseButton.PRIMARY) {
                         myBoidWorld.addPredator(event.getX(), event.getY());
                     }
                 }

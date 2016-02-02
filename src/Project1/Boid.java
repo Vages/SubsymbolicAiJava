@@ -247,6 +247,12 @@ public class Boid {
         return alignmentFactor;
     }
 
+    public static double getMaxNoiseForce() {
+        return maxNoiseForce;
+    }
 
+    public static void setMaxNoiseForce(double maxNoiseForce) {
+        Boid.maxNoiseForce = maxNoiseForce;
+    }
 }
 
