@@ -1,6 +1,7 @@
 package Project2;
 
 public abstract class Individual {
+    public abstract int[] getGenotype();
 
-    public abstract String getPhenotype();
+    public abstract int[] getPhenotype();
 }

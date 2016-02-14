@@ -1,6 +1,7 @@
 package Project2;
 
 public interface IndividualEvaluator {
-
-    double evaluate(Individual a);
+    static double evaluate(Individual a) {
+        return 0;
+    }
 }
