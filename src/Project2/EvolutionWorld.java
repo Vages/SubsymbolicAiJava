@@ -1,4 +1,7 @@
 package Project2;
 
-public class EvolutionWorld {
+import java.util.ArrayList;
+
+public abstract class EvolutionWorld {
+    protected ArrayList<Individual> childPool, adultPool, matingPool, selectedMatePool;
 }
