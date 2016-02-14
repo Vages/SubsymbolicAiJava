@@ -1,5 +1,7 @@
 package Project2;
 
+import java.util.Arrays;
+
 public class OneMaxIndividual extends Individual{
     private int[] genotype;
 
@@ -16,5 +18,10 @@ public class OneMaxIndividual extends Individual{
 
     public int[] getGenotype() {
         return this.getPhenotype();
+    }
+
+    @Override
+    public String toString() {
+        return Arrays.toString(this.genotype);
     }
 }
