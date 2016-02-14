@@ -11,8 +11,8 @@ public class IntVectorCrossBreederTest {
 
     @Test
     public void testCrossBreed() throws Exception {
-        OneMaxIndividual a = new OneMaxIndividual(new int[]{0, 0, 0, 0, 0});
-        OneMaxIndividual b = new OneMaxIndividual(new int[]{1, 1, 1, 1, 1});
+        int[] a = new int[]{0, 0, 0, 0, 0};
+        int[] b = new int[]{1, 1, 1, 1, 1};
 
         IntVectorCrossBreeder cb = new IntVectorCrossBreeder(new Random(0)); // Seed so that crossing point is index 3
 

@@ -13,10 +13,7 @@ public class IntVectorCrossBreeder {
         this.randomNumberGenerator = randomNumberGenerator;
     }
 
-    public int[][] crossBreed(Individual a, Individual b){
-        int[] genotypeA = a.getGenotype();
-        int[] genotypeB = b.getGenotype();
-
+    public int[][] crossBreed(int[] genotypeA, int[] genotypeB){
         int genotypeLength = genotypeA.length;
 
         int crossingPoint = (int) (randomNumberGenerator.nextDouble()*genotypeLength);

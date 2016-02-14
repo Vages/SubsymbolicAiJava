@@ -1,7 +1,40 @@
 package Project2;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 public abstract class EvolutionWorld {
-    protected ArrayList<Individual> childPool, adultPool, matingPool, selectedMatePool;
+    protected ArrayList<Individual>
+            undevelopedChildren,
+            developedChildren;
+    protected Map<Individual, Double> fitnessTestedAdults;
+
+    public void oneRoundOfEvolution(){
+        developChildren();
+        testFitness();
+        selectAdults();
+        ageBasedFiltering();
+        parentSelection();
+        genotypeCopying();
+        reproduction();
+    }
+
+    protected void developChildren() {
+        for (Individual c: undevelopedChildren) {
+            c.develop();
+            developedChildren.add(c);
+        }
+    };
+
+    protected abstract void testFitness();
+
+    protected abstract void selectAdults();
+
+    protected abstract void ageBasedFiltering();
+
+    protected abstract void parentSelection();
+
+    protected abstract void genotypeCopying();
+
+    protected abstract void reproduction();
 }

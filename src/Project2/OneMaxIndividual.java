@@ -11,17 +11,24 @@ public class OneMaxIndividual extends Individual{
 
     @Override
     public int[] getPhenotype() {
-        int [] a = new int[genotype.length];
-        System.arraycopy(genotype, 0, a, 0, genotype.length);
-        return a;
+        return this.getGenotype();
+    }
+
+    @Override
+    public void develop() {
+
     }
 
     public int[] getGenotype() {
-        return this.getPhenotype();
+        int [] a = new int[genotype.length];
+        System.arraycopy(genotype, 0, a, 0, genotype.length);
+        return a;
     }
 
     @Override
     public String toString() {
         return Arrays.toString(this.genotype);
     }
+
+
 }
