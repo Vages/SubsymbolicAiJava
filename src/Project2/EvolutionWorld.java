@@ -7,7 +7,7 @@ public abstract class EvolutionWorld {
     protected ArrayList<Individual>
             undevelopedChildren,
             developedChildren;
-    protected Map<Individual, Double> fitnessTestedAdults;
+    protected Map<Individual, Double> fitnessTestedChildren, fitnessTestedAdults;
 
     public void oneRoundOfEvolution(){
         developChildren();
