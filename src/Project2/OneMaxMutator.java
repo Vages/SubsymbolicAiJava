@@ -5,7 +5,7 @@ public class OneMaxMutator {
     public static int[] mutate(int[] genome){
 
         double mutateThreshold = 0.01;
-        double numberOfMutations = 6;
+        double numberOfMutations = 3;
         if (Math.random() > mutateThreshold)
             return genome;
 

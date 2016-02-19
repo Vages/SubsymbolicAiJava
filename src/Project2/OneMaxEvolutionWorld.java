@@ -8,18 +8,23 @@ public class OneMaxEvolutionWorld extends EvolutionWorld {
 
     private RandomCollection<Individual> parentRouletteWheel;
     private RandomCollection<int[]> matingRouletteWheel;
-    private int numberOfMates = 50;
+    private int numberOfMates;
     private ArrayList<Individual> matingList;
     private IntVectorCrossBreeder crossBreeder = new IntVectorCrossBreeder();
+    private PhenotypeEvaluator evaluator;
 
-    public OneMaxEvolutionWorld(int stringLength, int initialChildren) {
+    public OneMaxEvolutionWorld(int stringLength, int initialChildren, int[] idealPhenotype) {
         undevelopedChildren = new ArrayList<>();
         developedChildren = new ArrayList<>();
-        fitnessTestedChildren = new TreeMap<>(new OneMaxComparator());
-        fitnessTestedAdults = new TreeMap<>(new OneMaxComparator());
+
+        evaluator = new OneMaxEvaluator(idealPhenotype);
+
+        fitnessTestedChildren = new TreeMap<>(new PhenotypeComparator(evaluator));
+        fitnessTestedAdults = new TreeMap<>(new PhenotypeComparator(evaluator));
         parentRouletteWheel = new RandomCollection<>();
         matingRouletteWheel = new RandomCollection<>();
         matingList = new ArrayList<>();
+        numberOfMates = initialChildren/2;
 
         // Adding all children
         for (int i = 0; i < initialChildren; i++) {
@@ -34,9 +39,17 @@ public class OneMaxEvolutionWorld extends EvolutionWorld {
     }
 
     public static void main(String[] args) {
-        OneMaxEvolutionWorld omew = new OneMaxEvolutionWorld(40, 100);
+        int stringlength = 20;
+        int generations = 100;
+        int[] idealPhenotype = new int[stringlength];
 
-        for (int i = 0; i<100; i++){
+        for (int i = 0; i < stringlength; i++){
+            idealPhenotype[i] = 1;
+        }
+
+        OneMaxEvolutionWorld omew = new OneMaxEvolutionWorld(stringlength, generations, idealPhenotype);
+
+        for (int i = 0; i<1000; i++){
             omew.oneRoundOfEvolution();
         }
 
@@ -46,14 +59,14 @@ public class OneMaxEvolutionWorld extends EvolutionWorld {
     @Override
     protected void testFitness() {
         for (Individual c: developedChildren) {
-            fitnessTestedChildren.put(c, OneMaxEvaluator.evaluate(c));
+            fitnessTestedChildren.put(c, evaluator.evaluate(c.getPhenotype()));
         }
     }
 
     @Override
     protected void selectAdults() {
         for (Individual c: fitnessTestedChildren.keySet()){
-            fitnessTestedAdults.put(c, OneMaxEvaluator.evaluate(c));
+            fitnessTestedAdults.put(c, evaluator.evaluate(c.getPhenotype()));
         }
 
     }
@@ -87,13 +100,13 @@ public class OneMaxEvolutionWorld extends EvolutionWorld {
 
     @Override
     protected void reproduction() {
-        int number_of_reproductions = numberOfMates/2;
+        int number_of_reproductions = numberOfMates;
         undevelopedChildren = new ArrayList<>();
         developedChildren = new ArrayList<>();
         for (int i = 0; i < number_of_reproductions; i++){
             int[][] childPair = crossBreeder.crossBreed(matingRouletteWheel.next(), matingRouletteWheel.next());
-            undevelopedChildren.add(new OneMaxIndividual(childPair[0]));
-            undevelopedChildren.add(new OneMaxIndividual(childPair[1]));
+            undevelopedChildren.add(new OneMaxIndividual(OneMaxMutator.mutate(childPair[0])));
+            undevelopedChildren.add(new OneMaxIndividual(OneMaxMutator.mutate(childPair[1])));
         }
 
     }

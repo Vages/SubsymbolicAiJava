@@ -1,13 +1,18 @@
 package Project2;
 
-public class OneMaxEvaluator implements IndividualEvaluator {
+public class OneMaxEvaluator implements PhenotypeEvaluator {
+    private int[] idealPhenotype;
 
-    public static double evaluate(Individual a) {
-        int[] p = a.getPhenotype();
+    public OneMaxEvaluator(int[] idealPhenotype) {
+        this.idealPhenotype = new int[idealPhenotype.length];
+        System.arraycopy(idealPhenotype, 0, this.idealPhenotype, 0, idealPhenotype.length);
+    }
+
+    public double evaluate(int[] phenotype) {
         double errors = 0;
 
-        for (int aP : p) {
-            if (aP != 1) {
+        for (int i = 0; i<phenotype.length; i++){
+            if (phenotype[i] != this.idealPhenotype[i]) {
                 errors++;
             }
         }
