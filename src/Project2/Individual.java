@@ -5,5 +5,7 @@ public abstract class Individual {
 
     public abstract int[] getPhenotype();
 
+    public abstract double getFitness();
+
     public abstract void develop();
 }

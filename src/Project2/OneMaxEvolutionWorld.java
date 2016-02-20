@@ -12,6 +12,7 @@ public class OneMaxEvolutionWorld extends EvolutionWorld {
     private ArrayList<Individual> matingList;
     private IntVectorCrossBreeder crossBreeder = new IntVectorCrossBreeder();
     private PhenotypeEvaluator evaluator;
+    private IntegerMutator mutator;
 
     public OneMaxEvolutionWorld(int stringLength, int initialChildren, int[] idealPhenotype) {
         undevelopedChildren = new ArrayList<>();
@@ -25,6 +26,7 @@ public class OneMaxEvolutionWorld extends EvolutionWorld {
         matingRouletteWheel = new RandomCollection<>();
         matingList = new ArrayList<>();
         numberOfMates = initialChildren/2;
+        mutator = new IntegerMutator(1, 0.3, 1);
 
         // Adding all children
         for (int i = 0; i < initialChildren; i++) {
@@ -34,12 +36,13 @@ public class OneMaxEvolutionWorld extends EvolutionWorld {
                 genotype[j] = (int) (Math.random()*2);
             }
 
-            this.undevelopedChildren.add(new OneMaxIndividual(genotype));
+            this.undevelopedChildren.add(new OneMaxIndividual(genotype, evaluator));
         }
     }
 
     public static void main(String[] args) {
-        int stringlength = 20;
+        int stringlength = 40;
+        int individuals = 100;
         int generations = 100;
         int[] idealPhenotype = new int[stringlength];
 
@@ -47,9 +50,9 @@ public class OneMaxEvolutionWorld extends EvolutionWorld {
             idealPhenotype[i] = 1;
         }
 
-        OneMaxEvolutionWorld omew = new OneMaxEvolutionWorld(stringlength, generations, idealPhenotype);
+        OneMaxEvolutionWorld omew = new OneMaxEvolutionWorld(stringlength, individuals, idealPhenotype);
 
-        for (int i = 0; i<1000; i++){
+        for (int i = 0; i<generations; i++){
             omew.oneRoundOfEvolution();
         }
 
@@ -59,14 +62,16 @@ public class OneMaxEvolutionWorld extends EvolutionWorld {
     @Override
     protected void testFitness() {
         for (Individual c: developedChildren) {
-            fitnessTestedChildren.put(c, evaluator.evaluate(c.getPhenotype()));
+            if (c.getFitness() == 1) System.out.println("foundit!");
+            System.out.println(c.getFitness());
+            fitnessTestedChildren.put(c, c.getFitness());
         }
     }
 
     @Override
     protected void selectAdults() {
         for (Individual c: fitnessTestedChildren.keySet()){
-            fitnessTestedAdults.put(c, evaluator.evaluate(c.getPhenotype()));
+            fitnessTestedAdults.put(c, c.getFitness());
         }
 
     }
@@ -105,8 +110,8 @@ public class OneMaxEvolutionWorld extends EvolutionWorld {
         developedChildren = new ArrayList<>();
         for (int i = 0; i < number_of_reproductions; i++){
             int[][] childPair = crossBreeder.crossBreed(matingRouletteWheel.next(), matingRouletteWheel.next());
-            undevelopedChildren.add(new OneMaxIndividual(OneMaxMutator.mutate(childPair[0])));
-            undevelopedChildren.add(new OneMaxIndividual(OneMaxMutator.mutate(childPair[1])));
+            undevelopedChildren.add(new OneMaxIndividual(mutator.mutate(childPair[0]), evaluator));
+            undevelopedChildren.add(new OneMaxIndividual(mutator.mutate(childPair[1]), evaluator));
         }
 
     }

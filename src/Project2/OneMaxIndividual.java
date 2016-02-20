@@ -3,10 +3,14 @@ package Project2;
 import java.util.Arrays;
 
 public class OneMaxIndividual extends Individual{
-    private int[] genotype;
+    private final int[] genotype;
+    private Double fitness;
+    private PhenotypeEvaluator evaluator;
 
-    public OneMaxIndividual(int[] genotype) {
+
+    public OneMaxIndividual(int[] genotype, PhenotypeEvaluator evaluator) {
         this.genotype = genotype;
+        this.evaluator = evaluator;
     }
 
     @Override
@@ -23,6 +27,14 @@ public class OneMaxIndividual extends Individual{
         int [] a = new int[genotype.length];
         System.arraycopy(genotype, 0, a, 0, genotype.length);
         return a;
+    }
+
+    public double getFitness() {
+        if (this.fitness == null) {
+            this.fitness = this.evaluator.evaluate(this.getPhenotype());
+        }
+
+        return this.fitness;
     }
 
     @Override

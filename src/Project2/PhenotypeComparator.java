@@ -11,6 +11,6 @@ public class PhenotypeComparator implements Comparator<Individual> {
 
     @Override
     public int compare(Individual o1, Individual o2) {
-        return (int) Math.signum(evaluator.evaluate(o1.getPhenotype())-evaluator.evaluate(o2.getPhenotype()));
+        return (int) Math.signum(o1.getFitness()-o2.getFitness());
     }
 }
