@@ -1,17 +1,18 @@
 package Project2;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 public abstract class EvolutionWorld {
-    protected ArrayList<Individual>
-            undevelopedChildren,
-            developedChildren;
-    protected Map<Individual, Double> fitnessTestedChildren, fitnessTestedAdults;
+    protected ArrayList<Individual> children, adults;
+
+    public EvolutionWorld() {
+        children = new ArrayList<>();
+        adults = new ArrayList<>();
+    }
 
     public void oneRoundOfEvolution(){
         developChildren();
-        testFitness();
+        assessFitness();
         selectAdults();
         ageBasedFiltering();
         parentSelection();
@@ -20,13 +21,12 @@ public abstract class EvolutionWorld {
     }
 
     protected void developChildren() {
-        for (Individual c: undevelopedChildren) {
+        for (Individual c: children) {
             c.develop();
-            developedChildren.add(c);
         }
     };
 
-    protected abstract void testFitness();
+    protected abstract void assessFitness();
 
     protected abstract void selectAdults();
 
