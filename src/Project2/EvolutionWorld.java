@@ -9,16 +9,19 @@ public abstract class EvolutionWorld {
     protected RandomCollection<Individual> parentRouletteWheel;
     protected ArrayList<Individual> matingIndividualList;
     protected int numberOfNewChildren;
+    protected int numberOfGenerations;
+    protected int currentGeneration;
 
     // Fields related to tournament selection
     protected int tournamentSize = 5;
     protected double tournamentE = 0.1;
 
-    public EvolutionWorld(MatingSelection matingSelection, int numberOfNewChildren) {
+    public EvolutionWorld(MatingSelection matingSelection, int numberOfNewChildren, int generations) {
         children = new ArrayList<>();
         adults = new ArrayList<>();
         this.matingSelection = matingSelection;
         this.numberOfNewChildren = numberOfNewChildren;
+        this.numberOfGenerations = generations;
     }
 
     public void oneRoundOfEvolution(){
@@ -40,6 +43,12 @@ public abstract class EvolutionWorld {
         }
         genotypeCopying();
         reproduction();
+    }
+
+    public void runAllGenerations() {
+        for (currentGeneration = 0; currentGeneration < this.numberOfGenerations; currentGeneration++) {
+            this.oneRoundOfEvolution();
+        }
     }
 
     protected void developChildren() {
@@ -129,9 +138,6 @@ public abstract class EvolutionWorld {
                 matingIndividualList.add(tournament.get(0)); // List is already randomized, so this is a random choice
             }
         }
-
-
-
 
     }
 

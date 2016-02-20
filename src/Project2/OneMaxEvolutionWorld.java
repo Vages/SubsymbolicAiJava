@@ -9,8 +9,8 @@ public class OneMaxEvolutionWorld extends EvolutionWorld {
     private PhenotypeEvaluator evaluator;
     private IntegerMutator mutator;
 
-    public OneMaxEvolutionWorld(int stringLength, int initialChildren, int[] idealPhenotype) {
-        super(MatingSelection.TOURNAMENT_SELECTION, initialChildren);
+    public OneMaxEvolutionWorld(MatingSelection ms, int initialChildren, int numberOfGenerations, int stringLength, int[] idealPhenotype) {
+        super(ms, initialChildren, numberOfGenerations);
         evaluator = new OneMaxEvaluator(idealPhenotype);
         mutator = new IntegerMutator(1, 0.3, 1);
 
@@ -36,11 +36,8 @@ public class OneMaxEvolutionWorld extends EvolutionWorld {
             idealPhenotype[i] = 1;
         }
 
-        OneMaxEvolutionWorld omew = new OneMaxEvolutionWorld(stringlength, individuals, idealPhenotype);
-
-        for (int i = 0; i<generations; i++){
-            omew.oneRoundOfEvolution();
-        }
+        OneMaxEvolutionWorld omew = new OneMaxEvolutionWorld(MatingSelection.FITNESS_PROPORTIONATE, individuals, generations, stringlength, idealPhenotype);
+        omew.runAllGenerations();
 
         System.out.println("Hello!");
     }
