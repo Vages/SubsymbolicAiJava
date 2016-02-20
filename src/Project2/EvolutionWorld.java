@@ -1,6 +1,7 @@
 package Project2;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public abstract class EvolutionWorld {
     protected ArrayList<Individual> children, adults;
@@ -8,6 +9,10 @@ public abstract class EvolutionWorld {
     protected RandomCollection<Individual> parentRouletteWheel;
     protected ArrayList<Individual> matingIndividualList;
     protected int numberOfNewChildren;
+
+    // Fields related to tournament selection
+    protected int tournamentSize = 5;
+    protected double tournamentE = 0.1;
 
     public EvolutionWorld(MatingSelection matingSelection, int numberOfNewChildren) {
         children = new ArrayList<>();
@@ -21,12 +26,16 @@ public abstract class EvolutionWorld {
         assessFitness();
         selectAdults();
         ageBasedFiltering();
+        matingIndividualList = new ArrayList<>();
         switch (this.matingSelection) {
             case FITNESS_PROPORTIONATE:
                 fitnessProportionateParentSelection();
                 break;
             case SIGMA_SCALING:
                 sigmaScaledParentSelection();
+                break;
+            case TOURNAMENT_SELECTION:
+                tournamentParentSelection();
                 break;
         }
         genotypeCopying();
@@ -61,7 +70,6 @@ public abstract class EvolutionWorld {
             parentRouletteWheel.add(a.getFitness(), a);
         }
 
-        matingIndividualList = new ArrayList<>();
         for (int i = 0; i < numberOfNewChildren; i++) {
             Individual next = parentRouletteWheel.next();
             matingIndividualList.add(next);
@@ -88,11 +96,43 @@ public abstract class EvolutionWorld {
             parentRouletteWheel.add(scaledFitnessValues[i], adults.get(i));
         }
 
-        matingIndividualList = new ArrayList<>();
         for (int i = 0; i < numberOfNewChildren; i++) {
             Individual next = parentRouletteWheel.next();
             matingIndividualList.add(next);
         }
+    }
+
+    protected void tournamentParentSelection() {
+        ArrayList<Individual> tournament;
+        for (int i = 0; i < this.numberOfNewChildren; i++) {
+            tournament = new ArrayList<>();
+            Collections.shuffle(adults);
+
+            for (int j = 0; j < this.tournamentSize; j++) {
+                tournament.add(adults.get(j));
+            }
+
+            if (Math.random() > this.tournamentE) {
+                double maxFitness = 0;
+                Individual maxIndividual = null;
+
+                for (Individual a: tournament) {
+                    double f = a.getFitness();
+                    if (f > maxFitness) {
+                        maxFitness = f;
+                        maxIndividual = a;
+                    }
+                }
+
+                matingIndividualList.add(maxIndividual);
+            } else {
+                matingIndividualList.add(tournament.get(0)); // List is already randomized, so this is a random choice
+            }
+        }
+
+
+
+
     }
 
     protected abstract void genotypeCopying();

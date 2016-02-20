@@ -10,7 +10,7 @@ public class OneMaxEvolutionWorld extends EvolutionWorld {
     private IntegerMutator mutator;
 
     public OneMaxEvolutionWorld(int stringLength, int initialChildren, int[] idealPhenotype) {
-        super(MatingSelection.FITNESS_PROPORTIONATE, initialChildren);
+        super(MatingSelection.TOURNAMENT_SELECTION, initialChildren);
         evaluator = new OneMaxEvaluator(idealPhenotype);
         mutator = new IntegerMutator(1, 0.3, 1);
 
