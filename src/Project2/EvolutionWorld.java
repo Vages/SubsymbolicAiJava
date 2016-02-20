@@ -25,6 +25,9 @@ public abstract class EvolutionWorld {
             case FITNESS_PROPORTIONATE:
                 fitnessProportionateParentSelection();
                 break;
+            case SIGMA_SCALING:
+                sigmaScaledParentSelection();
+                break;
         }
         genotypeCopying();
         reproduction();
@@ -56,6 +59,33 @@ public abstract class EvolutionWorld {
         parentRouletteWheel = new RandomCollection<>();
         for (Individual a: adults) {
             parentRouletteWheel.add(a.getFitness(), a);
+        }
+
+        matingIndividualList = new ArrayList<>();
+        for (int i = 0; i < numberOfNewChildren; i++) {
+            Individual next = parentRouletteWheel.next();
+            matingIndividualList.add(next);
+        }
+    }
+
+    protected void sigmaScaledParentSelection() {
+        double[] fitnessValues = new double[adults.size()];
+        for (int i = 0; i < adults.size(); i++) {
+            fitnessValues[i] = adults.get(i).getFitness();
+        }
+
+        double average = ScalingTools.average(fitnessValues);
+        double standardDeviation = ScalingTools.standardDeviation(fitnessValues, average);
+
+        double[] scaledFitnessValues = new double[adults.size()];
+
+        for (int i = 0; i < adults.size(); i++) {
+            scaledFitnessValues[i] = ScalingTools.sigmaScale(adults.get(i).getFitness(), average, standardDeviation);
+        }
+
+        parentRouletteWheel = new RandomCollection<>();
+        for (int i = 0; i < adults.size(); i++) {
+            parentRouletteWheel.add(scaledFitnessValues[i], adults.get(i));
         }
 
         matingIndividualList = new ArrayList<>();
