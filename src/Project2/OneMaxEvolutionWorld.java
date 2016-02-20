@@ -4,19 +4,13 @@ package Project2;
 import java.util.ArrayList;
 
 public class OneMaxEvolutionWorld extends EvolutionWorld {
-
-    private RandomCollection<Individual> parentRouletteWheel;
     private ArrayList<int[]> matingGenotypeList;
-    private int numberOfNewChildren;
-    private ArrayList<Individual> matingIndividualList;
     private IntVectorCrossBreeder crossBreeder = new IntVectorCrossBreeder();
     private PhenotypeEvaluator evaluator;
     private IntegerMutator mutator;
 
     public OneMaxEvolutionWorld(int stringLength, int initialChildren, int[] idealPhenotype) {
-        super();
-        numberOfNewChildren = initialChildren;
-
+        super(MatingSelection.FITNESS_PROPORTIONATE, initialChildren);
         evaluator = new OneMaxEvaluator(idealPhenotype);
         mutator = new IntegerMutator(1, 0.3, 1);
 
@@ -52,21 +46,6 @@ public class OneMaxEvolutionWorld extends EvolutionWorld {
     }
 
     @Override
-    protected void parentSelection() {
-        // Roulette wheel implementation
-        parentRouletteWheel = new RandomCollection<>();
-        for (Individual a: adults) {
-            parentRouletteWheel.add(a.getFitness(), a);
-        }
-
-        matingIndividualList = new ArrayList<>();
-        for (int i = 0; i < numberOfNewChildren; i++) {
-            Individual next = parentRouletteWheel.next();
-            matingIndividualList.add(next);
-        }
-    }
-
-    @Override
     protected void genotypeCopying() {
         matingGenotypeList = new ArrayList<>();
         for (Individual i: matingIndividualList) {
@@ -78,7 +57,7 @@ public class OneMaxEvolutionWorld extends EvolutionWorld {
     protected void reproduction() {
         children = new ArrayList<>();
         adults = new ArrayList<>();
-        for (int i = 0; i < numberOfNewChildren; i = i + 2){
+        for (int i = 0; i < matingGenotypeList.size(); i = i + 2){
             int[][] childPair = crossBreeder.crossBreed(matingGenotypeList.get(i), matingGenotypeList.get(i+1));
             children.add(new OneMaxIndividual(mutator.mutate(childPair[0]), evaluator));
             children.add(new OneMaxIndividual(mutator.mutate(childPair[1]), evaluator));

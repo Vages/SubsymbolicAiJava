@@ -4,10 +4,16 @@ import java.util.ArrayList;
 
 public abstract class EvolutionWorld {
     protected ArrayList<Individual> children, adults;
+    protected MatingSelection matingSelection;
+    protected RandomCollection<Individual> parentRouletteWheel;
+    protected ArrayList<Individual> matingIndividualList;
+    protected int numberOfNewChildren;
 
-    public EvolutionWorld() {
+    public EvolutionWorld(MatingSelection matingSelection, int numberOfNewChildren) {
         children = new ArrayList<>();
         adults = new ArrayList<>();
+        this.matingSelection = matingSelection;
+        this.numberOfNewChildren = numberOfNewChildren;
     }
 
     public void oneRoundOfEvolution(){
@@ -15,7 +21,11 @@ public abstract class EvolutionWorld {
         assessFitness();
         selectAdults();
         ageBasedFiltering();
-        parentSelection();
+        switch (this.matingSelection) {
+            case FITNESS_PROPORTIONATE:
+                fitnessProportionateParentSelection();
+                break;
+        }
         genotypeCopying();
         reproduction();
     }
@@ -28,7 +38,7 @@ public abstract class EvolutionWorld {
 
     protected void assessFitness() {
         for (Individual c: children) {
-            c.getFitness();
+            System.out.println(c.getFitness());
         }
     }
 
@@ -42,7 +52,18 @@ public abstract class EvolutionWorld {
 
     }
 
-    protected abstract void parentSelection();
+    protected void fitnessProportionateParentSelection() {
+        parentRouletteWheel = new RandomCollection<>();
+        for (Individual a: adults) {
+            parentRouletteWheel.add(a.getFitness(), a);
+        }
+
+        matingIndividualList = new ArrayList<>();
+        for (int i = 0; i < numberOfNewChildren; i++) {
+            Individual next = parentRouletteWheel.next();
+            matingIndividualList.add(next);
+        }
+    }
 
     protected abstract void genotypeCopying();
 
