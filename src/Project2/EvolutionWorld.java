@@ -24,13 +24,23 @@ public abstract class EvolutionWorld {
         for (Individual c: children) {
             c.develop();
         }
-    };
+    }
 
-    protected abstract void assessFitness();
+    protected void assessFitness() {
+        for (Individual c: children) {
+            c.getFitness();
+        }
+    }
 
-    protected abstract void selectAdults();
+    protected void selectAdults() {
+        for (Individual c: children){
+            adults.add(c);
+        }
+    }
 
-    protected abstract void ageBasedFiltering();
+    protected void ageBasedFiltering(){
+
+    }
 
     protected abstract void parentSelection();
 

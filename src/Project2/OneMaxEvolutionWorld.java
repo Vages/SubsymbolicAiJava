@@ -52,27 +52,6 @@ public class OneMaxEvolutionWorld extends EvolutionWorld {
     }
 
     @Override
-    protected void assessFitness() {
-        for (Individual c: children) {
-            if (c.getFitness() == 1) System.out.println("foundit!");
-            System.out.println(c.getFitness());
-        }
-    }
-
-    @Override
-    protected void selectAdults() {
-        for (Individual c: children){
-            adults.add(c);
-        }
-
-    }
-
-    @Override
-    protected void ageBasedFiltering() {
-
-    }
-
-    @Override
     protected void parentSelection() {
         // Roulette wheel implementation
         parentRouletteWheel = new RandomCollection<>();
