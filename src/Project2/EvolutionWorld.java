@@ -9,6 +9,7 @@ public abstract class EvolutionWorld {
     protected SelectionStrategy matingSelection;
     protected RandomCollection<Individual> parentRouletteWheel;
     protected ArrayList<Individual> matingIndividualList;
+    protected ArrayList<ArrayList<String>> statisticsLog;
     protected int childPoolSize;
     protected int adultPoolSize = 70;
     protected int numberOfGenerations;
@@ -25,6 +26,15 @@ public abstract class EvolutionWorld {
         this.matingSelection = matingSelection;
         this.childPoolSize = childPoolSize;
         this.numberOfGenerations = generations;
+
+        statisticsLog = new ArrayList<>();
+        ArrayList<String> descriptiveLine = new ArrayList<>();
+        descriptiveLine.add("Generation");
+        descriptiveLine.add("Best fitness");
+        descriptiveLine.add("Average fitness");
+        descriptiveLine.add("Standard deviation");
+        descriptiveLine.add("Best phenotype");
+        statisticsLog.add(descriptiveLine);
     }
 
     public void oneRoundOfEvolution(){
@@ -42,6 +52,8 @@ public abstract class EvolutionWorld {
         for (currentGeneration = 0; currentGeneration < this.numberOfGenerations; currentGeneration++) {
             this.oneRoundOfEvolution();
         }
+
+        GenerateCsv.generateCsvFile("./out/logs/SubsymbolicAiJava/Project2/test.csv", statisticsLog);
     }
 
     protected void developChildren() {
@@ -89,6 +101,8 @@ public abstract class EvolutionWorld {
     }
 
     protected void findGenerationStatistics() {
+        ArrayList<String> statisticsLine = new ArrayList<>();
+
         Collections.sort(adults);
         Individual best = adults.get(adults.size()-1);
 
@@ -106,6 +120,14 @@ public abstract class EvolutionWorld {
         System.out.println("Standard deviation: " + standardDeviation);
         System.out.println("Best phenotype:     " + best.toString());
         System.out.println();
+
+        statisticsLine.add(Integer.toString(currentGeneration));
+        statisticsLine.add(Double.toString(best.getFitness()));
+        statisticsLine.add(Double.toString(average));
+        statisticsLine.add(Double.toString(standardDeviation));
+        statisticsLine.add(best.toString().replace(',', ';'));
+
+        statisticsLog.add(statisticsLine);
     }
 
     private void parentSelection() {
