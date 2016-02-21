@@ -1,6 +1,7 @@
-package Project2;
+package Project2.evaluators;
 
-import java.util.HashMap;
+import Project2.Tuple;
+
 import java.util.HashSet;
 
 public class SurprisingSequenceEvaluator implements PhenotypeEvaluator {

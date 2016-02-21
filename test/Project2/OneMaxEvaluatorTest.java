@@ -1,5 +1,6 @@
 package Project2;
 
+import Project2.evaluators.OneMaxEvaluator;
 import org.junit.Test;
 
 import static org.junit.Assert.*;

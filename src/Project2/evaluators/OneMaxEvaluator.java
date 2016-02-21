@@ -1,4 +1,4 @@
-package Project2;
+package Project2.evaluators;
 
 public class OneMaxEvaluator implements PhenotypeEvaluator {
     private int[] idealPhenotype;

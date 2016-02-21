@@ -1,6 +1,9 @@
 package Project2;
 
 
+import Project2.evaluators.OneMaxEvaluator;
+import Project2.evaluators.PhenotypeEvaluator;
+
 import java.util.ArrayList;
 
 public class OneMaxEvolutionWorld extends EvolutionWorld {
