@@ -1,12 +1,12 @@
-package project2;
+package project2.tools;
 
 public class ScalingTools {
 
-    static double sigmaScale(double fitness, double averageFitness, double standardDeviation){
+    public static double sigmaScale(double fitness, double averageFitness, double standardDeviation){
         return (1 + (fitness-averageFitness)/(2*standardDeviation));
     }
 
-    static double average(double[] values) {
+    public static double average(double[] values) {
         double sum = 0;
 
         for (double v: values) {
@@ -16,7 +16,7 @@ public class ScalingTools {
         return sum/values.length;
     }
 
-    static double standardDeviation(double[] values, double average) {
+    public static double standardDeviation(double[] values, double average) {
         double sum = 0;
 
         for (double v: values) {
@@ -28,15 +28,15 @@ public class ScalingTools {
         return Math.sqrt(variance);
     }
 
-    static double boltzmannExponent(double fitness, double temp) {
+    public static double boltzmannExponent(double fitness, double temp) {
         return Math.pow(Math.E, fitness/temp);
     }
 
-    static double boltzmannFitness(double fitness, double temp, double average) {
+    public static double boltzmannFitness(double fitness, double temp, double average) {
         return boltzmannExponent(fitness, temp)/average;
     }
 
-    static double averageBoltzmannExponent(double[] values, double temp) {
+    public static double averageBoltzmannExponent(double[] values, double temp) {
         double sum = 0;
 
         for (double v: values)

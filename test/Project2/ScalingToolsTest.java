@@ -1,6 +1,7 @@
 package project2;
 
 import org.junit.Test;
+import project2.tools.ScalingTools;
 
 import static org.junit.Assert.*;
 

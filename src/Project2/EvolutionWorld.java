@@ -1,6 +1,8 @@
 package project2;
 
 import project2.helperStructures.RandomCollection;
+import project2.tools.GenerateCsv;
+import project2.tools.ScalingTools;
 
 import java.util.ArrayList;
 import java.util.Collections;
