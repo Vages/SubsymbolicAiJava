@@ -1,4 +1,4 @@
-package project2.evaluators;
+package project2.integerSpecializations.evaluators;
 
 public class LolzEvaluator implements PhenotypeEvaluator {
     private int zCap;

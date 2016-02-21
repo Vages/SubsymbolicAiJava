@@ -1,6 +1,7 @@
-package project2;
+package project2.integerSpecializations;
 
-import project2.evaluators.PhenotypeEvaluator;
+import project2.Individual;
+import project2.integerSpecializations.evaluators.PhenotypeEvaluator;
 
 import java.util.Arrays;
 

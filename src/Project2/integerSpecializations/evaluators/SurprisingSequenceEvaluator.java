@@ -1,4 +1,4 @@
-package project2.evaluators;
+package project2.integerSpecializations.evaluators;
 
 import project2.helperStructures.Tuple;
 

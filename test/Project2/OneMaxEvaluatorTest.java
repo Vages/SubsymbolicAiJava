@@ -1,7 +1,8 @@
 package project2;
 
-import project2.evaluators.OneMaxEvaluator;
+import project2.integerSpecializations.evaluators.OneMaxEvaluator;
 import org.junit.Test;
+import project2.integerSpecializations.IntegerIndividual;
 
 import static org.junit.Assert.*;
 

@@ -1,6 +1,6 @@
 package project2;
 
-import project2.evaluators.LolzEvaluator;
+import project2.integerSpecializations.evaluators.LolzEvaluator;
 import org.junit.Test;
 
 import static org.junit.Assert.*;

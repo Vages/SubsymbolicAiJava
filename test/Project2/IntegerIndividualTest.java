@@ -1,5 +1,7 @@
 package project2;
 
+import project2.integerSpecializations.IntegerIndividual;
+
 import static org.junit.Assert.*;
 
 public class IntegerIndividualTest {

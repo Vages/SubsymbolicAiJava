@@ -1,8 +1,11 @@
-package project2;
+package project2.integerSpecializations;
 
 
-import project2.evaluators.OneMaxEvaluator;
-import project2.evaluators.PhenotypeEvaluator;
+import project2.EvolutionWorld;
+import project2.Individual;
+import project2.SelectionStrategy;
+import project2.integerSpecializations.evaluators.OneMaxEvaluator;
+import project2.integerSpecializations.evaluators.PhenotypeEvaluator;
 
 import java.util.ArrayList;
 

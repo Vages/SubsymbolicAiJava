@@ -1,6 +1,6 @@
 package project2;
 
-import project2.evaluators.SurprisingSequenceEvaluator;
+import project2.integerSpecializations.evaluators.SurprisingSequenceEvaluator;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
