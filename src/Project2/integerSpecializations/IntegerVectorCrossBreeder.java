@@ -2,19 +2,23 @@ package project2.integerSpecializations;
 
 import java.util.Random;
 
-public class IntVectorCrossBreeder {
+public class IntegerVectorCrossBreeder {
     Random randomNumberGenerator;
+    double crossingRate = 0.2;
 
-    public IntVectorCrossBreeder() {
+    public IntegerVectorCrossBreeder() {
         randomNumberGenerator = new Random();
     }
 
-    public IntVectorCrossBreeder(Random randomNumberGenerator) {
+    public IntegerVectorCrossBreeder(Random randomNumberGenerator) {
         this.randomNumberGenerator = randomNumberGenerator;
     }
 
     public int[][] crossBreed(int[] genotypeA, int[] genotypeB){
         int genotypeLength = genotypeA.length;
+
+        if (Math.random() > crossingRate)
+            return new int[][] {genotypeA, genotypeB};
 
         int crossingPoint = (int) (randomNumberGenerator.nextDouble()*genotypeLength);
 
