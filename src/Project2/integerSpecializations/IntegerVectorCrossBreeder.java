@@ -14,6 +14,11 @@ public class IntegerVectorCrossBreeder {
         this.randomNumberGenerator = randomNumberGenerator;
     }
 
+    public IntegerVectorCrossBreeder(double crossingRate) {
+        this.crossingRate = crossingRate;
+        randomNumberGenerator = new Random();
+    }
+
     public int[][] crossBreed(int[] genotypeA, int[] genotypeB){
         int genotypeLength = genotypeA.length;
 

@@ -11,14 +11,15 @@ import java.util.ArrayList;
 
 public class OneMaxEvolutionWorld extends EvolutionWorld {
     private ArrayList<int[]> matingGenotypeList;
-    private IntVectorCrossBreeder crossBreeder = new IntVectorCrossBreeder();
+    private IntegerVectorCrossBreeder crossBreeder;
     private PhenotypeEvaluator evaluator;
     private IntegerMutator mutator;
 
     public OneMaxEvolutionWorld(SelectionStrategy ms, int initialChildren, int numberOfGenerations, int stringLength, int[] idealPhenotype) {
         super(ms, initialChildren, numberOfGenerations);
         evaluator = new OneMaxEvaluator(idealPhenotype);
-        mutator = new IntegerMutator(1, 0.3, 1);
+        mutator = new IntegerMutator(1, 0.1, 1);
+        crossBreeder = new IntegerVectorCrossBreeder(0.2);
 
         for (int i = 0; i < initialChildren; i++) {
             int[] genotype = new int[stringLength];
@@ -33,7 +34,7 @@ public class OneMaxEvolutionWorld extends EvolutionWorld {
 
     public static void main(String[] args) {
         int stringlength = 40;
-        int individuals = 100;
+        int individuals = 70;
         int generations = 100;
         int[] idealPhenotype = new int[stringlength];
 
