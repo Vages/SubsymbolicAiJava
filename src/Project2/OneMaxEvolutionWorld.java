@@ -14,7 +14,6 @@ public class OneMaxEvolutionWorld extends EvolutionWorld {
         evaluator = new OneMaxEvaluator(idealPhenotype);
         mutator = new IntegerMutator(1, 0.3, 1);
 
-        // Adding all children
         for (int i = 0; i < initialChildren; i++) {
             int[] genotype = new int[stringLength];
 
