@@ -2,7 +2,7 @@ package Project2;
 
 import java.util.Arrays;
 
-public class OneMaxIndividual extends Individual{
+public class OneMaxIndividual extends Individual implements Comparable {
     private final int[] genotype;
     private Double fitness;
     private PhenotypeEvaluator evaluator;
@@ -40,6 +40,15 @@ public class OneMaxIndividual extends Individual{
     @Override
     public String toString() {
         return Arrays.toString(this.genotype);
+    }
+
+
+    @Override
+    public int compareTo(Object o) {
+        if (!(o instanceof OneMaxIndividual))
+            throw new ClassCastException("Expected OneMaxIndividualObject");
+        double otherObjectFitness = ((OneMaxIndividual) o).getFitness();
+        return (int) Math.signum(this.getFitness()-otherObjectFitness);
     }
 
 
