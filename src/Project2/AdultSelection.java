@@ -1,0 +1,5 @@
+package Project2;
+
+public enum AdultSelection {
+    FULL_GENERATIONAL_REPLACEMENT, OVER_PRODUCTION, GENERATIONAL_MIXING
+}

@@ -5,10 +5,12 @@ import java.util.Collections;
 
 public abstract class EvolutionWorld {
     protected ArrayList<Individual> children, adults;
+    protected AdultSelection adultSelection = AdultSelection.GENERATIONAL_MIXING;
     protected SelectionStrategy matingSelection;
     protected RandomCollection<Individual> parentRouletteWheel;
     protected ArrayList<Individual> matingIndividualList;
-    protected int numberOfNewChildren;
+    protected int childPoolSize;
+    protected int adultPoolSize = 70;
     protected int numberOfGenerations;
     protected int currentGeneration;
 
@@ -16,11 +18,11 @@ public abstract class EvolutionWorld {
     protected int tournamentSize = 5;
     protected double tournamentE = 0.1;
 
-    public EvolutionWorld(SelectionStrategy matingSelection, int numberOfNewChildren, int generations) {
+    public EvolutionWorld(SelectionStrategy matingSelection, int childPoolSize, int generations) {
         children = new ArrayList<>();
         adults = new ArrayList<>();
         this.matingSelection = matingSelection;
-        this.numberOfNewChildren = numberOfNewChildren;
+        this.childPoolSize = childPoolSize;
         this.numberOfGenerations = generations;
     }
 
@@ -68,9 +70,31 @@ public abstract class EvolutionWorld {
     }
 
     protected void selectAdults() {
-        for (Individual c: children){
-            adults.add(c);
+        switch (this.adultSelection){
+            case FULL_GENERATIONAL_REPLACEMENT:
+                adults.clear();
+                for (Individual c: children){
+                    adults.add(c);
+                }
+                break;
+            case OVER_PRODUCTION:
+                adults.clear();
+                Collections.sort(children);
+                Collections.reverse(children);
+                for (int i = 0; i < adultPoolSize; i++) {
+                    adults.add(children.get(i));
+                }
+                break;
+            case GENERATIONAL_MIXING:
+                for (Individual c: children){
+                    adults.add(c);
+                }
+                Collections.sort(adults);
+                Collections.reverse(adults);
+                adults.subList(adultPoolSize, adults.size()).clear();
+                break;
         }
+
     }
 
     protected void ageBasedFiltering(){
@@ -83,7 +107,7 @@ public abstract class EvolutionWorld {
             parentRouletteWheel.add(a.getFitness(), a);
         }
 
-        for (int i = 0; i < numberOfNewChildren; i++) {
+        for (int i = 0; i < childPoolSize; i++) {
             Individual next = parentRouletteWheel.next();
             matingIndividualList.add(next);
         }
@@ -109,7 +133,7 @@ public abstract class EvolutionWorld {
             parentRouletteWheel.add(scaledFitnessValues[i], adults.get(i));
         }
 
-        for (int i = 0; i < numberOfNewChildren; i++) {
+        for (int i = 0; i < childPoolSize; i++) {
             Individual next = parentRouletteWheel.next();
             matingIndividualList.add(next);
         }
@@ -117,7 +141,7 @@ public abstract class EvolutionWorld {
 
     protected void tournamentParentSelection() {
         ArrayList<Individual> tournament;
-        for (int i = 0; i < this.numberOfNewChildren; i++) {
+        for (int i = 0; i < this.childPoolSize; i++) {
             tournament = new ArrayList<>();
             Collections.shuffle(adults);
 
@@ -165,7 +189,7 @@ public abstract class EvolutionWorld {
             parentRouletteWheel.add(scaledFitnessValues[i], adults.get(i));
         }
 
-        for (int i = 0; i < numberOfNewChildren; i++) {
+        for (int i = 0; i < childPoolSize; i++) {
             Individual next = parentRouletteWheel.next();
             matingIndividualList.add(next);
         }

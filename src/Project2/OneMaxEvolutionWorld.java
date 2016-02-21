@@ -51,8 +51,7 @@ public class OneMaxEvolutionWorld extends EvolutionWorld {
 
     @Override
     protected void reproduction() {
-        children = new ArrayList<>();
-        adults = new ArrayList<>();
+        children.clear();
         for (int i = 0; i < matingGenotypeList.size(); i = i + 2){
             int[][] childPair = crossBreeder.crossBreed(matingGenotypeList.get(i), matingGenotypeList.get(i+1));
             children.add(new OneMaxIndividual(mutator.mutate(childPair[0]), evaluator));
