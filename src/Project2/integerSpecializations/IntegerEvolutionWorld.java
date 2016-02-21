@@ -1,6 +1,7 @@
 package project2.integerSpecializations;
 
 
+import project2.AdultSelection;
 import project2.EvolutionWorld;
 import project2.Individual;
 import project2.SelectionStrategy;
@@ -15,13 +16,13 @@ public class IntegerEvolutionWorld extends EvolutionWorld {
     private PhenotypeEvaluator evaluator;
     private IntegerMutator mutator;
 
-    public IntegerEvolutionWorld(SelectionStrategy ms, int initialChildren, int numberOfGenerations, int stringLength, int[] idealPhenotype) {
-        super(ms, initialChildren, numberOfGenerations);
+    public IntegerEvolutionWorld(SelectionStrategy matingStrategy, int childPoolSize, int numberOfGenerations, int stringLength, int[] idealPhenotype) {
+        super(AdultSelection.FULL_GENERATIONAL_REPLACEMENT, matingStrategy, childPoolSize, 70, numberOfGenerations, 5, 0.1, "test");
         evaluator = new OneMaxEvaluator(idealPhenotype);
         mutator = new IntegerMutator(1, 0.1, 1);
         crossBreeder = new IntegerVectorCrossBreeder(0.2);
 
-        for (int i = 0; i < initialChildren; i++) {
+        for (int i = 0; i < childPoolSize; i++) {
             int[] genotype = new int[stringLength];
 
             for (int j = 0; j < stringLength; j++){
@@ -30,20 +31,6 @@ public class IntegerEvolutionWorld extends EvolutionWorld {
 
             this.children.add(new IntegerIndividual(genotype, evaluator));
         }
-    }
-
-    public static void main(String[] args) {
-        int stringlength = 40;
-        int individuals = 70;
-        int generations = 100;
-        int[] idealPhenotype = new int[stringlength];
-
-        for (int i = 0; i < stringlength; i++){
-            idealPhenotype[i] = 1;
-        }
-
-        IntegerEvolutionWorld omew = new IntegerEvolutionWorld(SelectionStrategy.FITNESS_PROPORTIONATE, individuals, generations, stringlength, idealPhenotype);
-        omew.runAllGenerations();
     }
 
     @Override

@@ -9,27 +9,37 @@ import java.util.Collections;
 
 public abstract class EvolutionWorld {
     protected ArrayList<Individual> children, adults;
-    protected AdultSelection adultSelection = AdultSelection.FULL_GENERATIONAL_REPLACEMENT;
+    protected AdultSelection adultSelection;
     protected SelectionStrategy matingSelection;
     protected RandomCollection<Individual> parentRouletteWheel;
     protected ArrayList<Individual> matingIndividualList;
     protected ArrayList<ArrayList<String>> statisticsLog;
     protected int childPoolSize;
-    protected int adultPoolSize = 70;
+    protected int adultPoolSize;
     protected int numberOfGenerations;
     protected int currentGeneration;
+    protected String logFileName;
 
     // Fields related to tournament selection
-    protected int tournamentSize = 5;
-    protected double tournamentE = 0.1;
+    protected int tournamentSize;
+    protected double tournamentE;
 
-    public EvolutionWorld(SelectionStrategy matingSelection, int childPoolSize, int generations) {
+    public EvolutionWorld(AdultSelection adultSelection, SelectionStrategy matingSelection,
+                          int childPoolSize, int adultPoolSize, int generations,
+                          int tournamentSize, double tournamentE,
+                          String logFileName) {
         children = new ArrayList<>();
         adults = new ArrayList<>();
         matingIndividualList = new ArrayList<>();
+
+        this.adultSelection = adultSelection;
         this.matingSelection = matingSelection;
         this.childPoolSize = childPoolSize;
+        this.adultPoolSize = adultPoolSize;
         this.numberOfGenerations = generations;
+        this.tournamentSize = tournamentSize;
+        this.tournamentE = tournamentE;
+        this.logFileName = logFileName;
 
         statisticsLog = new ArrayList<>();
         ArrayList<String> descriptiveLine = new ArrayList<>();
@@ -57,7 +67,7 @@ public abstract class EvolutionWorld {
             this.oneRoundOfEvolution();
         }
 
-        GenerateCsv.generateCsvFile("./out/logs/SubsymbolicAiJava/project2/test.csv", statisticsLog);
+        GenerateCsv.generateCsvFile("./out/logs/SubsymbolicAiJava/project2/"+this.logFileName+".csv", statisticsLog);
     }
 
     protected void developChildren() {
