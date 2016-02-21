@@ -2,13 +2,16 @@ package Project2;
 
 import java.util.Arrays;
 
-public class OneMaxIndividual extends Individual {
+/**
+ *
+ */
+public class IntegerIndividual extends Individual {
     private final int[] genotype;
     private Double fitness;
     private PhenotypeEvaluator evaluator;
 
 
-    public OneMaxIndividual(int[] genotype, PhenotypeEvaluator evaluator) {
+    public IntegerIndividual(int[] genotype, PhenotypeEvaluator evaluator) {
         this.genotype = genotype;
         this.evaluator = evaluator;
     }
