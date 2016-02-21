@@ -1,7 +1,8 @@
-package project2.integerSpecializations;
+package project2.integerSpecializations.runners;
 
 import project2.AdultSelection;
 import project2.SelectionStrategy;
+import project2.integerSpecializations.IntegerEvolutionWorld;
 import project2.integerSpecializations.evaluators.OneMaxEvaluator;
 import project2.integerSpecializations.evaluators.PhenotypeEvaluator;
 
@@ -50,10 +51,11 @@ public class OneMaxEvolutionRunner {
         int tournamentSize = Integer.parseInt(args[5]);
         double tournamentE = Double.parseDouble(args[6]);
         String logFileName = args[7];
-        int maxInt = 1;
         double mutateThreshold = Double.parseDouble(args[8]);
         int numberOfMutations = Integer.parseInt(args[9]);
         double crossingRate = Double.parseDouble(args[10]);
+
+        int maxInt = 1;
 
         int stringlength;
         int[] idealPhenotype;
