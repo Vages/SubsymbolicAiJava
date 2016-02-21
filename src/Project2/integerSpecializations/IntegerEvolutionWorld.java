@@ -9,13 +9,13 @@ import project2.integerSpecializations.evaluators.PhenotypeEvaluator;
 
 import java.util.ArrayList;
 
-public class OneMaxEvolutionWorld extends EvolutionWorld {
+public class IntegerEvolutionWorld extends EvolutionWorld {
     private ArrayList<int[]> matingGenotypeList;
     private IntegerVectorCrossBreeder crossBreeder;
     private PhenotypeEvaluator evaluator;
     private IntegerMutator mutator;
 
-    public OneMaxEvolutionWorld(SelectionStrategy ms, int initialChildren, int numberOfGenerations, int stringLength, int[] idealPhenotype) {
+    public IntegerEvolutionWorld(SelectionStrategy ms, int initialChildren, int numberOfGenerations, int stringLength, int[] idealPhenotype) {
         super(ms, initialChildren, numberOfGenerations);
         evaluator = new OneMaxEvaluator(idealPhenotype);
         mutator = new IntegerMutator(1, 0.1, 1);
@@ -42,7 +42,7 @@ public class OneMaxEvolutionWorld extends EvolutionWorld {
             idealPhenotype[i] = 1;
         }
 
-        OneMaxEvolutionWorld omew = new OneMaxEvolutionWorld(SelectionStrategy.FITNESS_PROPORTIONATE, individuals, generations, stringlength, idealPhenotype);
+        IntegerEvolutionWorld omew = new IntegerEvolutionWorld(SelectionStrategy.FITNESS_PROPORTIONATE, individuals, generations, stringlength, idealPhenotype);
         omew.runAllGenerations();
     }
 
