@@ -40,6 +40,9 @@ public abstract class EvolutionWorld {
             case TOURNAMENT_SELECTION:
                 tournamentParentSelection();
                 break;
+            case BOLTZMANN_SCALING:
+                boltzmannParentSelection();
+                break;
         }
         genotypeCopying();
         reproduction();
@@ -59,6 +62,7 @@ public abstract class EvolutionWorld {
 
     protected void assessFitness() {
         for (Individual c: children) {
+            c.getFitness();
             System.out.println(c.getFitness());
         }
     }
@@ -138,7 +142,37 @@ public abstract class EvolutionWorld {
                 matingIndividualList.add(tournament.get(0)); // List is already randomized, so this is a random choice
             }
         }
+    }
 
+    protected void boltzmannParentSelection() {
+        double t = getTemperature();
+
+        double[] fitnessValues = new double[adults.size()];
+        for (int i = 0; i < adults.size(); i++) {
+            fitnessValues[i] = adults.get(i).getFitness();
+        }
+
+        double average = ScalingTools.averageBoltzmannExponent(fitnessValues, t);
+
+        double[] scaledFitnessValues = new double[adults.size()];
+
+        for (int i = 0; i < adults.size(); i++) {
+            scaledFitnessValues[i] = ScalingTools.boltzmannFitness(fitnessValues[i], t, average);
+        }
+
+        parentRouletteWheel = new RandomCollection<>();
+        for (int i = 0; i < adults.size(); i++) {
+            parentRouletteWheel.add(scaledFitnessValues[i], adults.get(i));
+        }
+
+        for (int i = 0; i < numberOfNewChildren; i++) {
+            Individual next = parentRouletteWheel.next();
+            matingIndividualList.add(next);
+        }
+    }
+
+    private double getTemperature() {
+        return 0.1*((double) (numberOfGenerations-currentGeneration))/numberOfGenerations+0.1;
     }
 
     protected abstract void genotypeCopying();

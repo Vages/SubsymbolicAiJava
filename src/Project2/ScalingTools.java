@@ -27,4 +27,21 @@ public class ScalingTools {
 
         return Math.sqrt(variance);
     }
+
+    static double boltzmannExponent(double fitness, double temp) {
+        return Math.pow(Math.E, fitness/temp);
+    }
+
+    static double boltzmannFitness(double fitness, double temp, double average) {
+        return boltzmannExponent(fitness, temp)/average;
+    }
+
+    static double averageBoltzmannExponent(double[] values, double temp) {
+        double sum = 0;
+
+        for (double v: values)
+            sum += boltzmannExponent(v, temp);
+
+        return sum/values.length;
+    }
 }
