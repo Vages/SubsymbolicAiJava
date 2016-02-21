@@ -1,6 +1,6 @@
 package Project2.evaluators;
 
-import Project2.Tuple;
+import Project2.helperStructures.Tuple;
 
 import java.util.HashSet;
 

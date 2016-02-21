@@ -1,5 +1,7 @@
 package Project2;
 
+import Project2.helperStructures.RandomCollection;
+
 import java.util.ArrayList;
 import java.util.Collections;
 

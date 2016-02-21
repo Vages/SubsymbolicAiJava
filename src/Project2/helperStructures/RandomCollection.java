@@ -1,4 +1,4 @@
-package Project2;
+package Project2.helperStructures;
 
 // Copied from https://stackoverflow.com/questions/6409652/random-weighted-selection-in-java
 
