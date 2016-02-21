@@ -21,6 +21,7 @@ public abstract class EvolutionWorld {
     public EvolutionWorld(SelectionStrategy matingSelection, int childPoolSize, int generations) {
         children = new ArrayList<>();
         adults = new ArrayList<>();
+        matingIndividualList = new ArrayList<>();
         this.matingSelection = matingSelection;
         this.childPoolSize = childPoolSize;
         this.numberOfGenerations = generations;
@@ -31,21 +32,7 @@ public abstract class EvolutionWorld {
         assessFitness();
         selectAdults();
         ageBasedFiltering();
-        matingIndividualList = new ArrayList<>();
-        switch (this.matingSelection) {
-            case FITNESS_PROPORTIONATE:
-                fitnessProportionateParentSelection();
-                break;
-            case SIGMA_SCALING:
-                sigmaScaledParentSelection();
-                break;
-            case TOURNAMENT_SELECTION:
-                tournamentParentSelection();
-                break;
-            case BOLTZMANN_SCALING:
-                boltzmannParentSelection();
-                break;
-        }
+        parentSelection();
         genotypeCopying();
         reproduction();
     }
@@ -99,6 +86,24 @@ public abstract class EvolutionWorld {
 
     protected void ageBasedFiltering(){
 
+    }
+
+    private void parentSelection() {
+        matingIndividualList.clear();
+        switch (this.matingSelection) {
+            case FITNESS_PROPORTIONATE:
+                fitnessProportionateParentSelection();
+                break;
+            case SIGMA_SCALING:
+                sigmaScaledParentSelection();
+                break;
+            case TOURNAMENT_SELECTION:
+                tournamentParentSelection();
+                break;
+            case BOLTZMANN_SCALING:
+                boltzmannParentSelection();
+                break;
+        }
     }
 
     protected void fitnessProportionateParentSelection() {
