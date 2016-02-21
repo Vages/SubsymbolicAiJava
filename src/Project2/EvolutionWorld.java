@@ -25,9 +25,8 @@ public abstract class EvolutionWorld {
     protected double tournamentE;
 
     public EvolutionWorld(AdultSelection adultSelection, SelectionStrategy matingSelection,
-                          int childPoolSize, int adultPoolSize, int generations,
-                          int tournamentSize, double tournamentE,
-                          String logFileName) {
+                          int childPoolSize, int adultPoolSize, int numberOfGenerations,
+                          int tournamentSize, double tournamentE, String logFileName) {
         children = new ArrayList<>();
         adults = new ArrayList<>();
         matingIndividualList = new ArrayList<>();
@@ -36,7 +35,7 @@ public abstract class EvolutionWorld {
         this.matingSelection = matingSelection;
         this.childPoolSize = childPoolSize;
         this.adultPoolSize = adultPoolSize;
-        this.numberOfGenerations = generations;
+        this.numberOfGenerations = numberOfGenerations;
         this.tournamentSize = tournamentSize;
         this.tournamentE = tournamentE;
         this.logFileName = logFileName;

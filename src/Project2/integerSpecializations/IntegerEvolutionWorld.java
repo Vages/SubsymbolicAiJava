@@ -5,7 +5,6 @@ import project2.AdultSelection;
 import project2.EvolutionWorld;
 import project2.Individual;
 import project2.SelectionStrategy;
-import project2.integerSpecializations.evaluators.OneMaxEvaluator;
 import project2.integerSpecializations.evaluators.PhenotypeEvaluator;
 
 import java.util.ArrayList;
@@ -16,11 +15,15 @@ public class IntegerEvolutionWorld extends EvolutionWorld {
     private PhenotypeEvaluator evaluator;
     private IntegerMutator mutator;
 
-    public IntegerEvolutionWorld(SelectionStrategy matingStrategy, int childPoolSize, int numberOfGenerations, int stringLength, int[] idealPhenotype) {
-        super(AdultSelection.FULL_GENERATIONAL_REPLACEMENT, matingStrategy, childPoolSize, 70, numberOfGenerations, 5, 0.1, "test");
-        evaluator = new OneMaxEvaluator(idealPhenotype);
-        mutator = new IntegerMutator(1, 0.1, 1);
-        crossBreeder = new IntegerVectorCrossBreeder(0.2);
+    public IntegerEvolutionWorld(AdultSelection adultSelection, SelectionStrategy matingStrategy,
+                                 int childPoolSize, int adultPoolSize, int numberOfGenerations,
+                                 int tournamentSize, double tournamentE, String logFileName,
+                                 int maxInt, double mutateThreshold, int numberOfMutations, double crossingRate,
+                                 int stringLength, PhenotypeEvaluator evaluator) {
+        super(adultSelection, matingStrategy, childPoolSize, adultPoolSize, numberOfGenerations, tournamentSize, tournamentE, logFileName);
+        mutator = new IntegerMutator(maxInt, mutateThreshold, numberOfMutations);
+        crossBreeder = new IntegerVectorCrossBreeder(crossingRate);
+        this.evaluator = evaluator;
 
         for (int i = 0; i < childPoolSize; i++) {
             int[] genotype = new int[stringLength];
