@@ -1,4 +1,4 @@
-package Project2;
+package project2;
 
 public abstract class Individual implements Comparable<Individual> {
     public abstract int[] getGenotype();

@@ -1,6 +1,6 @@
-package Project2;
+package project2;
 
-import Project2.evaluators.PhenotypeEvaluator;
+import project2.evaluators.PhenotypeEvaluator;
 
 import java.util.Arrays;
 

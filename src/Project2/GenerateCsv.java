@@ -1,4 +1,4 @@
-package Project2;
+package project2;
 
 import java.io.FileWriter;
 import java.io.IOException;

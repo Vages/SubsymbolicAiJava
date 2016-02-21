@@ -1,6 +1,6 @@
-package Project2;
+package project2;
 
-import Project2.helperStructures.RandomCollection;
+import project2.helperStructures.RandomCollection;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -55,7 +55,7 @@ public abstract class EvolutionWorld {
             this.oneRoundOfEvolution();
         }
 
-        GenerateCsv.generateCsvFile("./out/logs/SubsymbolicAiJava/Project2/test.csv", statisticsLog);
+        GenerateCsv.generateCsvFile("./out/logs/SubsymbolicAiJava/project2/test.csv", statisticsLog);
     }
 
     protected void developChildren() {

@@ -1,4 +1,4 @@
-package Project2;
+package project2;
 
 public enum SelectionStrategy {
     FITNESS_PROPORTIONATE, SIGMA_SCALING, TOURNAMENT_SELECTION, BOLTZMANN_SCALING;
