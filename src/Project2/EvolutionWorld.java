@@ -5,7 +5,7 @@ import java.util.Collections;
 
 public abstract class EvolutionWorld {
     protected ArrayList<Individual> children, adults;
-    protected AdultSelection adultSelection = AdultSelection.GENERATIONAL_MIXING;
+    protected AdultSelection adultSelection = AdultSelection.FULL_GENERATIONAL_REPLACEMENT;
     protected SelectionStrategy matingSelection;
     protected RandomCollection<Individual> parentRouletteWheel;
     protected ArrayList<Individual> matingIndividualList;
@@ -32,6 +32,7 @@ public abstract class EvolutionWorld {
         assessFitness();
         selectAdults();
         ageBasedFiltering();
+        findGenerationStatistics();
         parentSelection();
         genotypeCopying();
         reproduction();
@@ -52,7 +53,6 @@ public abstract class EvolutionWorld {
     protected void assessFitness() {
         for (Individual c: children) {
             c.getFitness();
-            System.out.println(c.getFitness());
         }
     }
 
@@ -86,6 +86,26 @@ public abstract class EvolutionWorld {
 
     protected void ageBasedFiltering(){
 
+    }
+
+    protected void findGenerationStatistics() {
+        Collections.sort(adults);
+        Individual best = adults.get(adults.size()-1);
+
+        double[] fitnessValues = new double[adults.size()];
+        for (int i = 0; i < adults.size(); i++) {
+            fitnessValues[i] = adults.get(i).getFitness();
+        }
+
+        double average = ScalingTools.average(fitnessValues);
+        double standardDeviation = ScalingTools.standardDeviation(fitnessValues, average);
+
+        System.out.println("Generation:         " + currentGeneration);
+        System.out.println("Best fitness:       " + best.getFitness());
+        System.out.println("Average fitness:    " + average);
+        System.out.println("Standard deviation: " + standardDeviation);
+        System.out.println("Best phenotype:     " + best.toString());
+        System.out.println();
     }
 
     private void parentSelection() {

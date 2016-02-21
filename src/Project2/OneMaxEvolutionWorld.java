@@ -37,8 +37,6 @@ public class OneMaxEvolutionWorld extends EvolutionWorld {
 
         OneMaxEvolutionWorld omew = new OneMaxEvolutionWorld(SelectionStrategy.FITNESS_PROPORTIONATE, individuals, generations, stringlength, idealPhenotype);
         omew.runAllGenerations();
-
-        System.out.println("Hello!");
     }
 
     @Override
