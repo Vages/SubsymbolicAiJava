@@ -5,7 +5,7 @@ import java.util.Collections;
 
 public abstract class EvolutionWorld {
     protected ArrayList<Individual> children, adults;
-    protected MatingSelection matingSelection;
+    protected SelectionStrategy matingSelection;
     protected RandomCollection<Individual> parentRouletteWheel;
     protected ArrayList<Individual> matingIndividualList;
     protected int numberOfNewChildren;
@@ -16,7 +16,7 @@ public abstract class EvolutionWorld {
     protected int tournamentSize = 5;
     protected double tournamentE = 0.1;
 
-    public EvolutionWorld(MatingSelection matingSelection, int numberOfNewChildren, int generations) {
+    public EvolutionWorld(SelectionStrategy matingSelection, int numberOfNewChildren, int generations) {
         children = new ArrayList<>();
         adults = new ArrayList<>();
         this.matingSelection = matingSelection;

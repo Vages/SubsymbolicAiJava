@@ -1,5 +1,5 @@
 package Project2;
 
-public enum MatingSelection {
+public enum SelectionStrategy {
     FITNESS_PROPORTIONATE, SIGMA_SCALING, TOURNAMENT_SELECTION, BOLTZMANN_SCALING;
 }
