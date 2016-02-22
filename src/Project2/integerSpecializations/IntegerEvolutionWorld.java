@@ -30,6 +30,7 @@ public class IntegerEvolutionWorld extends EvolutionWorld {
 
     @Override
     public void generateRandomChildren() {
+        children.clear();
         for (int i = 0; i < childPoolSize; i++) {
             int[] genotype = new int[this.stringLength];
 
