@@ -69,6 +69,8 @@ public abstract class EvolutionWorld {
 
     public void runAllGenerations() {
         statisticsLog.clear();
+        children.clear();
+        adults.clear();
         ArrayList<String> descriptiveLine = new ArrayList<>();
         descriptiveLine.add("Generation");
         descriptiveLine.add("Best fitness");
