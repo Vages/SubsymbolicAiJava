@@ -14,6 +14,7 @@ public class IntegerEvolutionWorld extends EvolutionWorld {
     private IntegerVectorCrossBreeder crossBreeder;
     private PhenotypeEvaluator evaluator;
     private IntegerMutator mutator;
+    private int stringLength;
 
     public IntegerEvolutionWorld(AdultSelection adultSelection, SelectionStrategy matingStrategy,
                                  int childPoolSize, int adultPoolSize, int numberOfGenerations,
@@ -24,18 +25,21 @@ public class IntegerEvolutionWorld extends EvolutionWorld {
         mutator = new IntegerMutator(maxInt, mutateThreshold, numberOfMutations);
         crossBreeder = new IntegerVectorCrossBreeder(crossingRate);
         this.evaluator = evaluator;
+        this.stringLength = stringLength;
+    }
 
+    @Override
+    public void generateRandomChildren() {
         for (int i = 0; i < childPoolSize; i++) {
-            int[] genotype = new int[stringLength];
+            int[] genotype = new int[this.stringLength];
 
-            for (int j = 0; j < stringLength; j++){
+            for (int j = 0; j < this.stringLength; j++){
                 genotype[j] = (int) (Math.random()*2);
             }
 
             this.children.add(new IntegerIndividual(genotype, evaluator));
         }
     }
-
     @Override
     protected void genotypeCopying() {
         matingGenotypeList = new ArrayList<>();

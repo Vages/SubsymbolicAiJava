@@ -23,7 +23,7 @@ public abstract class EvolutionWorld {
     // Fields related to tournament selection
     protected int tournamentSize;
     protected double tournamentE;
-
+    
     public EvolutionWorld(AdultSelection adultSelection, SelectionStrategy matingSelection,
                           int childPoolSize, int adultPoolSize, int numberOfGenerations,
                           int tournamentSize, double tournamentE, String logFileName) {
@@ -62,12 +62,15 @@ public abstract class EvolutionWorld {
     }
 
     public void runAllGenerations() {
+        generateRandomChildren();
         for (currentGeneration = 0; currentGeneration < this.numberOfGenerations; currentGeneration++) {
             this.oneRoundOfEvolution();
         }
 
         GenerateCsv.generateCsvFile("./out/logs/SubsymbolicAiJava/project2/"+this.logFileName+".csv", statisticsLog);
     }
+
+    protected abstract void generateRandomChildren();
 
     protected void developChildren() {
         for (Individual c: children) {
