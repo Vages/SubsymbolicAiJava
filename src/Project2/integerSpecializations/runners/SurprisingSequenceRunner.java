@@ -8,42 +8,8 @@ import project2.integerSpecializations.evaluators.SurprisingSequenceEvaluator;
 
 public class SurprisingSequenceRunner {
     public static void main(String[] args) {
-        AdultSelection adultSelection;
-
-        switch (args[0].charAt(0)) {
-            case 'f':
-                adultSelection = AdultSelection.FULL_GENERATIONAL_REPLACEMENT;
-                break;
-            case 'o':
-                adultSelection = AdultSelection.OVER_PRODUCTION;
-                break;
-            case 'g':
-                adultSelection = AdultSelection.GENERATIONAL_MIXING;
-                break;
-            default:
-                adultSelection = AdultSelection.FULL_GENERATIONAL_REPLACEMENT;
-                break;
-        }
-
-        SelectionStrategy selectionStrategy;
-
-        switch (args[1].charAt(0)) {
-            case 'f':
-                selectionStrategy = SelectionStrategy.FITNESS_PROPORTIONATE;
-                break;
-            case 's':
-                selectionStrategy = SelectionStrategy.SIGMA_SCALING;
-                break;
-            case 't':
-                selectionStrategy = SelectionStrategy.TOURNAMENT_SELECTION;
-                break;
-            case 'b':
-                selectionStrategy = SelectionStrategy.BOLTZMANN_SCALING;
-                break;
-            default:
-                selectionStrategy = SelectionStrategy.FITNESS_PROPORTIONATE;
-                break;
-        }
+        AdultSelection adultSelection = AdultSelection.getStrategyFromChar(args[0].charAt(0));
+        SelectionStrategy selectionStrategy = SelectionStrategy.getStrategyFromChar(args[1].charAt(0));
 
         int childPoolSize = Integer.parseInt(args[2]);
         int adultPoolSize = Integer.parseInt(args[3]);
