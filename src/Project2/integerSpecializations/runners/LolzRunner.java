@@ -30,7 +30,7 @@ public class LolzRunner {
         IntegerEvolutionWorld omew = new IntegerEvolutionWorld(adultSelection, selectionStrategy, childPoolSize,
                 adultPoolSize, generations, tournamentSize, tournamentE, logFileName, maxInt, mutateThreshold,
                 numberOfMutations, crossingRate, stringlength, evaluator);
-        omew.runAllGenerations();
+        omew.runAllEpochs();
 
     }
 }

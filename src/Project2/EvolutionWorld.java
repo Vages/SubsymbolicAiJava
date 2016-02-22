@@ -17,15 +17,22 @@ public abstract class EvolutionWorld {
     protected int childPoolSize;
     protected int adultPoolSize;
     protected int numberOfGenerations;
+    protected int epochs;
+    protected int currentEpoch;
     protected int currentGeneration;
     protected String logFileName;
 
     // Fields related to tournament selection
     protected int tournamentSize;
     protected double tournamentE;
+
+    // Arrays to contain statistics about runs
+    protected double[] bestFitnessSums;
+    protected double[] averageFitnessSums;
+    protected double[] standardDeviationSums;
     
     public EvolutionWorld(AdultSelection adultSelection, SelectionStrategy matingSelection,
-                          int childPoolSize, int adultPoolSize, int numberOfGenerations,
+                          int childPoolSize, int adultPoolSize, int numberOfGenerations, int epochs,
                           int tournamentSize, double tournamentE, String logFileName) {
         children = new ArrayList<>();
         adults = new ArrayList<>();
@@ -36,18 +43,17 @@ public abstract class EvolutionWorld {
         this.childPoolSize = childPoolSize;
         this.adultPoolSize = adultPoolSize;
         this.numberOfGenerations = numberOfGenerations;
+        this.epochs = epochs;
         this.tournamentSize = tournamentSize;
         this.tournamentE = tournamentE;
         this.logFileName = logFileName;
 
+        bestFitnessSums = new double[numberOfGenerations];
+        averageFitnessSums= new double[numberOfGenerations];
+        standardDeviationSums = new double[numberOfGenerations];
+
         statisticsLog = new ArrayList<>();
-        ArrayList<String> descriptiveLine = new ArrayList<>();
-        descriptiveLine.add("Generation");
-        descriptiveLine.add("Best fitness");
-        descriptiveLine.add("Average fitness");
-        descriptiveLine.add("Standard deviation");
-        descriptiveLine.add("Best phenotype");
-        statisticsLog.add(descriptiveLine);
+
     }
 
     public void oneRoundOfEvolution(){
@@ -62,12 +68,45 @@ public abstract class EvolutionWorld {
     }
 
     public void runAllGenerations() {
+        statisticsLog.clear();
+        ArrayList<String> descriptiveLine = new ArrayList<>();
+        descriptiveLine.add("Generation");
+        descriptiveLine.add("Best fitness");
+        descriptiveLine.add("Average fitness");
+        descriptiveLine.add("Standard deviation");
+        descriptiveLine.add("Best phenotype");
+        statisticsLog.add(descriptiveLine);
+
         generateRandomChildren();
         for (currentGeneration = 0; currentGeneration < this.numberOfGenerations; currentGeneration++) {
             this.oneRoundOfEvolution();
         }
 
-        GenerateCsv.generateCsvFile("./out/logs/SubsymbolicAiJava/project2/"+this.logFileName+".csv", statisticsLog);
+        GenerateCsv.generateCsvFile("./out/logs/SubsymbolicAiJava/project2/"+this.logFileName+"-"+Integer.toString(currentEpoch)+".csv", statisticsLog);
+    }
+
+    public void runAllEpochs() {
+        for (currentEpoch = 0; currentEpoch < epochs; currentEpoch++){
+            runAllGenerations();
+        }
+        statisticsLog.clear();
+        ArrayList<String> descriptiveLine = new ArrayList<>();
+        descriptiveLine.add("Generation");
+        descriptiveLine.add("Best fitness");
+        descriptiveLine.add("Average fitness");
+        descriptiveLine.add("Standard deviation");
+        statisticsLog.add(descriptiveLine);
+
+        for (int i = 0; i<numberOfGenerations; i++) {
+            ArrayList<String> line = new ArrayList<>();
+            line.add(Integer.toString(i));
+            line.add(Double.toString(bestFitnessSums[i]/epochs));
+            line.add(Double.toString(averageFitnessSums[i]/epochs));
+            line.add(Double.toString(standardDeviationSums[i]/epochs));
+            statisticsLog.add(line);
+        }
+
+        GenerateCsv.generateCsvFile("./out/logs/SubsymbolicAiJava/project2/"+this.logFileName+"-averages.csv", statisticsLog);
     }
 
     protected abstract void generateRandomChildren();
@@ -127,23 +166,29 @@ public abstract class EvolutionWorld {
             fitnessValues[i] = adults.get(i).getFitness();
         }
 
-        double average = ScalingTools.average(fitnessValues);
-        double standardDeviation = ScalingTools.standardDeviation(fitnessValues, average);
+        double averageFitness = ScalingTools.average(fitnessValues);
+        double standardDeviation = ScalingTools.standardDeviation(fitnessValues, averageFitness);
+        double bestFitness = best.getFitness();
+        String bestAsString = best.toString();
 
         System.out.println("Generation:         " + currentGeneration);
-        System.out.println("Best fitness:       " + best.getFitness());
-        System.out.println("Average fitness:    " + average);
+        System.out.println("Best fitness:       " + bestFitness);
+        System.out.println("Average fitness:    " + averageFitness);
         System.out.println("Standard deviation: " + standardDeviation);
-        System.out.println("Best phenotype:     " + best.toString());
+        System.out.println("Best phenotype:     " + bestAsString);
         System.out.println();
 
         statisticsLine.add(Integer.toString(currentGeneration));
-        statisticsLine.add(Double.toString(best.getFitness()));
-        statisticsLine.add(Double.toString(average));
+        statisticsLine.add(Double.toString(bestFitness));
+        statisticsLine.add(Double.toString(averageFitness));
         statisticsLine.add(Double.toString(standardDeviation));
-        statisticsLine.add(best.toString().replace(',', ';'));
+        statisticsLine.add(bestAsString.replace(',', ';'));
 
         statisticsLog.add(statisticsLine);
+
+        bestFitnessSums[currentGeneration] += bestFitness;
+        averageFitnessSums[currentGeneration] += averageFitness;
+        standardDeviationSums[currentGeneration] += standardDeviation;
     }
 
     private void parentSelection() {

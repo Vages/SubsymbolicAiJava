@@ -21,7 +21,7 @@ public class IntegerEvolutionWorld extends EvolutionWorld {
                                  int tournamentSize, double tournamentE, String logFileName,
                                  int maxInt, double mutateThreshold, int numberOfMutations, double crossingRate,
                                  int stringLength, PhenotypeEvaluator evaluator) {
-        super(adultSelection, matingStrategy, childPoolSize, adultPoolSize, numberOfGenerations, tournamentSize, tournamentE, logFileName);
+        super(adultSelection, matingStrategy, childPoolSize, adultPoolSize, numberOfGenerations, 20, tournamentSize, tournamentE, logFileName);
         mutator = new IntegerMutator(maxInt, mutateThreshold, numberOfMutations);
         crossBreeder = new IntegerVectorCrossBreeder(crossingRate);
         this.evaluator = evaluator;
