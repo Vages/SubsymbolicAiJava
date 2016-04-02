@@ -1,25 +1,36 @@
 package project3;
 
+import org.apache.commons.lang3.ArrayUtils;
 import project2.Individual;
 
-public class SimpleFlatLandIndividual extends Individual<Integer, FlatlandNeuralNetwork> {
-    @Override
-    public Integer[] getGenotype() {
-        return new Integer[0];
+public class SimpleFlatLandIndividual extends Individual<Double, FlatlandNeuralNetwork> {
+    private Double[] genotype;
+    private int[] topology;
+    private FlatlandNeuralNetwork phenotype;
+    private double fitness;
+
+    public SimpleFlatLandIndividual(Double[] genotype, int[] topology) {
+        this.genotype = genotype;
+        this.topology = topology;
     }
 
     @Override
-    public FlatlandNeuralNetwork[] getPhenotype() {
-        return new FlatlandNeuralNetwork[0];
+    public Double[] getGenotype() {
+        return genotype;
+    }
+
+    @Override
+    public FlatlandNeuralNetwork getPhenotype() {
+        return phenotype;
     }
 
     @Override
     public double getFitness() {
-        return 0;
+        return fitness;
     }
 
     @Override
     public void develop() {
-
+        this.phenotype = new FlatlandNeuralNetwork(topology, ArrayUtils.toPrimitive(genotype));
     }
 }

@@ -5,7 +5,7 @@ public abstract class Individual<G, P> implements Comparable<Individual> {
 
     public abstract G[] getGenotype();
 
-    public abstract P[] getPhenotype();
+    public abstract P getPhenotype();
 
     public abstract double getFitness();
 

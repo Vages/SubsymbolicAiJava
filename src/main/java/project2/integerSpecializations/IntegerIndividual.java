@@ -8,7 +8,7 @@ import java.util.Arrays;
 /**
  *
  */
-public class IntegerIndividual extends Individual<Integer, Integer> {
+public class IntegerIndividual extends Individual<Integer, Integer[]> {
     private Double fitness;
     private IntegerPhenotypeEvaluator evaluator;
 
