@@ -1,10 +1,7 @@
 package project2.integerSpecializations;
 
 
-import project2.AdultSelection;
-import project2.EvolutionWorld;
-import project2.Individual;
-import project2.SelectionStrategy;
+import project2.*;
 import project2.integerSpecializations.evaluators.IntegerPhenotypeEvaluator;
 
 import java.util.ArrayList;

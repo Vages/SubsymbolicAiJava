@@ -1,6 +1,7 @@
-package project2.integerSpecializations;
+package project2;
 
 import org.junit.Test;
+import project2.CrossBreeder;
 
 import java.util.Random;
 

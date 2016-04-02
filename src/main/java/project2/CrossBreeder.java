@@ -1,4 +1,4 @@
-package project2.integerSpecializations;
+package project2;
 
 import java.lang.reflect.Array;
 import java.util.Random;
