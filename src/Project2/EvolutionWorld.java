@@ -306,7 +306,7 @@ public abstract class EvolutionWorld {
     }
 
     private double getTemperature() {
-        return 0.1*((double) (numberOfGenerations-currentGeneration))/numberOfGenerations+0.1;
+        return 0.01*((double) (numberOfGenerations-currentGeneration))/numberOfGenerations+0.001;
     }
 
     protected abstract void genotypeCopying();

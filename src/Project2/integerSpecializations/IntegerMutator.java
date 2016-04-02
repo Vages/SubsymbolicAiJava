@@ -13,12 +13,12 @@ public class IntegerMutator {
         this.numberOfMutations = numberOfMutations;
     }
 
-    public int[] mutate(int[] genome){
+    public Integer[] mutate(Integer[] genome){
 
         if (Math.random() > mutateThreshold)
             return genome;
 
-        int[] copiedGenome = new int[genome.length];
+        Integer[] copiedGenome = new Integer[genome.length];
         System.arraycopy(genome, 0, copiedGenome, 0, genome.length);
 
         for (int i = 0; i < numberOfMutations; i++){

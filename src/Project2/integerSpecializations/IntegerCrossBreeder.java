@@ -2,33 +2,33 @@ package project2.integerSpecializations;
 
 import java.util.Random;
 
-public class IntegerVectorCrossBreeder {
+public class IntegerCrossBreeder {
     Random randomNumberGenerator;
     double crossingRate = 0.2;
 
-    public IntegerVectorCrossBreeder() {
+    public IntegerCrossBreeder() {
         randomNumberGenerator = new Random();
     }
 
-    public IntegerVectorCrossBreeder(Random randomNumberGenerator) {
+    public IntegerCrossBreeder(Random randomNumberGenerator) {
         this.randomNumberGenerator = randomNumberGenerator;
     }
 
-    public IntegerVectorCrossBreeder(double crossingRate) {
+    public IntegerCrossBreeder(double crossingRate) {
         this.crossingRate = crossingRate;
         randomNumberGenerator = new Random();
     }
 
-    public int[][] crossBreed(int[] genotypeA, int[] genotypeB){
+    public Integer[][] crossBreed(Integer[] genotypeA, Integer[] genotypeB){
         int genotypeLength = genotypeA.length;
 
         if (Math.random() > crossingRate)
-            return new int[][] {genotypeA, genotypeB};
+            return new Integer[][] {genotypeA, genotypeB};
 
         int crossingPoint = (int) (randomNumberGenerator.nextDouble()*genotypeLength);
 
-        int[] childAGenotype = new int[genotypeLength];
-        int[] childBGenotype = new int[genotypeLength];
+        Integer[] childAGenotype = new Integer[genotypeLength];
+        Integer[] childBGenotype = new Integer[genotypeLength];
 
         for (int i = 0; i < genotypeLength; i++){
             if (i < crossingPoint){
@@ -40,6 +40,6 @@ public class IntegerVectorCrossBreeder {
             }
         }
 
-        return new int[][] {childAGenotype, childBGenotype};
+        return new Integer[][] {childAGenotype, childBGenotype};
     }
 }

@@ -8,7 +8,7 @@ public class OneMaxEvaluator implements PhenotypeEvaluator {
         System.arraycopy(idealPhenotype, 0, this.idealPhenotype, 0, idealPhenotype.length);
     }
 
-    public double evaluate(int[] phenotype) {
+    public double evaluate(Integer[] phenotype) {
         double errors = 0;
 
         for (int i = 0; i<phenotype.length; i++){

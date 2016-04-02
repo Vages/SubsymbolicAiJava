@@ -11,10 +11,10 @@ public class LolzEvaluatorTest {
     public void testEvaluate() throws Exception {
         LolzEvaluator lolzEvaluator = new LolzEvaluator(4);
 
-        int[] allOnes = {1,1,1,1,1,1};
-        int[] allZeroes = {0,0,0,0,0,0};
-        int[] twoLeadingOnes = {1,1,0,1,0,1};
-        int[] twoLeadingZeroes = {0,0,1,0,1,1};
+        Integer[] allOnes = {1,1,1,1,1,1};
+        Integer[] allZeroes = {0,0,0,0,0,0};
+        Integer[] twoLeadingOnes = {1,1,0,1,0,1};
+        Integer[] twoLeadingZeroes = {0,0,1,0,1,1};
 
         assertEquals(lolzEvaluator.evaluate(allOnes), 6, 0.001);
         assertEquals(lolzEvaluator.evaluate(allZeroes), 4, 0.001);

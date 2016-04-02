@@ -12,7 +12,7 @@ public class SurprisingSequenceEvaluator implements PhenotypeEvaluator {
     }
 
     @Override
-    public double evaluate(int[] phenotype) {
+    public double evaluate(Integer[] phenotype) {
         double errors = 0;
 
         int maxDist = (globallySurprising) ? phenotype.length-1 : 1;

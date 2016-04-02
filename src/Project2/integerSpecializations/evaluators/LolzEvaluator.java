@@ -7,7 +7,7 @@ public class LolzEvaluator implements PhenotypeEvaluator {
         this.zCap = zCap;
     }
 
-    public double evaluate(int[] phenotype) {
+    public double evaluate(Integer[] phenotype) {
         int firstDigit = phenotype[0];
         int stopIndex;
 

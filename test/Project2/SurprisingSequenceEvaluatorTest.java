@@ -12,10 +12,10 @@ public class SurprisingSequenceEvaluatorTest {
         SurprisingSequenceEvaluator locallySurprising = new SurprisingSequenceEvaluator(false);
         SurprisingSequenceEvaluator globallySurprising = new SurprisingSequenceEvaluator(true);
 
-        int[] abccba = {0, 1, 2, 2, 1, 0};
-        int[] aabcc = {0,0,1,2,2};
-        int[] abbacca = {0,1,1,0,2,2,0};
-        int[] abcbc = {0,1,2,1,2};
+        Integer[] abccba = {0, 1, 2, 2, 1, 0};
+        Integer[] aabcc = {0,0,1,2,2};
+        Integer[] abbacca = {0,1,1,0,2,2,0};
+        Integer[] abcbc = {0,1,2,1,2};
 
         // ABCCBA should be surprising globally and locally
 
