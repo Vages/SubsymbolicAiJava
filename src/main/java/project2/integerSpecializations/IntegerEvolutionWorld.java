@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 public class IntegerEvolutionWorld extends EvolutionWorld {
     private ArrayList<Integer[]> matingGenotypeList;
-    private IntegerCrossBreeder crossBreeder;
+    private CrossBreeder<Integer> crossBreeder;
     private IntegerPhenotypeEvaluator evaluator;
     private IntegerMutator mutator;
     private int stringLength;
@@ -24,7 +24,7 @@ public class IntegerEvolutionWorld extends EvolutionWorld {
                                  int stringLength, IntegerPhenotypeEvaluator evaluator) {
         super(adultSelection, matingStrategy, childPoolSize, adultPoolSize, numberOfGenerations, 1, tournamentSize, tournamentE, logFileName);
         mutator = new IntegerMutator(maxInt, mutateThreshold, numberOfMutations);
-        crossBreeder = new IntegerCrossBreeder(crossingRate);
+        crossBreeder = new CrossBreeder<Integer>(Integer.class, crossingRate);
         this.evaluator = evaluator;
         this.stringLength = stringLength;
         this.maxInt = maxInt;
