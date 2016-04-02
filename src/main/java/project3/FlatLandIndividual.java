@@ -3,13 +3,13 @@ package project3;
 import org.apache.commons.lang3.ArrayUtils;
 import project2.Individual;
 
-public class SimpleFlatLandIndividual extends Individual<Double, FlatlandNeuralNetwork> {
+public class FlatLandIndividual extends Individual<Double, FlatlandNeuralNetwork> {
     private Double[] genotype;
     private int[] topology;
     private FlatlandNeuralNetwork phenotype;
     private double fitness;
 
-    public SimpleFlatLandIndividual(Double[] genotype, int[] topology) {
+    public FlatLandIndividual(Double[] genotype, int[] topology) {
         this.genotype = genotype;
         this.topology = topology;
     }
