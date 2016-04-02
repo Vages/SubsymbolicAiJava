@@ -10,7 +10,7 @@ public class FlatlandNeuralNetworkTest {
 
     @Test
     public void testPropagate() throws Exception {
-        FlatlandNeuralNetwork simpleNetwork = new FlatlandNeuralNetwork(new int[]{3, 3}, new double[]{1, 1, 1, 1, 1, 1, 1, 1, 1});
+        FlatlandNeuralNetwork simpleNetwork = new FlatlandNeuralNetwork(new int[]{3, 3}, new double[]{1,1,1,1,1,1,1,1,1,1,1,1});
 
         simpleNetwork.setInput(0, 1);
         simpleNetwork.setInput(1, 1);
@@ -18,6 +18,8 @@ public class FlatlandNeuralNetworkTest {
 
         simpleNetwork.propagate();
 
-        assertEquals(Nd4j.create(new double[]{3, 3, 3}, new int[]{3}), simpleNetwork.getOutputs());
+        double sigmoid_4 = 1.0/(1+Math.pow(Math.E, -4));
+
+        assertEquals(Nd4j.create(new double[]{sigmoid_4, sigmoid_4, sigmoid_4}, new int[]{3}), simpleNetwork.getOutputs());
     }
 }
