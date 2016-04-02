@@ -1,7 +1,6 @@
 package project2;
 
 import org.junit.Test;
-import project2.CrossBreeder;
 
 import java.util.Random;
 
@@ -14,7 +13,7 @@ public class CrossBreederTest {
         Integer[] a = new Integer[]{0, 0, 0, 0, 0};
         Integer[] b = new Integer[]{1, 1, 1, 1, 1};
 
-        CrossBreeder<Integer> cb = new CrossBreeder<Integer>(Integer.class, 1.0, new Random(0)); // Seed so that crossing point is index 3
+        CrossBreeder<Integer> cb = new CrossBreeder<>(Integer.class, 1.0, new Random(0)); // Seed so that crossing point is index 3
 
         Integer[][] children = cb.crossBreed(a, b);
         Integer[] childAGenotype = children[0];
