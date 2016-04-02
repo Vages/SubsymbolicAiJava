@@ -7,7 +7,8 @@ import project2.tools.ScalingTools;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public abstract class EvolutionWorld {
+public abstract class EvolutionWorld<G> {
+    protected ArrayList<G[]> matingGenotypeList;
     protected ArrayList<Individual> children, adults;
     protected AdultSelection adultSelection;
     protected SelectionStrategy matingSelection;
@@ -309,7 +310,12 @@ public abstract class EvolutionWorld {
         return 0.01*((double) (numberOfGenerations-currentGeneration))/numberOfGenerations+0.001;
     }
 
-    protected abstract void genotypeCopying();
+    protected void genotypeCopying() {
+        matingGenotypeList = new ArrayList<>();
+        for (Individual i: matingIndividualList) {
+            matingGenotypeList.add((G[]) i.getGenotype());
+        }
+    }
 
     protected abstract void reproduction();
 }

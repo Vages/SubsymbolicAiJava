@@ -6,8 +6,7 @@ import project2.integerSpecializations.evaluators.IntegerPhenotypeEvaluator;
 
 import java.util.ArrayList;
 
-public class IntegerEvolutionWorld extends EvolutionWorld {
-    private ArrayList<Integer[]> matingGenotypeList;
+public class IntegerEvolutionWorld extends EvolutionWorld<Integer> {
     private CrossBreeder<Integer> crossBreeder;
     private IntegerPhenotypeEvaluator evaluator;
     private IntegerMutator mutator;
@@ -37,13 +36,6 @@ public class IntegerEvolutionWorld extends EvolutionWorld {
             }
 
             this.children.add(new IntegerIndividual(genotype, evaluator));
-        }
-    }
-    @Override
-    protected void genotypeCopying() {
-        matingGenotypeList = new ArrayList<>();
-        for (Individual i: matingIndividualList) {
-            matingGenotypeList.add((Integer[]) i.getGenotype());
         }
     }
 
