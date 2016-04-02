@@ -19,11 +19,6 @@ public class FlatlandEvolutionWorld extends EvolutionWorld {
     }
 
     @Override
-    protected void genotypeCopying() {
-
-    }
-
-    @Override
     protected void reproduction() {
 
     }
