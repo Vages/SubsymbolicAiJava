@@ -4,10 +4,10 @@ import project2.helperStructures.Tuple;
 
 import java.util.HashSet;
 
-public class SurprisingSequenceEvaluatorInteger implements IntegerPhenotypeEvaluator {
+public class SurprisingSequenceEvaluator implements IntegerPhenotypeEvaluator {
     private boolean globallySurprising;
 
-    public SurprisingSequenceEvaluatorInteger(boolean globallySurprising) {
+    public SurprisingSequenceEvaluator(boolean globallySurprising) {
         this.globallySurprising = globallySurprising;
     }
 

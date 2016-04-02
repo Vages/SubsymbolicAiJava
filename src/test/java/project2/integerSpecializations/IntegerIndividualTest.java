@@ -1,4 +1,4 @@
-package project2;
+package project2.integerSpecializations;
 
 import project2.integerSpecializations.IntegerIndividual;
 

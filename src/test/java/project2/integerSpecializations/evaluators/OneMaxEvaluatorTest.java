@@ -1,6 +1,5 @@
-package project2;
+package project2.integerSpecializations.evaluators;
 
-import project2.integerSpecializations.evaluators.OneMaxEvaluatorInteger;
 import org.junit.Test;
 import project2.integerSpecializations.IntegerIndividual;
 
@@ -11,7 +10,7 @@ public class OneMaxEvaluatorTest {
     @Test
     public void testEvaluate() throws Exception {
         int[] idealPhenotype = {1, 1, 1};
-        OneMaxEvaluatorInteger evaluator = new OneMaxEvaluatorInteger(idealPhenotype);
+        OneMaxEvaluator evaluator = new OneMaxEvaluator(idealPhenotype);
 
         IntegerIndividual noErrors = new IntegerIndividual(new Integer[]{1, 1, 1}, evaluator);
         IntegerIndividual oneError = new IntegerIndividual(new Integer[]{1, 1, 0}, evaluator);

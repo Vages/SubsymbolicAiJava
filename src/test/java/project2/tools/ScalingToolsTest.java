@@ -1,4 +1,4 @@
-package project2;
+package project2.tools;
 
 import org.junit.Test;
 import project2.tools.ScalingTools;

@@ -10,13 +10,14 @@ public class IntegerCrossBreeder {
         randomNumberGenerator = new Random();
     }
 
-    public IntegerCrossBreeder(Random randomNumberGenerator) {
-        this.randomNumberGenerator = randomNumberGenerator;
-    }
-
     public IntegerCrossBreeder(double crossingRate) {
         this.crossingRate = crossingRate;
         randomNumberGenerator = new Random();
+    }
+
+    public IntegerCrossBreeder(double crossingRate, Random randomNumberGenerator) {
+        this.crossingRate = crossingRate;
+        this.randomNumberGenerator = randomNumberGenerator;
     }
 
     public Integer[][] crossBreed(Integer[] genotypeA, Integer[] genotypeB){

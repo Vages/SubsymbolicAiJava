@@ -1,6 +1,5 @@
-package project2;
+package project2.integerSpecializations.evaluators;
 
-import project2.integerSpecializations.evaluators.LolzEvaluatorInteger;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -9,7 +8,7 @@ public class LolzEvaluatorTest {
 
     @Test
     public void testEvaluate() throws Exception {
-        LolzEvaluatorInteger lolzEvaluator = new LolzEvaluatorInteger(4);
+        LolzEvaluator lolzEvaluator = new LolzEvaluator(4);
 
         Integer[] allOnes = {1,1,1,1,1,1};
         Integer[] allZeroes = {0,0,0,0,0,0};
