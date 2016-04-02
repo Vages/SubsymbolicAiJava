@@ -1,6 +1,6 @@
 package project2;
 
-import project2.integerSpecializations.evaluators.SurprisingSequenceEvaluator;
+import project2.integerSpecializations.evaluators.SurprisingSequenceEvaluatorInteger;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -9,8 +9,8 @@ public class SurprisingSequenceEvaluatorTest {
 
     @Test
     public void testEvaluate() throws Exception {
-        SurprisingSequenceEvaluator locallySurprising = new SurprisingSequenceEvaluator(false);
-        SurprisingSequenceEvaluator globallySurprising = new SurprisingSequenceEvaluator(true);
+        SurprisingSequenceEvaluatorInteger locallySurprising = new SurprisingSequenceEvaluatorInteger(false);
+        SurprisingSequenceEvaluatorInteger globallySurprising = new SurprisingSequenceEvaluatorInteger(true);
 
         Integer[] abccba = {0, 1, 2, 2, 1, 0};
         Integer[] aabcc = {0,0,1,2,2};

@@ -1,7 +1,7 @@
 package project2.integerSpecializations;
 
 import project2.Individual;
-import project2.integerSpecializations.evaluators.PhenotypeEvaluator;
+import project2.integerSpecializations.evaluators.IntegerPhenotypeEvaluator;
 
 import java.util.Arrays;
 
@@ -10,10 +10,10 @@ import java.util.Arrays;
  */
 public class IntegerIndividual extends Individual<Integer, Integer> {
     private Double fitness;
-    private PhenotypeEvaluator evaluator;
+    private IntegerPhenotypeEvaluator evaluator;
 
 
-    public IntegerIndividual(Integer[] genotype, PhenotypeEvaluator evaluator) {
+    public IntegerIndividual(Integer[] genotype, IntegerPhenotypeEvaluator evaluator) {
         this.genotype = genotype;
         this.evaluator = evaluator;
     }

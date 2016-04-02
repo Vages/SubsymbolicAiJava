@@ -5,14 +5,14 @@ import project2.AdultSelection;
 import project2.EvolutionWorld;
 import project2.Individual;
 import project2.SelectionStrategy;
-import project2.integerSpecializations.evaluators.PhenotypeEvaluator;
+import project2.integerSpecializations.evaluators.IntegerPhenotypeEvaluator;
 
 import java.util.ArrayList;
 
 public class IntegerEvolutionWorld extends EvolutionWorld {
     private ArrayList<Integer[]> matingGenotypeList;
     private IntegerCrossBreeder crossBreeder;
-    private PhenotypeEvaluator evaluator;
+    private IntegerPhenotypeEvaluator evaluator;
     private IntegerMutator mutator;
     private int stringLength;
     private int maxInt;
@@ -21,7 +21,7 @@ public class IntegerEvolutionWorld extends EvolutionWorld {
                                  int childPoolSize, int adultPoolSize, int numberOfGenerations,
                                  int tournamentSize, double tournamentE, String logFileName,
                                  int maxInt, double mutateThreshold, int numberOfMutations, double crossingRate,
-                                 int stringLength, PhenotypeEvaluator evaluator) {
+                                 int stringLength, IntegerPhenotypeEvaluator evaluator) {
         super(adultSelection, matingStrategy, childPoolSize, adultPoolSize, numberOfGenerations, 1, tournamentSize, tournamentE, logFileName);
         mutator = new IntegerMutator(maxInt, mutateThreshold, numberOfMutations);
         crossBreeder = new IntegerCrossBreeder(crossingRate);

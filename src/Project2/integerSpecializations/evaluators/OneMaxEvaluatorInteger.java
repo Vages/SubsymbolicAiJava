@@ -1,9 +1,9 @@
 package project2.integerSpecializations.evaluators;
 
-public class OneMaxEvaluator implements PhenotypeEvaluator {
+public class OneMaxEvaluatorInteger implements IntegerPhenotypeEvaluator {
     private int[] idealPhenotype;
 
-    public OneMaxEvaluator(int[] idealPhenotype) {
+    public OneMaxEvaluatorInteger(int[] idealPhenotype) {
         this.idealPhenotype = new int[idealPhenotype.length];
         System.arraycopy(idealPhenotype, 0, this.idealPhenotype, 0, idealPhenotype.length);
     }

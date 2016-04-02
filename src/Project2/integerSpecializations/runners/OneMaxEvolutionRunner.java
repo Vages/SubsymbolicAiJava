@@ -3,8 +3,8 @@ package project2.integerSpecializations.runners;
 import project2.AdultSelection;
 import project2.SelectionStrategy;
 import project2.integerSpecializations.IntegerEvolutionWorld;
-import project2.integerSpecializations.evaluators.OneMaxEvaluator;
-import project2.integerSpecializations.evaluators.PhenotypeEvaluator;
+import project2.integerSpecializations.evaluators.OneMaxEvaluatorInteger;
+import project2.integerSpecializations.evaluators.IntegerPhenotypeEvaluator;
 
 public class OneMaxEvolutionRunner {
     public static void main(String[] args) {
@@ -46,7 +46,7 @@ public class OneMaxEvolutionRunner {
                 break;
         }
 
-        PhenotypeEvaluator evaluator = new OneMaxEvaluator(idealPhenotype);
+        IntegerPhenotypeEvaluator evaluator = new OneMaxEvaluatorInteger(idealPhenotype);
 
         IntegerEvolutionWorld omew = new IntegerEvolutionWorld(adultSelection, selectionStrategy, childPoolSize,
                 adultPoolSize, generations, tournamentSize, tournamentE, logFileName, maxInt, mutateThreshold,

@@ -1,5 +1,5 @@
 package project2.integerSpecializations.evaluators;
 
-public interface PhenotypeEvaluator {
+public interface IntegerPhenotypeEvaluator {
     double evaluate(Integer[] phenotype);
 }

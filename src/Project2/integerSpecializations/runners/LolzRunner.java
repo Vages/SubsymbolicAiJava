@@ -3,8 +3,8 @@ package project2.integerSpecializations.runners;
 import project2.AdultSelection;
 import project2.SelectionStrategy;
 import project2.integerSpecializations.IntegerEvolutionWorld;
-import project2.integerSpecializations.evaluators.LolzEvaluator;
-import project2.integerSpecializations.evaluators.PhenotypeEvaluator;
+import project2.integerSpecializations.evaluators.LolzEvaluatorInteger;
+import project2.integerSpecializations.evaluators.IntegerPhenotypeEvaluator;
 
 public class LolzRunner {
     public static void main(String[] args) {
@@ -25,7 +25,7 @@ public class LolzRunner {
         int stringlength = Integer.parseInt(args[11]);
         int zCap = Integer.parseInt(args[12]);
 
-        PhenotypeEvaluator evaluator = new LolzEvaluator(zCap);
+        IntegerPhenotypeEvaluator evaluator = new LolzEvaluatorInteger(zCap);
 
         IntegerEvolutionWorld omew = new IntegerEvolutionWorld(adultSelection, selectionStrategy, childPoolSize,
                 adultPoolSize, generations, tournamentSize, tournamentE, logFileName, maxInt, mutateThreshold,

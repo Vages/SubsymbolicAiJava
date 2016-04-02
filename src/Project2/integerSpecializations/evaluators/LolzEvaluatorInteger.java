@@ -1,9 +1,9 @@
 package project2.integerSpecializations.evaluators;
 
-public class LolzEvaluator implements PhenotypeEvaluator {
+public class LolzEvaluatorInteger implements IntegerPhenotypeEvaluator {
     private int zCap;
 
-    public LolzEvaluator(int zCap) {
+    public LolzEvaluatorInteger(int zCap) {
         this.zCap = zCap;
     }
 

@@ -3,8 +3,8 @@ package project2.integerSpecializations.runners;
 import project2.AdultSelection;
 import project2.SelectionStrategy;
 import project2.integerSpecializations.IntegerEvolutionWorld;
-import project2.integerSpecializations.evaluators.PhenotypeEvaluator;
-import project2.integerSpecializations.evaluators.SurprisingSequenceEvaluator;
+import project2.integerSpecializations.evaluators.IntegerPhenotypeEvaluator;
+import project2.integerSpecializations.evaluators.SurprisingSequenceEvaluatorInteger;
 
 public class SurprisingSequenceRunner {
     public static void main(String[] args) {
@@ -35,7 +35,7 @@ public class SurprisingSequenceRunner {
         int maxInt = Integer.parseInt(args[12])-1;
         int stringlength = Integer.parseInt(args[13]);
 
-        PhenotypeEvaluator evaluator = new SurprisingSequenceEvaluator(globallySurprising);
+        IntegerPhenotypeEvaluator evaluator = new SurprisingSequenceEvaluatorInteger(globallySurprising);
 
         IntegerEvolutionWorld omew = new IntegerEvolutionWorld(adultSelection, selectionStrategy, childPoolSize,
                 adultPoolSize, generations, tournamentSize, tournamentE, logFileName, maxInt, mutateThreshold,
