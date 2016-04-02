@@ -20,9 +20,6 @@
         </plugins>
     </build>
 
-    <name>SubsymbolicAiJava</name>
-    <url>http://maven.apache.org</url>
-
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <nd4j.version>0.4-rc3.8</nd4j.version>
