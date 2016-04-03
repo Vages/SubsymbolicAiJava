@@ -85,7 +85,7 @@ public abstract class EvolutionWorld<G> {
             this.oneRoundOfEvolution();
         }
 
-        GenerateCsv.generateCsvFile("./out/logs/SubsymbolicAiJava/project2/"+this.logFileName+"-"+Integer.toString(currentEpoch)+".csv", statisticsLog);
+        GenerateCsv.generateCsvFile("./out/logs/SubsymbolicAiJava/"+this.logFileName+"-"+Integer.toString(currentEpoch)+".csv", statisticsLog);
     }
 
     public void runAllEpochs() {
@@ -109,7 +109,7 @@ public abstract class EvolutionWorld<G> {
             statisticsLog.add(line);
         }
 
-        GenerateCsv.generateCsvFile("./out/logs/SubsymbolicAiJava/project2/"+this.logFileName+"-averages.csv", statisticsLog);
+        GenerateCsv.generateCsvFile("./out/logs/SubsymbolicAiJava/"+this.logFileName+"-averages.csv", statisticsLog);
     }
 
     protected abstract void generateRandomChildren();
