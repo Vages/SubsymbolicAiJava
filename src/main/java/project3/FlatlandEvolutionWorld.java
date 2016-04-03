@@ -22,8 +22,8 @@ public class FlatlandEvolutionWorld extends EvolutionWorld<Double> {
     @Override
     protected void generateRandomChildren() {
         for (int i = 0; i < childPoolSize; i++) {
-            Double[] genotype = FlatLandIndividual.generateRandomGenotype(topology);
-            this.children.add(new FlatLandIndividual(genotype, topology));
+            Double[] genotype = FlatlandIndividual.generateRandomGenotype(topology);
+            this.children.add(new FlatlandIndividual(genotype, topology));
         }
     }
 

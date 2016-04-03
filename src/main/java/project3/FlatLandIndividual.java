@@ -5,13 +5,13 @@ import project2.Individual;
 
 import java.util.ArrayList;
 
-public class FlatLandIndividual extends Individual<Double> {
+public class FlatlandIndividual extends Individual<Double> {
     private Double[] genotype;
     private int[] topology;
     private SigmoidNeuralNetwork phenotype;
     private double fitness;
 
-    public FlatLandIndividual(Double[] genotype, int[] topology) {
+    public FlatlandIndividual(Double[] genotype, int[] topology) {
         this.genotype = genotype;
         this.topology = topology;
     }

@@ -8,15 +8,15 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-public class FlatLandIndividualTest {
+public class FlatlandIndividualTest {
 
     @Test
     public void testGenerateRandomGenotype() throws Exception {
         int[] two_layer_topology = {3, 3};
         int[] three_layer_topology = {1, 1, 1};
 
-        Double[] twoLayerWeights = FlatLandIndividual.generateRandomGenotype(two_layer_topology);
-        Double[] threeLayerWeights = FlatLandIndividual.generateRandomGenotype(three_layer_topology);
+        Double[] twoLayerWeights = FlatlandIndividual.generateRandomGenotype(two_layer_topology);
+        Double[] threeLayerWeights = FlatlandIndividual.generateRandomGenotype(three_layer_topology);
 
         assertEquals(12, twoLayerWeights.length);
         assertEquals(6, threeLayerWeights.length);
