@@ -54,7 +54,7 @@ public class Board {
     }
 
     public CellType getCell(int x, int y){
-        return this.grid[y%boardSize][x%boardSize];
+        return this.grid[(y+boardSize)%boardSize][(x+boardSize)%boardSize];
     }
 
     public CellType move(MoveDirection d){
