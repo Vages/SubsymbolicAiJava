@@ -5,12 +5,12 @@ import org.nd4j.linalg.factory.Nd4j;
 
 import java.util.Arrays;
 
-public class FlatlandNeuralNetwork {
+public class SigmoidNeuralNetwork {
     private int[] topology;
     private INDArray[] activations;
     private INDArray[] weights;
 
-    public FlatlandNeuralNetwork(int[] topology, double[] weight) {
+    public SigmoidNeuralNetwork(int[] topology, double[] weight) {
         this.topology = topology;
         this.activations = new INDArray[topology.length];
         this.weights = new INDArray[topology.length-1];

@@ -3,10 +3,10 @@ package project3;
 import org.apache.commons.lang3.ArrayUtils;
 import project2.Individual;
 
-public class FlatLandIndividual extends Individual<Double, FlatlandNeuralNetwork> {
+public class FlatLandIndividual extends Individual<Double, SigmoidNeuralNetwork> {
     private Double[] genotype;
     private int[] topology;
-    private FlatlandNeuralNetwork phenotype;
+    private SigmoidNeuralNetwork phenotype;
     private double fitness;
 
     public FlatLandIndividual(Double[] genotype, int[] topology) {
@@ -20,7 +20,7 @@ public class FlatLandIndividual extends Individual<Double, FlatlandNeuralNetwork
     }
 
     @Override
-    public FlatlandNeuralNetwork getPhenotype() {
+    public SigmoidNeuralNetwork getPhenotype() {
         return phenotype;
     }
 
@@ -31,6 +31,6 @@ public class FlatLandIndividual extends Individual<Double, FlatlandNeuralNetwork
 
     @Override
     public void develop() {
-        this.phenotype = new FlatlandNeuralNetwork(topology, ArrayUtils.toPrimitive(genotype));
+        this.phenotype = new SigmoidNeuralNetwork(topology, ArrayUtils.toPrimitive(genotype));
     }
 }

@@ -1,5 +1,5 @@
 package project3;
 
-public enum FlatlandCellTypes {
+public enum CellType {
     FOOD, POISON, EMPTY
 }

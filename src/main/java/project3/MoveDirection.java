@@ -1,5 +1,5 @@
 package project3;
 
-public enum MoveDirections {
+public enum MoveDirection {
     LEFT, RIGHT, FORWARD
 }

@@ -1,5 +1,5 @@
 package project3;
 
-public enum Headings {
+public enum Heading {
     NORTH, EAST, SOUTH, WEST
 }
