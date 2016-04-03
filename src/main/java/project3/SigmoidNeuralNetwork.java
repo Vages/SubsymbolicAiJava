@@ -9,6 +9,7 @@ public class SigmoidNeuralNetwork {
     private int[] topology;
     private INDArray[] activations;
     private INDArray[] weights;
+    private MoveDirection[] dirs = {MoveDirection.LEFT, MoveDirection.FORWARD, MoveDirection.RIGHT};
 
     public SigmoidNeuralNetwork(int[] topology, double[] weight) {
         this.topology = topology;
@@ -54,6 +55,45 @@ public class SigmoidNeuralNetwork {
 
     public INDArray getOutputs() {
         return this.activations[activations.length-1];
+    }
+
+    private int getMaxOutput(){
+        INDArray outputLayer = activations[activations.length-1];
+
+        int maxIndex = -1;
+        double maxOutput = Double.NEGATIVE_INFINITY;
+
+        for (int i = 0; i < outputLayer.length(); i++){
+            double output_i = outputLayer.getDouble(i);
+
+            if (output_i > maxOutput) {
+                maxIndex = i;
+                maxOutput = output_i;
+            }
+        }
+
+        return maxIndex;
+    }
+
+    private MoveDirection getMoveFromMaxIndex(int index){
+        return dirs[index];
+    }
+
+    public MoveDirection getNextMove(boolean[] food, boolean[] poison) {
+        // Set activations on input neurons from senses
+        for (int i = 0; i < 3; i++){
+            double activationLevel = food[i] ? 1 : 0;
+            setInput(i, activationLevel);
+        }
+
+        for (int i = 0; i < 3; i++){
+            double activationLevel = poison[i] ? 1 : 0;
+            setInput(i+3, activationLevel);
+        }
+
+        propagate();
+
+        return getMoveFromMaxIndex(getMaxOutput());
     }
 
     private double sigmoid(double exponent) {
