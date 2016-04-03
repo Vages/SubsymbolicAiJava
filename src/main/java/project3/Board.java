@@ -3,13 +3,17 @@ package project3;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
 
+import java.util.Arrays;
+
 public class Board {
     private int boardSize = 10;
     private static final MoveDirection[] mdIterable = {MoveDirection.LEFT, MoveDirection.FORWARD, MoveDirection.RIGHT};
     private INDArray currentCell;
     private INDArray startingCell;
     private Heading playerHeading;
+    private Heading startHeading;
     private CellType[][] grid = new CellType[boardSize][boardSize];
+    private CellType[][] originalGrid = new CellType[boardSize][boardSize];
 
     public Board(double f, double p, int[] startingCell) {
 
@@ -28,6 +32,7 @@ public class Board {
                     setCell(j, i, CellType.EMPTY);
                 }
             }
+            originalGrid[i] = Arrays.copyOf(grid[i], boardSize);
         }
 
         double[] startAsDouble = new double[2];
@@ -36,7 +41,17 @@ public class Board {
 
         this.startingCell = Nd4j.create(startAsDouble);
         this.currentCell = Nd4j.create(startAsDouble);
+        startHeading = Heading.SOUTH;
         playerHeading = Heading.SOUTH;
+    }
+
+    public void reset(){
+        for (int i = 0; i < boardSize; i++) {
+            grid[i] = Arrays.copyOf(originalGrid[i], boardSize);
+        }
+
+        this.currentCell = startingCell;
+        this.playerHeading = startHeading;
     }
 
     public CellType getCell(INDArray pos) {
