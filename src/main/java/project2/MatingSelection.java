@@ -1,11 +1,9 @@
 package project2;
 
-import com.sun.org.apache.bcel.internal.generic.Select;
-
-public enum SelectionStrategy {
+public enum MatingSelection {
     FITNESS_PROPORTIONATE, SIGMA_SCALING, TOURNAMENT_SELECTION, BOLTZMANN_SCALING;
 
-    public static SelectionStrategy getStrategyFromChar(char c){
+    public static MatingSelection getStrategyFromChar(char c){
         switch (c) {
             case 'f':
                 return FITNESS_PROPORTIONATE;

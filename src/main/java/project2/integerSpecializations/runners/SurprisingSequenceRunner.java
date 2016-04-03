@@ -1,7 +1,7 @@
 package project2.integerSpecializations.runners;
 
 import project2.AdultSelection;
-import project2.SelectionStrategy;
+import project2.MatingSelection;
 import project2.integerSpecializations.IntegerEvolutionWorld;
 import project2.integerSpecializations.evaluators.IntegerPhenotypeEvaluator;
 import project2.integerSpecializations.evaluators.SurprisingSequenceEvaluator;
@@ -9,7 +9,7 @@ import project2.integerSpecializations.evaluators.SurprisingSequenceEvaluator;
 public class SurprisingSequenceRunner {
     public static void main(String[] args) {
         AdultSelection adultSelection = AdultSelection.getStrategyFromChar(args[0].charAt(0));
-        SelectionStrategy selectionStrategy = SelectionStrategy.getStrategyFromChar(args[1].charAt(0));
+        MatingSelection matingSelection = MatingSelection.getStrategyFromChar(args[1].charAt(0));
 
         int childPoolSize = Integer.parseInt(args[2]);
         int adultPoolSize = Integer.parseInt(args[3]);
@@ -37,7 +37,7 @@ public class SurprisingSequenceRunner {
 
         IntegerPhenotypeEvaluator evaluator = new SurprisingSequenceEvaluator(globallySurprising);
 
-        IntegerEvolutionWorld omew = new IntegerEvolutionWorld(adultSelection, selectionStrategy, childPoolSize,
+        IntegerEvolutionWorld omew = new IntegerEvolutionWorld(adultSelection, matingSelection, childPoolSize,
                 adultPoolSize, generations, tournamentSize, tournamentE, logFileName, maxInt, mutateThreshold,
                 numberOfMutations, crossingRate, stringlength, evaluator);
         omew.runAllEpochs();

@@ -1,7 +1,5 @@
 package project2;
 
-import javafx.scene.Parent;
-import project2.helperStructures.RandomCollection;
 import project2.tools.GenerateCsv;
 import project2.tools.ScalingTools;
 
@@ -12,7 +10,7 @@ public abstract class EvolutionWorld<G> {
     protected ArrayList<G[]> matingGenotypeList;
     protected ArrayList<Individual> children, adults;
     protected AdultSelection adultSelection;
-    protected SelectionStrategy matingSelection;
+    protected MatingSelection matingSelection;
     protected ArrayList<Individual> matingIndividualList;
     protected ArrayList<ArrayList<String>> statisticsLog;
     protected int childPoolSize;
@@ -32,7 +30,7 @@ public abstract class EvolutionWorld<G> {
     protected double[] averageFitnessSums;
     protected double[] standardDeviationSums;
     
-    public EvolutionWorld(AdultSelection adultSelection, SelectionStrategy matingSelection,
+    public EvolutionWorld(AdultSelection adultSelection, MatingSelection matingSelection,
                           int childPoolSize, int adultPoolSize, int numberOfGenerations, int epochs,
                           int tournamentSize, double tournamentE, String logFileName) {
         children = new ArrayList<>();

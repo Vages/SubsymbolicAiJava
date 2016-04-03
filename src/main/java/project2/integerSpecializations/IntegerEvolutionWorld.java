@@ -4,8 +4,6 @@ package project2.integerSpecializations;
 import project2.*;
 import project2.integerSpecializations.evaluators.IntegerPhenotypeEvaluator;
 
-import java.util.ArrayList;
-
 public class IntegerEvolutionWorld extends EvolutionWorld<Integer> {
     private CrossBreeder<Integer> crossBreeder;
     private IntegerPhenotypeEvaluator evaluator;
@@ -13,7 +11,7 @@ public class IntegerEvolutionWorld extends EvolutionWorld<Integer> {
     private int stringLength;
     private int maxInt;
 
-    public IntegerEvolutionWorld(AdultSelection adultSelection, SelectionStrategy matingStrategy,
+    public IntegerEvolutionWorld(AdultSelection adultSelection, MatingSelection matingStrategy,
                                  int childPoolSize, int adultPoolSize, int numberOfGenerations,
                                  int tournamentSize, double tournamentE, String logFileName,
                                  int maxInt, double mutateThreshold, int numberOfMutations, double crossingRate,
