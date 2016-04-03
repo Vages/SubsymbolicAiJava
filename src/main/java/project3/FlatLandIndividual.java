@@ -3,7 +3,7 @@ package project3;
 import org.apache.commons.lang3.ArrayUtils;
 import project2.Individual;
 
-public class FlatLandIndividual extends Individual<Double, SigmoidNeuralNetwork> {
+public class FlatLandIndividual extends Individual<Double> {
     private Double[] genotype;
     private int[] topology;
     private SigmoidNeuralNetwork phenotype;
@@ -17,11 +17,6 @@ public class FlatLandIndividual extends Individual<Double, SigmoidNeuralNetwork>
     @Override
     public Double[] getGenotype() {
         return genotype;
-    }
-
-    @Override
-    public SigmoidNeuralNetwork getPhenotype() {
-        return phenotype;
     }
 
     @Override

@@ -1,11 +1,9 @@
 package project2;
 
-public abstract class Individual<G, P> implements Comparable<Individual> {
+public abstract class Individual<G> implements Comparable<Individual> {
     protected G[] genotype;
 
     public abstract G[] getGenotype();
-
-    public abstract P getPhenotype();
 
     public abstract double getFitness();
 
