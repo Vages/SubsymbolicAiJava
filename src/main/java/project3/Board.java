@@ -3,55 +3,29 @@ package project3;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class Board {
     private int boardSize = 10;
-    private static final Map<Heading, Map<MoveDirection, INDArray>> directionToSensorAndMoveCoordinates;
     private static final MoveDirection[] mdIterable = {MoveDirection.LEFT, MoveDirection.FORWARD, MoveDirection.RIGHT};
     private INDArray currentCell;
     private INDArray startingCell;
     private Heading playerHeading;
     private CellType[][] grid = new CellType[boardSize][boardSize];
 
-    static {
-        // Fill the Map with the right heading/direction mappings
-
-        directionToSensorAndMoveCoordinates = new HashMap<>();
-
-        INDArray[] relativeCoordinates = new INDArray[]{Nd4j.create(new double[]{0, -1}), // North
-                Nd4j.create(new double[]{1, 0}), // East
-                Nd4j.create(new double[]{0, 1}), // South
-                Nd4j.create(new double[]{-1, 0})}; // West
-        Heading[] heads = {Heading.NORTH, Heading.EAST, Heading.SOUTH, Heading.WEST};
-
-        for (int i = 0; i < 4; i++) {
-            Heading h = heads[i];
-            Map<MoveDirection, INDArray> this_hs_map = new HashMap<>();
-            for (int j = 0; j < 3; j++) {
-                int i1 = (i + j + 4 - 1) % 4;
-                this_hs_map.put(mdIterable[j], relativeCoordinates[i1]);
-            }
-            directionToSensorAndMoveCoordinates.put(h, this_hs_map);
-        }
-    }
-
     public Board(double f, double p, int[] startingCell) {
 
         // Fill the board with poison with the given food-poison-distribution
         for (int i = 0; i < boardSize; i++) {
             for (int j = 0; j < boardSize; j++) {
-                if (i == startingCell[1] && j == startingCell[0]) {
-                    grid[i][j] = CellType.EMPTY;
+                if (j == startingCell[0] && i == startingCell[1]) {
+                    setCell(j, i, CellType.EMPTY);
                     continue; // This space will be used as the player space
                 }
                 if (Math.random() < f) {
-                    grid[i][j] = CellType.FOOD;
+                    setCell(j, i, CellType.FOOD);
                 } else if (Math.random() < p) {
-                    grid[i][j] = CellType.POISON;
+                    setCell(j, i, CellType.POISON);
                 } else {
-                    grid[i][j] = CellType.EMPTY;
+                    setCell(j, i, CellType.EMPTY);
                 }
             }
         }
@@ -65,26 +39,42 @@ public class Board {
         playerHeading = Heading.SOUTH;
     }
 
-    public CellType getCell(int x, int y) {
-        return this.grid[(y + boardSize) % boardSize][(x + boardSize) % boardSize];
+    public CellType getCell(INDArray pos) {
+        return this.grid[((int) pos.getDouble(1) + boardSize) % boardSize][((int) pos.getDouble(0) + boardSize) % boardSize];
+    }
+
+    public void setCell(INDArray pos, CellType contents){
+        int x = (int) pos.getDouble(0);
+        int y = (int) pos.getDouble(1);
+        setCell(x, y, contents);
+    }
+
+    public void setCell(int x, int y, CellType contents) {
+        this.grid[y][x] = contents;
     }
 
     public CellType move(MoveDirection d) {
-        return null;
+        playerHeading = playerHeading.getHeadingAfterTurn(d); // Turn the robot, if it is to be turned.
+        if (d != MoveDirection.STAND_STILL) {
+            currentCell = currentCell.add(playerHeading.getVector()); // Move it forward in the current heading direction.
+        }
+
+        CellType contents = getCell(currentCell);
+        setCell(currentCell, CellType.EMPTY);
+
+        return contents;
     }
 
     public boolean[] sense(CellType t) {
         boolean[] sensings = new boolean[3];
 
-        Map<MoveDirection, INDArray> coordinates = directionToSensorAndMoveCoordinates.get(playerHeading);
-
         for (int i = 0; i < mdIterable.length; i++) {
             MoveDirection md = mdIterable[i];
-            INDArray relativeCoordinate = coordinates.get(md);
+            INDArray relativeCoordinate = playerHeading.getHeadingAfterTurn(md).getVector();
 
             INDArray directionCell = currentCell.add(relativeCoordinate);
 
-            CellType contents = this.getCell((int) directionCell.getDouble(0), (int) directionCell.getDouble(1));
+            CellType contents = this.getCell(directionCell);
 
             sensings[i] = contents == t;
         }
