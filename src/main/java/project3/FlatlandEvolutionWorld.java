@@ -6,23 +6,25 @@ import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import net.sourceforge.argparse4j.inf.Namespace;
 import project2.AdultSelection;
 import project2.EvolutionWorld;
-import project2.SelectionStrategy;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import project2.MatingSelection;
 
 public class FlatlandEvolutionWorld extends EvolutionWorld<Double> {
-    public FlatlandEvolutionWorld(AdultSelection adultSelection, SelectionStrategy matingSelection, int childPoolSize,
+    private int[] topology;
+
+    public FlatlandEvolutionWorld(AdultSelection adultSelection, MatingSelection matingSelection, int childPoolSize,
                                   int adultPoolSize, int numberOfGenerations, int epochs, int tournamentSize,
-                                  double tournamentE, String logFileName) {
+                                  double tournamentE, String logFileName, int[] topology) {
         super(adultSelection, matingSelection, childPoolSize, adultPoolSize, numberOfGenerations, epochs,
                 tournamentSize, tournamentE, logFileName);
+        this.topology = topology;
     }
 
     @Override
     protected void generateRandomChildren() {
-
+        for (int i = 0; i < childPoolSize; i++) {
+            Double[] genotype = FlatLandIndividual.generateRandomGenotype(topology);
+            this.children.add(new FlatLandIndividual(genotype, topology));
+        }
     }
 
     @Override
@@ -75,14 +77,15 @@ public class FlatlandEvolutionWorld extends EvolutionWorld<Double> {
 
             FlatlandEvolutionWorld mew = new FlatlandEvolutionWorld(
                     AdultSelection.GENERATIONAL_MIXING,
-                    SelectionStrategy.SIGMA_SCALING,
+                    MatingSelection.SIGMA_SCALING,
                     res.get("children"),
                     res.get("adults"),
                     res.get("generations"),
                     res.get("epochs"),
                     5,
                     0.1,
-                    res.get("log_file")
+                    res.get("log_file"),
+                    res.get("topology")
             );
 
             System.out.println("Hello");
