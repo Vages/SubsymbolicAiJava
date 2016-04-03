@@ -38,6 +38,12 @@
             <artifactId>nd4j-x86</artifactId>
             <version>${nd4j.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>net.sourceforge.argparse4j</groupId>
+            <artifactId>argparse4j</artifactId>
+            <version>0.7.0</version>
+        </dependency>
     </dependencies>
     
 </project>
