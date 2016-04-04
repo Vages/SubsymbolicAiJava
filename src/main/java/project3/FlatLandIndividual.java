@@ -8,12 +8,15 @@ import java.util.ArrayList;
 public class FlatlandIndividual extends Individual<Double> {
     private Double[] genotype;
     private int[] topology;
-    private SigmoidNeuralNetwork phenotype;
+    private SigmoidNeuralNetwork network;
+    private int lastScenariosVersionAssessed = -1;
     private double fitness;
+    private FlatlandEvolutionWorld world;
 
-    public FlatlandIndividual(Double[] genotype, int[] topology) {
+    public FlatlandIndividual(Double[] genotype, int[] topology, FlatlandEvolutionWorld world) {
         this.genotype = genotype;
         this.topology = topology;
+        this.world = world;
     }
 
     @Override
@@ -23,12 +26,52 @@ public class FlatlandIndividual extends Individual<Double> {
 
     @Override
     public double getFitness() {
-        return fitness;
+        if (this.lastScenariosVersionAssessed == world.getScenariosVersion())
+            return fitness;
+        double f = assessFitnessForAllWorldScenarios();
+        this.fitness = f > 0 ? f : 0; // Cannot be smaller than 0, to avoid errors.
+        this.lastScenariosVersionAssessed = world.getScenariosVersion();
+        return this.fitness;
+    }
+
+    private double assessFitnessForAllWorldScenarios() {
+        ArrayList<Board> boards = world.getScenarios();
+        double fitnessSum = 0;
+        for (Board b: boards) {
+            b.reset();
+            fitnessSum += assessFitnessForBoard(b);
+        }
+
+        return fitnessSum;
+    }
+
+    private double assessFitnessForBoard(Board b){
+        double sum = 0;
+        for (int i = 0; i < 60; i++) {
+            sum += doOneMoveOnBoard(b);
+        }
+
+        return sum;
+    }
+
+    private double doOneMoveOnBoard(Board b) {
+        boolean[] food = b.sense(CellType.FOOD);
+        boolean[] poison = b.sense(CellType.POISON);
+
+        MoveDirection nextMove = network.getNextMove(food, poison);
+
+        CellType contents = b.move(nextMove);
+
+        if (contents == CellType.FOOD) {
+            return world.getFoodReward();
+        } else if (contents == CellType.POISON){
+            return world.getPoisonReward();
+        } else return 0;
     }
 
     @Override
     public void develop() {
-        this.phenotype = new SigmoidNeuralNetwork(topology, ArrayUtils.toPrimitive(genotype));
+        this.network = new SigmoidNeuralNetwork(topology, ArrayUtils.toPrimitive(genotype));
     }
 
     public static Double[] generateRandomGenotype(int[] topology){
