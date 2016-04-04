@@ -9,20 +9,40 @@ import project2.CrossBreeder;
 import project2.EvolutionWorld;
 import project2.MatingSelection;
 
+import java.util.ArrayList;
+
 public class FlatlandEvolutionWorld extends EvolutionWorld<Double> {
     private final CrossBreeder<Double> crossBreeder;
     private int[] topology;
     private DoubleMutator doubleMutator;
+    private double[] fpDistribution;
+    private ArrayList<Board> scenarios;
+    private int numberOfScenarios;
 
     public FlatlandEvolutionWorld(AdultSelection adultSelection, MatingSelection matingSelection, int childPoolSize,
                                   int adultPoolSize, int numberOfGenerations, int epochs, int tournamentSize,
                                   double tournamentE, String logFileName, int[] topology, double crossingRate,
-                                  double mutateThreshold, int numberOfMutations, double minValue, double maxValue) {
+                                  double mutateThreshold, int numberOfMutations, double minValue, double maxValue,
+                                  double[] fpDistribution, int numberOfScenarios) {
         super(adultSelection, matingSelection, childPoolSize, adultPoolSize, numberOfGenerations, epochs,
                 tournamentSize, tournamentE, logFileName);
         this.topology = topology;
         this.crossBreeder = new CrossBreeder<>(Double.class, crossingRate);
         this.doubleMutator = new DoubleMutator(mutateThreshold, numberOfMutations, minValue, maxValue);
+        this.fpDistribution = fpDistribution;
+        this.numberOfScenarios = numberOfScenarios;
+        generateNewScenarios();
+    }
+
+    private enum ScenarioPolicy {
+        DYNAMIC, STATIC
+    }
+
+    private void generateNewScenarios(){
+        scenarios.clear();
+        for (int i = 0; i < numberOfScenarios; i++){
+            scenarios.add(new Board(fpDistribution[0], fpDistribution[1], new int[]{0,0}));
+        }
     }
 
     @Override
@@ -105,6 +125,16 @@ public class FlatlandEvolutionWorld extends EvolutionWorld<Double> {
                 .type(Double.class)
                 .setDefault(new double[]{-1, 1});
 
+        parser.addArgument("-fpd", "--food-poison-distribution")
+                .nargs(2)
+                .type(Double.class)
+                .setDefault(new double[]{0.33, 0.33});
+
+        parser.addArgument("-ns", "--number-of-scenarios")
+                .nargs(1)
+                .type(Integer.class)
+                .setDefault(1);
+
         try {
             Namespace res = parser.parseArgs(args);
 
@@ -125,7 +155,9 @@ public class FlatlandEvolutionWorld extends EvolutionWorld<Double> {
                     res.get("mutate_threshold"),
                     res.get("number_of_mutations"),
                     mutation_range[0],
-                    mutation_range[1]
+                    mutation_range[1],
+                    res.get("food_poison_distribution"),
+                    res.get("number_of_scenarios")
             );
 
             System.out.println("Hello");
