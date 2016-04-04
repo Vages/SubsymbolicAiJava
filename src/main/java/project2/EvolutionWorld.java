@@ -146,7 +146,8 @@ public abstract class EvolutionWorld<G> {
                 }
                 Collections.sort(adults);
                 Collections.reverse(adults);
-                adults.subList(adultPoolSize, adults.size()).clear();
+                if (adults.size() > adultPoolSize)
+                    adults.subList(adultPoolSize, adults.size()).clear();
                 break;
         }
 
