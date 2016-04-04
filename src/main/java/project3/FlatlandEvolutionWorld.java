@@ -79,6 +79,7 @@ public class FlatlandEvolutionWorld extends EvolutionWorld<Double> {
         super.oneRoundOfEvolution();
         if (scenarioPolicy == ScenarioPolicy.DYNAMIC){
             generateNewScenarios();
+            scenariosVersion ++;
         }
     }
 
@@ -99,8 +100,8 @@ public class FlatlandEvolutionWorld extends EvolutionWorld<Double> {
     }
 
     public static void main(String[] args) {
-        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog")
-                .description("Flatland Evolution World");
+        ArgumentParser parser = ArgumentParsers.newArgumentParser("FlatlandEvolutionWorld")
+                .description("Runs a flatland evolution simulation");
 
         parser.addArgument("-g", "--generations")
                 .metavar("N")
@@ -110,7 +111,7 @@ public class FlatlandEvolutionWorld extends EvolutionWorld<Double> {
 
         parser.addArgument("-c", "--children")
                 .metavar("N")
-                .setDefault(100)
+                .setDefault(500)
                 .type(Integer.class)
                 .help("number of individuals in the child pool");
 

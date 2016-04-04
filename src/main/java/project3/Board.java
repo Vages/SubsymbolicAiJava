@@ -72,6 +72,16 @@ public class Board {
         playerHeading = playerHeading.getHeadingAfterTurn(d); // Turn the robot, if it is to be turned.
         if (d != MoveDirection.STAND_STILL) {
             currentCell = currentCell.add(playerHeading.getVector()); // Move it forward in the current heading direction.
+            for (int i = 0; i < 2; i++) {
+                double value = currentCell.getDouble(i);
+                if (value < 0) {
+                    value += boardSize;
+                    currentCell.putScalar(i, value);
+                } else if (value >= boardSize ) {
+                    value -= boardSize;
+                    currentCell.putScalar(i, value);
+                }
+            }
         }
 
         CellType contents = getCell(currentCell);
