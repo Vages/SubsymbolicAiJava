@@ -19,6 +19,7 @@ public class FlatlandEvolutionWorld extends EvolutionWorld<Double> {
     private double[] fpDistribution;
     private ArrayList<Board> scenarios;
     private int numberOfScenarios;
+    private int scenariosVersion = 0;
     private double foodReward;
     private double poisonReward;
 
@@ -50,13 +51,14 @@ public class FlatlandEvolutionWorld extends EvolutionWorld<Double> {
         for (int i = 0; i < numberOfScenarios; i++){
             scenarios.add(new Board(fpDistribution[0], fpDistribution[1], new int[]{0,0}));
         }
+        scenariosVersion++;
     }
 
     @Override
     protected void generateRandomChildren() {
         for (int i = 0; i < childPoolSize; i++) {
             Double[] genotype = FlatlandIndividual.generateRandomGenotype(topology);
-            this.children.add(new FlatlandIndividual(genotype, topology));
+            this.children.add(new FlatlandIndividual(genotype, topology, this));
         }
     }
 
@@ -66,8 +68,8 @@ public class FlatlandEvolutionWorld extends EvolutionWorld<Double> {
 
         for (int i = 0; i < matingGenotypeList.size(); i = i + 2) {
             Double[][] childPair = crossBreeder.crossBreed(matingGenotypeList.get(i), matingGenotypeList.get(i+1));
-            children.add(new FlatlandIndividual(doubleMutator.mutate(childPair[0]), topology));
-            children.add(new FlatlandIndividual(doubleMutator.mutate(childPair[1]), topology));
+            children.add(new FlatlandIndividual(doubleMutator.mutate(childPair[0]), topology, this));
+            children.add(new FlatlandIndividual(doubleMutator.mutate(childPair[1]), topology, this));
         }
 
     }
@@ -80,13 +82,29 @@ public class FlatlandEvolutionWorld extends EvolutionWorld<Double> {
         }
     }
 
+    public ArrayList<Board> getScenarios() {
+        return scenarios;
+    }
+
+    public double getFoodReward() {
+        return foodReward;
+    }
+
+    public double getPoisonReward() {
+        return poisonReward;
+    }
+
+    public int getScenariosVersion() {
+        return scenariosVersion;
+    }
+
     public static void main(String[] args) {
         ArgumentParser parser = ArgumentParsers.newArgumentParser("prog")
                 .description("Flatland Evolution World");
 
         parser.addArgument("-g", "--generations")
                 .metavar("N")
-                .setDefault(50)
+                .setDefault(100)
                 .type(Integer.class)
                 .help("number of generations used for evolution");
 
@@ -182,12 +200,13 @@ public class FlatlandEvolutionWorld extends EvolutionWorld<Double> {
                     mutation_range[0],
                     mutation_range[1],
                     res.get("food_poison_distribution"),
-                    res.get("fp_reward"),
+                    res.get("food_poison_reward"),
                     res.get("number_of_scenarios"),
                     res.get("dynamic")
             );
 
             System.out.println("Hello");
+            mew.runAllEpochs();
 
         } catch (ArgumentParserException e) {
             parser.handleError(e);
