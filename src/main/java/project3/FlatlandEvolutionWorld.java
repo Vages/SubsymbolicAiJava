@@ -13,17 +13,20 @@ import java.util.ArrayList;
 
 public class FlatlandEvolutionWorld extends EvolutionWorld<Double> {
     private final CrossBreeder<Double> crossBreeder;
-    private int[] topology;
+    private final ScenarioPolicy scenarioPolicy;
+    private final int[] topology;
     private DoubleMutator doubleMutator;
     private double[] fpDistribution;
     private ArrayList<Board> scenarios;
     private int numberOfScenarios;
+    private double foodReward;
+    private double poisonReward;
 
     public FlatlandEvolutionWorld(AdultSelection adultSelection, MatingSelection matingSelection, int childPoolSize,
                                   int adultPoolSize, int numberOfGenerations, int epochs, int tournamentSize,
                                   double tournamentE, String logFileName, int[] topology, double crossingRate,
                                   double mutateThreshold, int numberOfMutations, double minValue, double maxValue,
-                                  double[] fpDistribution, int numberOfScenarios) {
+                                  double[] fpDistribution, double[] fpReward, int numberOfScenarios, ScenarioPolicy scenarioPolicy) {
         super(adultSelection, matingSelection, childPoolSize, adultPoolSize, numberOfGenerations, epochs,
                 tournamentSize, tournamentE, logFileName);
         this.topology = topology;
@@ -31,6 +34,10 @@ public class FlatlandEvolutionWorld extends EvolutionWorld<Double> {
         this.doubleMutator = new DoubleMutator(mutateThreshold, numberOfMutations, minValue, maxValue);
         this.fpDistribution = fpDistribution;
         this.numberOfScenarios = numberOfScenarios;
+        this.scenarioPolicy = scenarioPolicy;
+        this.scenarios = new ArrayList<>();
+        this.foodReward = fpReward[0];
+        this.poisonReward = fpReward[1];
         generateNewScenarios();
     }
 
@@ -64,6 +71,15 @@ public class FlatlandEvolutionWorld extends EvolutionWorld<Double> {
         }
 
     }
+
+    @Override
+    public void oneRoundOfEvolution() {
+        super.oneRoundOfEvolution();
+        if (scenarioPolicy == ScenarioPolicy.DYNAMIC){
+            generateNewScenarios();
+        }
+    }
+
     public static void main(String[] args) {
         ArgumentParser parser = ArgumentParsers.newArgumentParser("prog")
                 .description("Flatland Evolution World");
@@ -135,6 +151,15 @@ public class FlatlandEvolutionWorld extends EvolutionWorld<Double> {
                 .type(Integer.class)
                 .setDefault(1);
 
+        parser.addArgument("-dyn", "--dynamic")
+                .setConst(ScenarioPolicy.DYNAMIC)
+                .setDefault(ScenarioPolicy.STATIC);
+
+        parser.addArgument("-fpr", "--food-poison-reward")
+                .nargs(2)
+                .type(Double.class)
+                .setDefault(new double[]{1, -5});
+
         try {
             Namespace res = parser.parseArgs(args);
 
@@ -157,7 +182,9 @@ public class FlatlandEvolutionWorld extends EvolutionWorld<Double> {
                     mutation_range[0],
                     mutation_range[1],
                     res.get("food_poison_distribution"),
-                    res.get("number_of_scenarios")
+                    res.get("fp_reward"),
+                    res.get("number_of_scenarios"),
+                    res.get("dynamic")
             );
 
             System.out.println("Hello");
