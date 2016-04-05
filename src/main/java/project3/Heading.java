@@ -40,4 +40,12 @@ public enum Heading {
             return this;
         }
     }
+
+    public double getVectorY(){
+        return vector.getDouble(1);
+    }
+
+    public double getVectorX(){
+        return vector.getDouble(0);
+    }
 }

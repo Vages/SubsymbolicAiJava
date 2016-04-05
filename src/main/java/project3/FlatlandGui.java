@@ -72,6 +72,35 @@ public class FlatlandGui extends Application {
         gc.setLineWidth(3);
         gc.setFill(new Color(0.9, 0.9, 0.9, 1));
         gc.fillRect(0, 0, sizeX, sizeY);
+
+        int bs = b.getBoardSize();
+        double cellSize = sizeX/bs;
+
+        for (int i = 0; i < bs; i++){
+            for (int j = 0; j < bs; j++) {
+                CellType cell = b.getCell(j, i);
+                if (cell == CellType.FOOD) {
+                    gc.setFill(new Color(0, 1, 0, 1));
+                } else if (cell == CellType.POISON) {
+                    gc.setFill(new Color(1, 0, 0, 1));
+                } else {
+                    gc.setFill(new Color(0.9, 0.9, 0.9, 0));
+                }
+
+                gc.fillOval(j*cellSize+cellSize/6, i*cellSize+cellSize/6, cellSize*2/3, cellSize*2/3);
+
+            }
+        }
+
+        int playerX = b.getPlayerX();
+        int playerY = b.getPlayerY();
+        Heading h = b.getPlayerHeading();
+
+        gc.setFill(new Color (0, 0, 0, 1));
+        gc.fillRect(playerX*cellSize+10, playerY*cellSize+10, cellSize-20, cellSize-20);
+        double xCenter = cellSize * (playerX + 0.5);
+        double yCenter = cellSize*(playerY+0.5);
+        gc.strokeLine(xCenter, yCenter, xCenter+h.getVectorX()*cellSize/2, yCenter+h.getVectorY()*cellSize/2);
     }
 
     public static void main(String[] args) {
@@ -82,6 +111,8 @@ public class FlatlandGui extends Application {
             }
         }.start();
         FlatlandGui startUpTest = FlatlandGui.waitForStartUpTest();
-        startUpTest.drawBoard(new Board(0.33, 0.33, new int[]{0,0}));
+
+        Board b = new Board(0.33, 0.33, new int[]{0, 0});
+        startUpTest.drawBoard(b);
     }
 }

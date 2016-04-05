@@ -42,7 +42,7 @@ public class Board {
         this.startingCell = Nd4j.create(startAsDouble);
         this.currentCell = Nd4j.create(startAsDouble);
         startHeading = Heading.SOUTH;
-        playerHeading = Heading.SOUTH;
+        playerHeading = startHeading;
     }
 
     public void reset(){
@@ -58,6 +58,14 @@ public class Board {
         return this.grid[((int) pos.getDouble(1) + boardSize) % boardSize][((int) pos.getDouble(0) + boardSize) % boardSize];
     }
 
+    public CellType getCell(int x, int y) {
+        return this.grid[(y+boardSize)%boardSize][(x+boardSize)%boardSize];
+    }
+
+    public int getBoardSize(){
+        return this.boardSize;
+    }
+
     public void setCell(INDArray pos, CellType contents){
         int x = (int) pos.getDouble(0);
         int y = (int) pos.getDouble(1);
@@ -66,6 +74,18 @@ public class Board {
 
     public void setCell(int x, int y, CellType contents) {
         this.grid[y][x] = contents;
+    }
+
+    public int getPlayerX(){
+        return (int) currentCell.getDouble(0);
+    }
+
+    public int getPlayerY(){
+        return (int) currentCell.getDouble(1);
+    }
+
+    public Heading getPlayerHeading() {
+        return playerHeading;
     }
 
     public CellType move(MoveDirection d) {
