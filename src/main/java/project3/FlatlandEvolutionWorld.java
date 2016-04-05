@@ -81,6 +81,8 @@ public class FlatlandEvolutionWorld extends EvolutionWorld<Double> {
             generateNewScenarios();
             scenariosVersion ++;
         }
+        FlatlandIndividual bestIndividual = (FlatlandIndividual) adults.get(adults.size()-1);
+        bestIndividual.assessFitnessForAllWorldScenarios(true);
     }
 
     public ArrayList<Board> getScenarios() {
@@ -168,7 +170,7 @@ public class FlatlandEvolutionWorld extends EvolutionWorld<Double> {
         parser.addArgument("-ns", "--number-of-scenarios")
                 .nargs(1)
                 .type(Integer.class)
-                .setDefault(1);
+                .setDefault(5);
 
         parser.addArgument("-dyn", "--dynamic")
                 .setConst(ScenarioPolicy.DYNAMIC)

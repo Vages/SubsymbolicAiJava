@@ -4,6 +4,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import project2.Individual;
 
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 public class FlatlandIndividual extends Individual<Double> {
     private Double[] genotype;
@@ -12,6 +13,18 @@ public class FlatlandIndividual extends Individual<Double> {
     private int lastScenariosVersionAssessed = -1;
     private double fitness;
     private FlatlandEvolutionWorld world;
+    private static FlatlandGui gui;
+
+    static {
+        new Thread() {
+            @Override
+            public void run() {
+                javafx.application.Application.launch(FlatlandGui.class);
+            }
+        }.start();
+        gui = FlatlandGui.waitForStartUpTest();
+        gui.printSomething();
+    }
 
     public FlatlandIndividual(Double[] genotype, int[] topology, FlatlandEvolutionWorld world) {
         this.genotype = genotype;
@@ -28,27 +41,36 @@ public class FlatlandIndividual extends Individual<Double> {
     public double getFitness() {
         if (this.lastScenariosVersionAssessed == world.getScenariosVersion())
             return fitness;
-        double f = assessFitnessForAllWorldScenarios();
+        double f = assessFitnessForAllWorldScenarios(false);
         this.fitness = f > 0 ? f : 0; // Cannot be smaller than 0, to avoid errors.
         this.lastScenariosVersionAssessed = world.getScenariosVersion();
         return this.fitness;
     }
 
-    private double assessFitnessForAllWorldScenarios() {
+    public double assessFitnessForAllWorldScenarios(boolean guiOn) {
         ArrayList<Board> boards = world.getScenarios();
+
         double fitnessSum = 0;
         for (Board b: boards) {
             b.reset();
-            fitnessSum += assessFitnessForBoard(b);
+            fitnessSum += assessFitnessForBoard(b, guiOn);
         }
 
         return fitnessSum;
     }
 
-    private double assessFitnessForBoard(Board b){
+    private double assessFitnessForBoard(Board b, boolean guiOn){
         double sum = 0;
         for (int i = 0; i < 60; i++) {
             sum += doOneMoveOnBoard(b);
+            if (guiOn) {
+                gui.drawBoard(b);
+                try {
+                    TimeUnit.MILLISECONDS.sleep(50);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
         }
 
         return sum;

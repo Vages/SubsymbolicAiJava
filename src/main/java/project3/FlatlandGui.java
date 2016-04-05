@@ -20,7 +20,7 @@ public class FlatlandGui extends Application {
     private double sizeX = 600;
     private double sizeY = 600;
 
-    GraphicsContext gc;
+    public GraphicsContext gc;
 
     public static FlatlandGui waitForStartUpTest() {
         try {
