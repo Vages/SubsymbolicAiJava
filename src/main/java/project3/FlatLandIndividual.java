@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit;
 public class FlatlandIndividual extends Individual<Double> {
     private Double[] genotype;
     private int[] topology;
-    private SigmoidNeuralNetwork network;
+    private FlatlandNeuralNetwork network;
     private int lastScenariosVersionAssessed = -1;
     private double fitness;
     private FlatlandEvolutionWorld world;
@@ -93,7 +93,7 @@ public class FlatlandIndividual extends Individual<Double> {
 
     @Override
     public void develop() {
-        this.network = new SigmoidNeuralNetwork(topology, ArrayUtils.toPrimitive(genotype));
+        this.network = new FlatlandNeuralNetwork(topology, ArrayUtils.toPrimitive(genotype));
     }
 
     public static Double[] generateRandomGenotype(int[] topology){

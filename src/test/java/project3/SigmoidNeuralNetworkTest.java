@@ -5,7 +5,7 @@ import org.nd4j.linalg.factory.Nd4j;
 
 import static org.junit.Assert.*;
 
-public class FlatlandNeuralNetworkTest {
+public class SigmoidNeuralNetworkTest {
 
     @Test
     public void testPropagate() throws Exception {

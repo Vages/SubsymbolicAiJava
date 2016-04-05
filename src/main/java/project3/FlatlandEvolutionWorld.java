@@ -112,7 +112,7 @@ public class FlatlandEvolutionWorld extends EvolutionWorld<Double> {
 
         parser.addArgument("-g", "--generations")
                 .metavar("N")
-                .setDefault(100)
+                .setDefault(10)
                 .type(Integer.class)
                 .help("number of generations used for evolution");
 
