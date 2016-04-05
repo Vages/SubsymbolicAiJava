@@ -6,26 +6,35 @@ import org.nd4j.linalg.factory.Nd4j;
 import java.util.Arrays;
 
 public class SigmoidNeuralNetwork {
+    private final INDArray[] bias_weights;
     protected int[] topology;
     protected INDArray[] activations;
     protected INDArray[] weights;
+    protected INDArray biasNode;
 
     protected SigmoidNeuralNetwork(int[] topology, double[] weight) {
         this.topology = topology;
         this.activations = new INDArray[topology.length];
         this.weights = new INDArray[topology.length-1];
+        this.bias_weights = new INDArray[topology.length-1];
+        this.biasNode = Nd4j.ones(1);
 
         int no_of_weights_added_so_far = 0;
 
         for (int i = 0; i < topology.length-1; i++) {
-            int activations_in_this_layer = topology[i] + 1;
-            int activations_in_next_layer = (i != topology.length-2) ? (topology[i + 1] + 1): topology[i+1];
+            int activations_in_this_layer = topology[i];
+            int activations_in_next_layer = topology[i+1];
             int weights_to_be_gotten = activations_in_this_layer*activations_in_next_layer;
 
-            this.activations[i] = Nd4j.zeros(activations_in_this_layer); // Add 1 for a bias node in each layer
+            this.activations[i] = Nd4j.zeros(activations_in_this_layer);
 
             double[] this_layers_weights = Arrays.copyOfRange(weight, no_of_weights_added_so_far, no_of_weights_added_so_far+weights_to_be_gotten);
+            no_of_weights_added_so_far += weights_to_be_gotten;
             this.weights[i] = Nd4j.create(this_layers_weights, new int[]{activations_in_this_layer, activations_in_next_layer});
+
+            double[] this_layers_bias_weights = Arrays.copyOfRange(weight, no_of_weights_added_so_far, no_of_weights_added_so_far+weights_to_be_gotten);
+            no_of_weights_added_so_far += activations_in_next_layer;
+            this.bias_weights[i] = Nd4j.create(this_layers_bias_weights, new int[]{1, activations_in_next_layer});
         }
 
         // Add output layer without bias node
@@ -36,15 +45,17 @@ public class SigmoidNeuralNetwork {
         for (int i = 0; i < this.weights.length; i++) {
             INDArray current_layer = this.activations[i];
             INDArray transition_weights = this.weights[i];
+            INDArray bias_weigths = this.bias_weights[i];
 
-            current_layer.putScalar(topology[i], 1);  // Set bias node to 1
+            INDArray activationFromCurrentLayer = current_layer.mmul(transition_weights);
+            INDArray activationFromBiasNode = biasNode.mmul(bias_weigths);
+            INDArray unscaledActivation = activationFromCurrentLayer.add(activationFromBiasNode);
 
-            this.activations[i+1] = current_layer.mmul(transition_weights);
-            INDArray next_layer = this.activations[i+1];
-
-            for (int j = 0; j < next_layer.length(); j++){
-                next_layer.putScalar(j, sigmoid(next_layer.getDouble(j)));
+            for (int j = 0; j < unscaledActivation.length(); j++){
+                unscaledActivation.putScalar(j, sigmoid(unscaledActivation.getDouble(j)));
             }
+
+            this.activations[i+1] = unscaledActivation;
         }
     }
 

@@ -97,22 +97,19 @@ public class FlatlandIndividual extends Individual<Double> {
     }
 
     public static Double[] generateRandomGenotype(int[] topology){
-        ArrayList<Double> weights = new ArrayList<>();
+        int numberOfWeightsToBeGenerated = 0;
 
         for (int i = 0; i < topology.length-1; i++) {
-            int nodes_in_this_layer = topology[i]+1;
-            int nodes_in_next_layer = topology[i+1]+1;
-            if (i == topology.length -2) {
-                nodes_in_next_layer--;
-            }
-
-            int weightsToBeGenerated = nodes_in_this_layer*nodes_in_next_layer;
-
-            for (int j = 0; j < weightsToBeGenerated; j++) {
-                weights.add(Math.random()*2-1); // Random number in range -1 to 1
-            }
+            numberOfWeightsToBeGenerated += topology[i]*topology[i+1]; // For transition weights
+            numberOfWeightsToBeGenerated += topology[i+1]; // for bias weights
         }
 
-        return weights.stream().toArray(Double[]::new);
+        Double[] weights = new Double[numberOfWeightsToBeGenerated];
+
+        for (int i = 0; i < weights.length; i++){
+            weights[i] = Math.random()*2-1;
+        }
+
+        return weights;
     }
 }

@@ -19,7 +19,7 @@ public class FlatlandIndividualTest {
         Double[] threeLayerWeights = FlatlandIndividual.generateRandomGenotype(three_layer_topology);
 
         assertEquals(12, twoLayerWeights.length);
-        assertEquals(6, threeLayerWeights.length);
+        assertEquals(4, threeLayerWeights.length);
 
         List<Double> twoList = Arrays.asList(twoLayerWeights);
         List<Double> threeList = Arrays.asList(threeLayerWeights);
