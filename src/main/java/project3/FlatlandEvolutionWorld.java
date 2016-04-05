@@ -81,6 +81,11 @@ public class FlatlandEvolutionWorld extends EvolutionWorld<Double> {
             generateNewScenarios();
             scenariosVersion ++;
         }
+    }
+
+    @Override
+    public void runAllGenerations() {
+        super.runAllGenerations();
         FlatlandIndividual bestIndividual = (FlatlandIndividual) adults.get(adults.size()-1);
         bestIndividual.assessFitnessForAllWorldScenarios(true);
     }
@@ -113,13 +118,13 @@ public class FlatlandEvolutionWorld extends EvolutionWorld<Double> {
 
         parser.addArgument("-c", "--children")
                 .metavar("N")
-                .setDefault(500)
+                .setDefault(40)
                 .type(Integer.class)
                 .help("number of individuals in the child pool");
 
         parser.addArgument("-a", "--adults")
                 .metavar("N")
-                .setDefault(200)
+                .setDefault(40)
                 .type(Integer.class)
                 .help("number of individuals in the adult pool");
 
@@ -208,7 +213,6 @@ public class FlatlandEvolutionWorld extends EvolutionWorld<Double> {
                     res.get("dynamic")
             );
 
-            System.out.println("Hello");
             mew.runAllEpochs();
 
         } catch (ArgumentParserException e) {
