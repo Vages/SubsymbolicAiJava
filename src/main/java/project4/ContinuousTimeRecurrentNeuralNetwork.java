@@ -37,11 +37,10 @@ public class ContinuousTimeRecurrentNeuralNetwork {
         this.outputActivations[0] = Nd4j.zeros(topology[0]); // Add outputActivations for first layer
 
         for (int i = 1; i < topology.length; i++) {
-            // Set internal and output activations, 1*t_n
+            // Set internal and output activations
             int neuronsInThisLayer = topology[i];
             this.internalActivations[i] = Nd4j.zeros(neuronsInThisLayer);
             this.outputActivations[i] = Nd4j.zeros(neuronsInThisLayer);
-            
 
             // Transition weights, t_(n-1)*t_n
             int neuronsInPreviousLayer = topology[i-1];
