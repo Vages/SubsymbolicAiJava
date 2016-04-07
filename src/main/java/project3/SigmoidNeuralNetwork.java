@@ -1,7 +1,9 @@
 package project3;
 
 import org.nd4j.linalg.api.ndarray.INDArray;
+import org.nd4j.linalg.api.ops.impl.transforms.Sigmoid;
 import org.nd4j.linalg.factory.Nd4j;
+import org.nd4j.linalg.ops.transforms.Transforms;
 
 import java.util.Arrays;
 
@@ -55,11 +57,7 @@ public class SigmoidNeuralNetwork {
             INDArray activationFromBiasNode = biasNode.mmul(biasWeights);
             INDArray unscaledActivation = activationFromCurrentLayer.add(activationFromBiasNode);
 
-            for (int j = 0; j < unscaledActivation.length(); j++){
-                unscaledActivation.putScalar(j, sigmoid(unscaledActivation.getDouble(j)));
-            }
-
-            this.activations[i+1] = unscaledActivation;
+            this.activations[i+1] = Transforms.sigmoid(unscaledActivation);
         }
     }
 
@@ -69,9 +67,5 @@ public class SigmoidNeuralNetwork {
 
     public INDArray getOutputs() {
         return this.activations[activations.length-1];
-    }
-
-    private double sigmoid(double exponent) {
-        return 1.0/(1.0+Math.pow(Math.E, -exponent));
     }
 }
