@@ -6,7 +6,7 @@ public class FlatlandNeuralNetwork extends SigmoidNeuralNetwork{
     private MoveDirection[] dirs = {MoveDirection.LEFT, MoveDirection.FORWARD, MoveDirection.RIGHT};
 
     protected FlatlandNeuralNetwork(int[] topology, double[] weight) {
-        super(topology, weight);
+        super(topology, weight, true);
     }
 
     private int getMaxOutput(){
