@@ -2,24 +2,30 @@ package project4;
 
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
+import org.nd4j.linalg.ops.transforms.Transforms;
 
 public class ContinuousTimeRecurrentNeuralNetwork {
     protected int[] topology;
-    protected INDArray[] activations;
+    
+    protected INDArray[] internalActivations;
+    protected INDArray[] outputActivations;
+    
     protected INDArray[] transitionWeights;
-    protected INDArray[] currentLayerWeights;
+    protected INDArray[] internalLayerWeights;
     protected INDArray[] biasWeights;
     protected INDArray[] gains;
     protected INDArray[] timeConstants;
+    
     protected INDArray biasNode;
 
     protected ContinuousTimeRecurrentNeuralNetwork(int[] topology, NeuralNetworkGene[] genes) {
         this.topology = topology;
-        this.activations = new INDArray[topology.length];
+        this.outputActivations = new INDArray[topology.length];
+        this.internalActivations = new INDArray[topology.length];
 
         // All of these arrays will have an empty first index. This will make the code for them simpler.
         this.transitionWeights = new INDArray[topology.length];
-        this.currentLayerWeights = new INDArray[topology.length];
+        this.internalLayerWeights = new INDArray[topology.length];
         this.biasWeights = new INDArray[topology.length];
         this.gains = new INDArray[topology.length];
         this.timeConstants = new INDArray[topology.length];
@@ -28,12 +34,14 @@ public class ContinuousTimeRecurrentNeuralNetwork {
 
         int noOfGenesAdded = 0;
 
-        this.activations[0] = Nd4j.zeros(topology[0]); // Add activations for first layer
+        this.outputActivations[0] = Nd4j.zeros(topology[0]); // Add outputActivations for first layer
 
         for (int i = 1; i < topology.length; i++) {
-            // Activations, 1*t_n
+            // Set internal and output activations, 1*t_n
             int neuronsInThisLayer = topology[i];
-            this.activations[i] = Nd4j.zeros(neuronsInThisLayer);
+            this.internalActivations[i] = Nd4j.zeros(neuronsInThisLayer);
+            this.outputActivations[i] = Nd4j.zeros(neuronsInThisLayer);
+            
 
             // Transition weights, t_(n-1)*t_n
             int neuronsInPreviousLayer = topology[i-1];
@@ -44,10 +52,10 @@ public class ContinuousTimeRecurrentNeuralNetwork {
             noOfGenesAdded += noOfTransitionWeights;
 
             // Current layer weights, t_n**2
-            int noOfCurrentLayerWeights = neuronsInThisLayer*neuronsInThisLayer;
-            double[] thisLayersCurrentLayerWeights = convertGeneRangeToDoublesArray(genes, noOfGenesAdded, noOfCurrentLayerWeights);
-            this.currentLayerWeights[i] = Nd4j.create(thisLayersCurrentLayerWeights, new int[]{neuronsInThisLayer, neuronsInThisLayer});
-            noOfGenesAdded += noOfCurrentLayerWeights;
+            int noOfInternalLayerWeights = neuronsInThisLayer*neuronsInThisLayer;
+            double[] thisLayersCurrentLayerWeights = convertGeneRangeToDoublesArray(genes, noOfGenesAdded, noOfInternalLayerWeights);
+            this.internalLayerWeights[i] = Nd4j.create(thisLayersCurrentLayerWeights, new int[]{neuronsInThisLayer, neuronsInThisLayer});
+            noOfGenesAdded += noOfInternalLayerWeights;
 
             // Biases, 1*t_n
             double[] thisLayersBiasWeights = convertGeneRangeToDoublesArray(genes, noOfGenesAdded, neuronsInThisLayer);
@@ -63,9 +71,44 @@ public class ContinuousTimeRecurrentNeuralNetwork {
             double[] thisLayersTimeConstants = convertGeneRangeToDoublesArray(genes, noOfGenesAdded, neuronsInThisLayer);
             this.gains[i] = Nd4j.create(thisLayersTimeConstants, new int[]{1, neuronsInThisLayer});
             noOfGenesAdded += neuronsInThisLayer;
-
         }
 
+    }
+
+    /**
+     * Propagates the information in the input nodes through the network.
+     */
+    public void propagate() {
+        for (int i = 1; i < this.outputActivations.length; i++){
+            // Get internal and external activations
+            INDArray previousLayerOutputActivations = this.outputActivations[i-1];
+            INDArray thisLayerOutputActivations = this.outputActivations[i];
+            INDArray lastTimeStepInternalActivations = this.internalActivations[i];
+
+            // Get all weights related to this layer
+            INDArray previousLayerTransitionWeights = this.transitionWeights[i];
+            INDArray thisInternalWeights = this.internalLayerWeights[i];
+            INDArray thisLayerBiases = this.biasWeights[i];
+            INDArray thisLayerGain = this.gains[i];
+            INDArray thisLayerTimeConstants = this.timeConstants[i];
+
+            // Calculate contributions from other nodes (including bias)
+            INDArray contributionFromPreviousLayer = previousLayerOutputActivations.mmul(previousLayerTransitionWeights);
+            INDArray contributionFromCurrentLayer = thisLayerOutputActivations.mmul(thisInternalWeights);
+            INDArray contributionFromBias = biasNode.mmul(thisLayerBiases);
+
+            INDArray sumOfContributions = contributionFromBias.add(contributionFromCurrentLayer).add(contributionFromPreviousLayer);
+
+            // Update the internal activation
+            INDArray differenceFromLastStep = sumOfContributions.sub(lastTimeStepInternalActivations);
+            INDArray derivative = differenceFromLastStep.div(thisLayerTimeConstants);
+            INDArray newInternalActivation = lastTimeStepInternalActivations.add(derivative);
+            this.internalActivations[i] = newInternalActivation;
+
+            // Set output activation
+            INDArray gainedInternalActivations = newInternalActivation.mul(thisLayerGain);
+            this.outputActivations[i] = Transforms.sigmoid(gainedInternalActivations);
+        }
     }
 
     /**
