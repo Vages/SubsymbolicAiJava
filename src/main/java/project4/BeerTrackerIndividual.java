@@ -1,8 +1,15 @@
 package project4;
 
+import project2.Individual;
+
 import java.util.ArrayList;
 
-public class BeerTrackerIndividual {
+public class BeerTrackerIndividual extends Individual<NeuralNetworkGene> {
+    private NeuralNetworkGene[] genotype;
+
+    public BeerTrackerIndividual(NeuralNetworkGene[] genotype) {
+        this.genotype = genotype;
+    }
 
     public static NeuralNetworkGene[] generateRandomGenotype(int[] topology) {
         ArrayList<NeuralNetworkGene> genes = new ArrayList<>();
@@ -46,5 +53,20 @@ public class BeerTrackerIndividual {
             gene.mutate();
             genes.add(gene);
         }
+    }
+
+    @Override
+    public NeuralNetworkGene[] getGenotype() {
+        return genotype;
+    }
+
+    @Override
+    public double getFitness() {
+        return 0;
+    }
+
+    @Override
+    public void develop() {
+
     }
 }
