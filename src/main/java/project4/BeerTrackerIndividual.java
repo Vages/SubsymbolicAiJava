@@ -13,7 +13,7 @@ public class BeerTrackerIndividual {
             addGenesForLayer(genes, neuronsInThisLayer, neuronsInPreviousLayer);
         }
 
-        return (NeuralNetworkGene[]) genes.toArray();
+        return genes.toArray(new NeuralNetworkGene[genes.size()]);
     }
 
     private static void addGenesForLayer(ArrayList<NeuralNetworkGene> genes, int neuronsInThisLayer, int neuronsInPreviousLayer) {
