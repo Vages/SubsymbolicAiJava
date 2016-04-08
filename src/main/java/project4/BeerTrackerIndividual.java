@@ -6,11 +6,20 @@ import java.util.ArrayList;
 
 public class BeerTrackerIndividual extends Individual<NeuralNetworkGene> {
     private NeuralNetworkGene[] genotype;
+    private int[] topology;
+    private ContinuousTimeRecurrentNeuralNetwork network;
 
-    public BeerTrackerIndividual(NeuralNetworkGene[] genotype) {
+    public BeerTrackerIndividual(NeuralNetworkGene[] genotype, int[] topology) {
         this.genotype = genotype;
+        this.topology = topology;
     }
 
+    /**
+     * Generates a random genotype for an indidual of this class given the typology
+     *
+     * @param topology Topology of form {int, …}
+     * @return random genotype
+     */
     public static NeuralNetworkGene[] generateRandomGenotype(int[] topology) {
         ArrayList<NeuralNetworkGene> genes = new ArrayList<>();
 
@@ -23,6 +32,13 @@ public class BeerTrackerIndividual extends Individual<NeuralNetworkGene> {
         return genes.toArray(new NeuralNetworkGene[genes.size()]);
     }
 
+    /**
+     * Helper method for generating a random genotype
+     *
+     * @param genes                  destination for the randomly generated genes
+     * @param neuronsInThisLayer     number of neurons in this layer
+     * @param neuronsInPreviousLayer number of neurons in previous layer
+     */
     private static void addGenesForLayer(ArrayList<NeuralNetworkGene> genes, int neuronsInThisLayer, int neuronsInPreviousLayer) {
         int normalWeightsForThisLayer = neuronsInThisLayer * (neuronsInThisLayer + neuronsInPreviousLayer);
 
@@ -67,6 +83,6 @@ public class BeerTrackerIndividual extends Individual<NeuralNetworkGene> {
 
     @Override
     public void develop() {
-
+        this.network = new ContinuousTimeRecurrentNeuralNetwork(topology, genotype);
     }
 }
