@@ -93,7 +93,9 @@ public class FlatlandIndividual extends Individual<Double> {
 
     @Override
     public void develop() {
-        this.network = new FlatlandNeuralNetwork(topology, ArrayUtils.toPrimitive(genotype));
+        if (this.network == null) {
+            this.network = new FlatlandNeuralNetwork(topology, ArrayUtils.toPrimitive(genotype));
+        }
     }
 
     public static Double[] generateRandomGenotype(int[] topology){
