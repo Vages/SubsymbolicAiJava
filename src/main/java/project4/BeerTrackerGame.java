@@ -25,9 +25,52 @@ public class BeerTrackerGame {
      * @param a         action to be performed
      * @param magnitude the magnitude of the action (used in conjunction with moving left and right)
      */
-    public void performAction(TrackerAction a, int magnitude) {
+    public CaptureEvent performAction(TrackerAction a, int magnitude) {
         if (a == TrackerAction.MOVE_LEFT || a == TrackerAction.MOVE_RIGHT) {
             moveTracker(a, magnitude);
+        }
+
+        return moveFallingObjectOneStepAndCheckForCaptures();
+    }
+
+    private CaptureEvent moveFallingObjectOneStepAndCheckForCaptures() {
+        fallingObjectYPosition--;
+
+        if (fallingObjectYPosition == 0) {
+            CaptureEvent captureResults = getCaptureResults();
+            spawnNewFallingObject();
+            return captureResults;
+        }
+
+        return CaptureEvent.NOTHING;
+    }
+
+    private CaptureEvent getCaptureResults() {
+        Set<Integer> trackerCells = getCellsOccupiedByObject(trackerPosition, trackerSize);
+        Set<Integer> objectCells = getCellsOccupiedByObject(fallingObjectXPosition, fallingObjectSize);
+        boolean isBig = fallingObjectSize > trackerSize;
+        if (isBig) {
+            if (trackerCells.containsAll(objectCells)){
+                return CaptureEvent.CAPTURED_SMALL;
+            } else {
+                trackerCells.retainAll(objectCells);
+                if (trackerCells.size() ==0) {
+                    return CaptureEvent.AVOIDED_SMALL;
+                } else {
+                    return CaptureEvent.PARTIALLY_CAPTURED_SMALL;
+                }
+            }
+        } else {
+            if (objectCells.containsAll(trackerCells)){
+                return CaptureEvent.CAPTURED_BIG;
+            } else {
+                trackerCells.retainAll(objectCells);
+                if (trackerCells.size() == 0) {
+                    return CaptureEvent.AVOIDED_BIG;
+                } else {
+                    return CaptureEvent.PARTIALLY_CAPTURED_BIG;
+                }
+            }
         }
     }
 
