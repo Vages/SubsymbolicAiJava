@@ -7,21 +7,22 @@ public class BeerTrackerGame {
     private int width;
     private int height;
     private int trackerPosition = 0;
-    private int trackerWidth;
+    private int trackerSize;
     private int fallingObjectXPosition;
     private int fallingObjectYPosition;
+    private int fallingObjectSize;
 
-    public BeerTrackerGame(int width, int height, int trackerWidth) {
+    public BeerTrackerGame(int width, int height, int trackerSize) {
         this.width = width;
         this.height = height;
-        this.trackerWidth = trackerWidth;
+        this.trackerSize = trackerSize;
         spawnNewFallingObject();
     }
 
     /**
      * Performs an action requested by the player
      *
-     * @param a action to be performed
+     * @param a         action to be performed
      * @param magnitude the magnitude of the action (used in conjunction with moving left and right)
      */
     public void performAction(TrackerAction a, int magnitude) {
@@ -33,7 +34,7 @@ public class BeerTrackerGame {
     /**
      * Moves the tracker a given number of steps.
      *
-     * @param a direction
+     * @param a         direction
      * @param magnitude number of steps to move
      */
     private void moveTracker(TrackerAction a, int magnitude) {
@@ -51,7 +52,7 @@ public class BeerTrackerGame {
      * Returns a set of the horizontal positions currently occupied by an object at the given starting position and of the given size.
      *
      * @param startingPosition x-position of the object
-     * @param size the size of the object
+     * @param size             the size of the object
      * @return set of x-positions occupied by the object
      */
     public Set<Integer> getCellsOccupiedByObject(int startingPosition, int size) {
@@ -69,11 +70,25 @@ public class BeerTrackerGame {
      */
     private void spawnNewFallingObject() {
         fallingObjectYPosition = height;
-        fallingObjectXPosition = 1 + (int) (Math.random()*6); // A random number from 1 to 6
+        fallingObjectXPosition = (int) (Math.random() * 30);
+        fallingObjectSize = 1 + (int) (Math.random() * 6); // A random number from 1 to 6
     }
 
-    public boolean[] getShadowSensings(){
-        boolean[] sensorReadings = new boolean[trackerWidth];
-        return null;
+    /**
+     * Returns an array of the readings of the shadow sensors of the tracker.
+     *
+     * @return an array of the shadow sensor readings
+     */
+    public boolean[] getShadowSensings() {
+        boolean[] sensorReadings = new boolean[trackerSize];
+
+        Set<Integer> fallingObjectCells = getCellsOccupiedByObject(fallingObjectXPosition, fallingObjectSize);
+
+        for (int i = 0; i < trackerSize; i++) {
+            int examinedCell = (trackerPosition + i) % width;
+            sensorReadings[i] = fallingObjectCells.contains(examinedCell);
+        }
+
+        return sensorReadings;
     }
 }
