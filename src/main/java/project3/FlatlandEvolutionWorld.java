@@ -46,7 +46,7 @@ public class FlatlandEvolutionWorld extends EvolutionWorld<Double> {
         DYNAMIC, STATIC
     }
 
-    private void generateNewScenarios(){
+    public void generateNewScenarios(){
         scenarios.clear();
         for (int i = 0; i < numberOfScenarios; i++){
             scenarios.add(new Board(fpDistribution[0], fpDistribution[1], new int[]{0,0}));
@@ -86,8 +86,6 @@ public class FlatlandEvolutionWorld extends EvolutionWorld<Double> {
     @Override
     public void runAllGenerations() {
         super.runAllGenerations();
-        FlatlandIndividual bestIndividual = (FlatlandIndividual) adults.get(adults.size()-1);
-        //bestIndividual.assessFitnessForAllWorldScenarios(true);
     }
 
     public FlatlandIndividual getBestIndividual() {

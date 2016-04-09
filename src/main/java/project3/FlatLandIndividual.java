@@ -15,7 +15,7 @@ public class FlatlandIndividual extends Individual<Double> {
     private FlatlandEvolutionWorld world;
     private static FlatlandGui gui;
 
-    static {
+    /*static {
         new Thread() {
             @Override
             public void run() {
@@ -24,7 +24,7 @@ public class FlatlandIndividual extends Individual<Double> {
         }.start();
         gui = FlatlandGui.waitForStartUpTest();
         gui.printSomething();
-    }
+    }*/
 
     public FlatlandIndividual(Double[] genotype, int[] topology, FlatlandEvolutionWorld world) {
         this.genotype = genotype;
@@ -76,7 +76,7 @@ public class FlatlandIndividual extends Individual<Double> {
         return sum;
     }
 
-    private double doOneMoveOnBoard(Board b) {
+    public double doOneMoveOnBoard(Board b) {
         boolean[] food = b.sense(CellType.FOOD);
         boolean[] poison = b.sense(CellType.POISON);
 

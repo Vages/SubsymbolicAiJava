@@ -37,7 +37,7 @@ public class FlatlandNewGui extends Application {
 
     final Label crossingRateDisplay = new Label(Double.toString(crossingRateValue)),
             mutationRateDisplay = new Label(Double.toString(mutationRateValue)),
-            spfDisplay = new Label(Double.toString((double) refreshRate / 60));
+            spfDisplay = new Label(Double.toString(refreshRate / 60));
 
     final Slider crossingRateSlider = new Slider(0, 1, crossingRateValue),
             mutationRateSlider = new Slider(0, 1, mutationRateValue);
@@ -51,7 +51,8 @@ public class FlatlandNewGui extends Application {
     final Button startEvolutionButton = new Button("Start Evolution"),
             halveSpfButton = new Button("/2"),
             doubleSpfButton = new Button("*2"),
-            startSimulationButton = new Button("Start simulation");
+            startSimulationButton = new Button("Start simulation"),
+            generateNewScenariosButton = new Button("Generate new scenarios");
 
     // Used for simulation
     int noOfBoards;
@@ -167,48 +168,61 @@ public class FlatlandNewGui extends Application {
         GridPane.setConstraints(doubleSpfButton, 4, 7);
         grid.getChildren().add(doubleSpfButton);
 
-        startSimulationButton.setOnAction(event -> {
-            GraphicsContext gc = canvas.getGraphicsContext2D();
-
-            bestIndividual = world.getBestIndividual();
-            ArrayList<Board> boards = world.getScenarios();
-            noOfBoards = boards.size();
-            currentlyExaminedBoard = 0;
-            currentNumberOfSteps = 0;
-            maxSteps = 61;
-
-            new AnimationTimer() {
-                int framesSkipped = 0;
-                @Override
-                public void handle(long now) {
-                    if (framesSkipped >= refreshRate) {
-                        Board b = boards.get(currentlyExaminedBoard);
-                        drawBoard(b, gc);
-                        bestIndividual.doOneMoveOnBoard(b);
-
-                        currentNumberOfSteps++;
-                        if (currentNumberOfSteps > maxSteps){
-                            currentNumberOfSteps = 0;
-                            currentlyExaminedBoard++;
-                        }
-                        if (currentlyExaminedBoard >= noOfBoards) {
-                            this.stop();
-                        }
-                        framesSkipped = 0;
-                    } else {
-                        framesSkipped++;
-                    }
-                }
-            }.start();
-        });
+        startSimulationButton.setOnAction(event -> runSimulation(canvas));
 
         GridPane.setConstraints(startSimulationButton, 1, 8);
         GridPane.setColumnSpan(startSimulationButton, 2);
         startSimulationButton.setDisable(true);
         grid.getChildren().add(startSimulationButton);
 
+        generateNewScenariosButton.setOnAction(event -> world.generateNewScenarios());
+
+        GridPane.setConstraints(generateNewScenariosButton, 3, 8);
+        GridPane.setColumnSpan(generateNewScenariosButton, 2);
+        generateNewScenariosButton.setDisable(true);
+        grid.getChildren().add(generateNewScenariosButton);
+
         primaryStage.show();
 
+    }
+
+    private void runSimulation(Canvas canvas) {
+        GraphicsContext gc = canvas.getGraphicsContext2D();
+
+        bestIndividual = world.getBestIndividual();
+        ArrayList<Board> boards = world.getScenarios();
+        for (Board b : boards) {
+            b.reset();
+        }
+        noOfBoards = boards.size();
+        currentlyExaminedBoard = 0;
+        currentNumberOfSteps = 0;
+        maxSteps = 61;
+
+        new AnimationTimer() {
+            int framesSkipped = 0;
+
+            @Override
+            public void handle(long now) {
+                if (framesSkipped >= refreshRate) {
+                    Board b = boards.get(currentlyExaminedBoard);
+                    drawBoard(b, gc);
+                    bestIndividual.doOneMoveOnBoard(b);
+
+                    currentNumberOfSteps++;
+                    if (currentNumberOfSteps > maxSteps) {
+                        currentNumberOfSteps = 0;
+                        currentlyExaminedBoard++;
+                    }
+                    if (currentlyExaminedBoard >= noOfBoards) {
+                        this.stop();
+                    }
+                    framesSkipped = 0;
+                } else {
+                    framesSkipped++;
+                }
+            }
+        }.start();
     }
 
     private void startEvolution() {
@@ -235,8 +249,8 @@ public class FlatlandNewGui extends Application {
                 crossingRateValue,
                 mutationRateValue,
                 1,
-                -1,
-                1,
+                -2,
+                2,
                 new double[]{0.33, 0.33},
                 new double[]{1, -5},
                 5,
@@ -246,6 +260,7 @@ public class FlatlandNewGui extends Application {
         world.runAllEpochs();
 
         startSimulationButton.setDisable(false);
+        generateNewScenariosButton.setDisable(false);
     }
 
     private void halveSecondsPerFrame() {
@@ -253,25 +268,25 @@ public class FlatlandNewGui extends Application {
         if (refreshRate <= 3) {
             halveSpfButton.setDisable(true);
         }
-        spfDisplay.setText(Double.toString((double) refreshRate / 60));
+        spfDisplay.setText(Double.toString(refreshRate / 60));
     }
 
     private void doubleSecondsPerFrame() {
         refreshRate *= 2;
         halveSpfButton.setDisable(false);
-        spfDisplay.setText(Double.toString((double) refreshRate / 60));
+        spfDisplay.setText(Double.toString(refreshRate / 60));
     }
 
     public void drawBoard(Board b, GraphicsContext gc) {
-        gc.clearRect(0,0,sizeX,sizeY);
+        gc.clearRect(0, 0, sizeX, sizeY);
         gc.setLineWidth(3);
         gc.setFill(new Color(0.9, 0.9, 0.9, 1));
         gc.fillRect(0, 0, sizeX, sizeY);
 
         int bs = b.getBoardSize();
-        double cellSize = sizeX/bs;
+        double cellSize = sizeX / bs;
 
-        for (int i = 0; i < bs; i++){
+        for (int i = 0; i < bs; i++) {
             for (int j = 0; j < bs; j++) {
                 CellType cell = b.getCell(j, i);
                 if (cell == CellType.FOOD) {
@@ -282,7 +297,7 @@ public class FlatlandNewGui extends Application {
                     gc.setFill(new Color(0.9, 0.9, 0.9, 0));
                 }
 
-                gc.fillOval(j*cellSize+cellSize/6, i*cellSize+cellSize/6, cellSize*2/3, cellSize*2/3);
+                gc.fillOval(j * cellSize + cellSize / 6, i * cellSize + cellSize / 6, cellSize * 2 / 3, cellSize * 2 / 3);
 
             }
         }
@@ -291,11 +306,11 @@ public class FlatlandNewGui extends Application {
         int playerY = b.getPlayerY();
         Heading h = b.getPlayerHeading();
 
-        gc.setFill(new Color (0, 0, 0, 1));
-        gc.fillRect(playerX*cellSize+10, playerY*cellSize+10, cellSize-20, cellSize-20);
+        gc.setFill(new Color(0, 0, 0, 1));
+        gc.fillRect(playerX * cellSize + 10, playerY * cellSize + 10, cellSize - 20, cellSize - 20);
         double xCenter = cellSize * (playerX + 0.5);
-        double yCenter = cellSize*(playerY+0.5);
-        gc.strokeLine(xCenter, yCenter, xCenter+h.getVectorX()*cellSize/2, yCenter+h.getVectorY()*cellSize/2);
+        double yCenter = cellSize * (playerY + 0.5);
+        gc.strokeLine(xCenter, yCenter, xCenter + h.getVectorX() * cellSize / 2, yCenter + h.getVectorY() * cellSize / 2);
     }
 
     public static void main(String[] args) {
