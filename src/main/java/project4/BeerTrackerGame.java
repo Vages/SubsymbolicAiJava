@@ -160,4 +160,18 @@ public class BeerTrackerGame {
 
         return sensorReadings;
     }
+
+    /**
+     * Returns an array indicating whether the tracker touches the edges of the board.
+     *
+     * @return array: first index indicates left edge, second index indicates the right edge.
+     */
+    public boolean[] getEdgeTouchSensings() {
+        boolean[] readings = new boolean[2];
+
+        if (trackerPosition == 0) readings[0] = true;
+        if (trackerPosition == maxTrackerPositionWithoutWrap) readings[1] = true;
+
+        return readings;
+    }
 }
