@@ -12,11 +12,10 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
-import java.awt.*;
-
 public class FlatlandNewGui extends Application {
     private double sizeX = 600;
     private double sizeY = 600;
+    private int refreshRate = 60;
     private double crossingRateValue = 0.5,
             mutationRateValue = 0.8;
 
@@ -25,10 +24,12 @@ public class FlatlandNewGui extends Application {
             adultsLabel = new Label("Adults :"),
             crossingRateLabel = new Label("Crossing rate:"),
             mutationRateLabel = new Label("Mutation rate:"),
-            dynamicLabel = new Label("Dynamic?");
+            dynamicLabel = new Label("Dynamic?"),
+            spfLabel = new Label("Seconds per frame: ");
 
     final Label crossingRateDisplay = new Label(Double.toString(crossingRateValue)),
-            mutationRateDisplay = new Label(Double.toString(mutationRateValue));
+            mutationRateDisplay = new Label(Double.toString(mutationRateValue)),
+            spfDisplay = new Label(Double.toString((double) refreshRate / 60));
 
     final Slider crossingRateSlider = new Slider(0, 1, crossingRateValue),
             mutationRateSlider = new Slider(0, 1, mutationRateValue);
@@ -39,7 +40,10 @@ public class FlatlandNewGui extends Application {
 
     final CheckBox dynamicButton = new CheckBox();
 
-    final Button startEvolutionButton = new Button("Start Evolution");
+    final Button startEvolutionButton = new Button("Start Evolution"),
+            halveSpfButton = new Button("/2"),
+            doubleSpfButton = new Button("*2"),
+            startSimulationButton = new Button("Start simulation");
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -108,7 +112,7 @@ public class FlatlandNewGui extends Application {
             mutationRateValue = (double) newValue;
             mutationRateDisplay.setText(String.format("%.1f", mutationRateValue));
         });
-        
+
         GridPane.setConstraints(mutationRateLabel, 1, 4);
         grid.getChildren().add(mutationRateLabel);
 
@@ -128,6 +132,38 @@ public class FlatlandNewGui extends Application {
         GridPane.setConstraints(startEvolutionButton, 1, 6);
         GridPane.setColumnSpan(startEvolutionButton, 2);
         grid.getChildren().add(startEvolutionButton);
+
+        // Simulation stuff
+        GridPane.setConstraints(spfLabel, 1, 7);
+        grid.getChildren().add(spfLabel);
+
+        GridPane.setConstraints(spfDisplay, 2, 7);
+        grid.getChildren().add(spfDisplay);
+
+        halveSpfButton.setOnAction(event -> {
+            refreshRate /= 2;
+            if (refreshRate <= 15) {
+                halveSpfButton.setDisable(true);
+            }
+            spfDisplay.setText(Double.toString((double) refreshRate / 60));
+        });
+
+        GridPane.setConstraints(halveSpfButton, 3, 7);
+        grid.getChildren().add(halveSpfButton);
+
+        doubleSpfButton.setOnAction(event -> {
+            refreshRate *= 2;
+            halveSpfButton.setDisable(false);
+            spfDisplay.setText(Double.toString((double) refreshRate / 60));
+        });
+
+        GridPane.setConstraints(doubleSpfButton, 4, 7);
+        grid.getChildren().add(doubleSpfButton);
+
+        GridPane.setConstraints(startSimulationButton, 1, 8);
+        GridPane.setColumnSpan(startSimulationButton, 2);
+        startSimulationButton.setDisable(true);
+        grid.getChildren().add(startSimulationButton);
 
         primaryStage.show();
 
