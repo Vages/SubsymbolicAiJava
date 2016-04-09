@@ -19,8 +19,11 @@ public class BeerTrackerGame {
         this.height = height;
         this.trackerSize = trackerSize;
         this.wrappingAllowed = wrappingAllowed;
-        this.trackerPosition = (int) (Math.random()*width);
         maxTrackerPositionWithoutWrap = width - trackerSize;
+        int spawnPositionRoof = width;
+        if (!wrappingAllowed)
+            spawnPositionRoof = maxTrackerPositionWithoutWrap + 1;
+        this.trackerPosition = (int) (Math.random()*spawnPositionRoof);
         spawnNewFallingObject();
     }
 
