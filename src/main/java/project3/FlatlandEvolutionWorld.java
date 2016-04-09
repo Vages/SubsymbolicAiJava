@@ -42,7 +42,7 @@ public class FlatlandEvolutionWorld extends EvolutionWorld<Double> {
         generateNewScenarios();
     }
 
-    private enum ScenarioPolicy {
+    public enum ScenarioPolicy {
         DYNAMIC, STATIC
     }
 
@@ -87,7 +87,7 @@ public class FlatlandEvolutionWorld extends EvolutionWorld<Double> {
     public void runAllGenerations() {
         super.runAllGenerations();
         FlatlandIndividual bestIndividual = (FlatlandIndividual) adults.get(adults.size()-1);
-        bestIndividual.assessFitnessForAllWorldScenarios(true);
+        //bestIndividual.assessFitnessForAllWorldScenarios(true);
     }
 
     public ArrayList<Board> getScenarios() {

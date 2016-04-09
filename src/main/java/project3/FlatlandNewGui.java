@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -11,6 +12,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import project2.AdultSelection;
+import project2.MatingSelection;
 
 public class FlatlandNewGui extends Application {
     private double sizeX = 600;
@@ -18,6 +21,8 @@ public class FlatlandNewGui extends Application {
     private int refreshRate = 60;
     private double crossingRateValue = 0.5,
             mutationRateValue = 0.8;
+
+    private FlatlandEvolutionWorld world;
 
     final Label generationsLabel = new Label("Generations: "),
             childrenLabel = new Label("Children :"),
@@ -129,6 +134,8 @@ public class FlatlandNewGui extends Application {
         GridPane.setConstraints(dynamicButton, 2, 5);
         grid.getChildren().add(dynamicButton);
 
+        startEvolutionButton.setOnAction(event -> startEvolution());
+
         GridPane.setConstraints(startEvolutionButton, 1, 6);
         GridPane.setColumnSpan(startEvolutionButton, 2);
         grid.getChildren().add(startEvolutionButton);
@@ -140,22 +147,12 @@ public class FlatlandNewGui extends Application {
         GridPane.setConstraints(spfDisplay, 2, 7);
         grid.getChildren().add(spfDisplay);
 
-        halveSpfButton.setOnAction(event -> {
-            refreshRate /= 2;
-            if (refreshRate <= 15) {
-                halveSpfButton.setDisable(true);
-            }
-            spfDisplay.setText(Double.toString((double) refreshRate / 60));
-        });
+        halveSpfButton.setOnAction(event -> halveSecondsPerFrame());
 
         GridPane.setConstraints(halveSpfButton, 3, 7);
         grid.getChildren().add(halveSpfButton);
 
-        doubleSpfButton.setOnAction(event -> {
-            refreshRate *= 2;
-            halveSpfButton.setDisable(false);
-            spfDisplay.setText(Double.toString((double) refreshRate / 60));
-        });
+        doubleSpfButton.setOnAction(event -> doubleSecondsPerFrame());
 
         GridPane.setConstraints(doubleSpfButton, 4, 7);
         grid.getChildren().add(doubleSpfButton);
@@ -167,6 +164,93 @@ public class FlatlandNewGui extends Application {
 
         primaryStage.show();
 
+    }
+
+    private void startEvolution() {
+        int noOfGenerations = Integer.parseInt(generationsField.getText());
+        int noOfChildren = Integer.parseInt(childrenField.getText());
+        int noOfAdults = Integer.parseInt(adultsField.getText());
+
+        FlatlandEvolutionWorld.ScenarioPolicy scenarioPolicy = FlatlandEvolutionWorld.ScenarioPolicy.STATIC;
+        if (dynamicButton.isSelected()) {
+            scenarioPolicy = FlatlandEvolutionWorld.ScenarioPolicy.DYNAMIC;
+        }
+
+        world = new FlatlandEvolutionWorld(
+                AdultSelection.GENERATIONAL_MIXING,
+                MatingSelection.SIGMA_SCALING,
+                noOfChildren,
+                noOfAdults,
+                noOfGenerations,
+                1,
+                5,
+                0.1,
+                "project3/log",
+                new int[]{6, 3},
+                crossingRateValue,
+                mutationRateValue,
+                1,
+                -1,
+                1,
+                new double[]{0.33, 0.33},
+                new double[]{1, -5},
+                5,
+                scenarioPolicy
+        );
+
+        world.runAllEpochs();
+
+        startSimulationButton.setDisable(false);
+    }
+
+    private void halveSecondsPerFrame() {
+        refreshRate /= 2;
+        if (refreshRate <= 15) {
+            halveSpfButton.setDisable(true);
+        }
+        spfDisplay.setText(Double.toString((double) refreshRate / 60));
+    }
+
+    private void doubleSecondsPerFrame() {
+        refreshRate *= 2;
+        halveSpfButton.setDisable(false);
+        spfDisplay.setText(Double.toString((double) refreshRate / 60));
+    }
+
+    public void drawBoard(Board b, GraphicsContext gc) {
+        gc.clearRect(0,0,sizeX,sizeY);
+        gc.setLineWidth(3);
+        gc.setFill(new Color(0.9, 0.9, 0.9, 1));
+        gc.fillRect(0, 0, sizeX, sizeY);
+
+        int bs = b.getBoardSize();
+        double cellSize = sizeX/bs;
+
+        for (int i = 0; i < bs; i++){
+            for (int j = 0; j < bs; j++) {
+                CellType cell = b.getCell(j, i);
+                if (cell == CellType.FOOD) {
+                    gc.setFill(new Color(0, 1, 0, 1));
+                } else if (cell == CellType.POISON) {
+                    gc.setFill(new Color(1, 0, 0, 1));
+                } else {
+                    gc.setFill(new Color(0.9, 0.9, 0.9, 0));
+                }
+
+                gc.fillOval(j*cellSize+cellSize/6, i*cellSize+cellSize/6, cellSize*2/3, cellSize*2/3);
+
+            }
+        }
+
+        int playerX = b.getPlayerX();
+        int playerY = b.getPlayerY();
+        Heading h = b.getPlayerHeading();
+
+        gc.setFill(new Color (0, 0, 0, 1));
+        gc.fillRect(playerX*cellSize+10, playerY*cellSize+10, cellSize-20, cellSize-20);
+        double xCenter = cellSize * (playerX + 0.5);
+        double yCenter = cellSize*(playerY+0.5);
+        gc.strokeLine(xCenter, yCenter, xCenter+h.getVectorX()*cellSize/2, yCenter+h.getVectorY()*cellSize/2);
     }
 
     public static void main(String[] args) {
