@@ -4,18 +4,23 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class BeerTrackerGame {
-    private int width;
-    private int height;
-    private int trackerPosition = 0;
+    private final boolean wrappingAllowed;
+    private final int width;
+    private final int height;
+    private int trackerPosition;
     private int trackerSize;
     private int fallingObjectXPosition;
     private int fallingObjectYPosition;
     private int fallingObjectSize;
+    private final int maxTrackerPositionWithoutWrap;
 
-    public BeerTrackerGame(int width, int height, int trackerSize) {
+    public BeerTrackerGame(int width, int height, int trackerSize, boolean wrappingAllowed) {
         this.width = width;
         this.height = height;
         this.trackerSize = trackerSize;
+        this.wrappingAllowed = wrappingAllowed;
+        this.trackerPosition = (int) (Math.random()*width);
+        maxTrackerPositionWithoutWrap = width - trackerSize;
         spawnNewFallingObject();
     }
 
@@ -50,18 +55,18 @@ public class BeerTrackerGame {
         Set<Integer> objectCells = getCellsOccupiedByObject(fallingObjectXPosition, fallingObjectSize);
         boolean isBig = fallingObjectSize > trackerSize;
         if (isBig) {
-            if (trackerCells.containsAll(objectCells)){
+            if (trackerCells.containsAll(objectCells)) {
                 return CaptureEvent.CAPTURED_SMALL;
             } else {
                 trackerCells.retainAll(objectCells);
-                if (trackerCells.size() ==0) {
+                if (trackerCells.size() == 0) {
                     return CaptureEvent.AVOIDED_SMALL;
                 } else {
                     return CaptureEvent.PARTIALLY_CAPTURED_SMALL;
                 }
             }
         } else {
-            if (objectCells.containsAll(trackerCells)){
+            if (objectCells.containsAll(trackerCells)) {
                 return CaptureEvent.CAPTURED_BIG;
             } else {
                 trackerCells.retainAll(objectCells);
@@ -81,14 +86,28 @@ public class BeerTrackerGame {
      * @param magnitude number of steps to move
      */
     private void moveTracker(TrackerAction a, int magnitude) {
-        if (a == TrackerAction.MOVE_LEFT) {
-            trackerPosition -= magnitude;
-        } else {
-            trackerPosition += magnitude;
-        }
+        if (wrappingAllowed) {
+            if (a == TrackerAction.MOVE_LEFT) {
+                trackerPosition -= magnitude;
+            } else {
+                trackerPosition += magnitude;
+            }
 
-        // Modulo operation to ensure wraparound
-        trackerPosition = (trackerPosition + width) % width;
+            // Modulo operation to ensure wraparound
+            trackerPosition = (trackerPosition + width) % width;
+        } else {
+            if (a == TrackerAction.MOVE_LEFT) {
+                trackerPosition -= magnitude;
+                if (trackerPosition < 0) {
+                    trackerPosition = 0;
+                }
+            } else {
+                trackerPosition += magnitude;
+                if (trackerPosition > maxTrackerPositionWithoutWrap) {
+                    trackerPosition = maxTrackerPositionWithoutWrap;
+                }
+            }
+        }
     }
 
     /**
@@ -113,8 +132,12 @@ public class BeerTrackerGame {
      */
     private void spawnNewFallingObject() {
         fallingObjectYPosition = height;
-        fallingObjectXPosition = (int) (Math.random() * 30);
         fallingObjectSize = 1 + (int) (Math.random() * 6); // A random number from 1 to 6
+        if (wrappingAllowed) {
+            fallingObjectXPosition = (int) (Math.random() * width);
+        } else {
+            fallingObjectXPosition = (int) (Math.random() * (width - fallingObjectSize));
+        }
     }
 
     /**

@@ -13,7 +13,7 @@ public class BeerTrackerGameTest {
     @Test
     public void testGetCellsOccupiedByObject() throws Exception {
         // Test without wraparound
-        BeerTrackerGame g = new BeerTrackerGame(30, 15, 5);
+        BeerTrackerGame g = new BeerTrackerGame(30, 15, 5, true);
 
         Set<Integer> expectedSimpleResults = new HashSet<>();
         Integer[] simpleElements = {0, 1, 2, 3, 4};
