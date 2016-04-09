@@ -90,6 +90,10 @@ public class FlatlandEvolutionWorld extends EvolutionWorld<Double> {
         //bestIndividual.assessFitnessForAllWorldScenarios(true);
     }
 
+    public FlatlandIndividual getBestIndividual() {
+        return (FlatlandIndividual) adults.get(adults.size()-1);
+    }
+
     public ArrayList<Board> getScenarios() {
         return scenarios;
     }

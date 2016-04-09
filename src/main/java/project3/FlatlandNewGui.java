@@ -1,5 +1,6 @@
 package project3;
 
+import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -15,10 +16,12 @@ import javafx.stage.Stage;
 import project2.AdultSelection;
 import project2.MatingSelection;
 
+import java.util.ArrayList;
+
 public class FlatlandNewGui extends Application {
     private double sizeX = 600;
     private double sizeY = 600;
-    private int refreshRate = 60;
+    private double refreshRate = 60;
     private double crossingRateValue = 0.5,
             mutationRateValue = 0.8;
 
@@ -49,6 +52,13 @@ public class FlatlandNewGui extends Application {
             halveSpfButton = new Button("/2"),
             doubleSpfButton = new Button("*2"),
             startSimulationButton = new Button("Start simulation");
+
+    // Used for simulation
+    int noOfBoards;
+    int currentlyExaminedBoard = 0;
+    int currentNumberOfSteps = 0;
+    int maxSteps = 61;
+    FlatlandIndividual bestIndividual;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -157,6 +167,41 @@ public class FlatlandNewGui extends Application {
         GridPane.setConstraints(doubleSpfButton, 4, 7);
         grid.getChildren().add(doubleSpfButton);
 
+        startSimulationButton.setOnAction(event -> {
+            GraphicsContext gc = canvas.getGraphicsContext2D();
+
+            bestIndividual = world.getBestIndividual();
+            ArrayList<Board> boards = world.getScenarios();
+            noOfBoards = boards.size();
+            currentlyExaminedBoard = 0;
+            currentNumberOfSteps = 0;
+            maxSteps = 61;
+
+            new AnimationTimer() {
+                int framesSkipped = 0;
+                @Override
+                public void handle(long now) {
+                    if (framesSkipped >= refreshRate) {
+                        Board b = boards.get(currentlyExaminedBoard);
+                        drawBoard(b, gc);
+                        bestIndividual.doOneMoveOnBoard(b);
+
+                        currentNumberOfSteps++;
+                        if (currentNumberOfSteps > maxSteps){
+                            currentNumberOfSteps = 0;
+                            currentlyExaminedBoard++;
+                        }
+                        if (currentlyExaminedBoard >= noOfBoards) {
+                            this.stop();
+                        }
+                        framesSkipped = 0;
+                    } else {
+                        framesSkipped++;
+                    }
+                }
+            }.start();
+        });
+
         GridPane.setConstraints(startSimulationButton, 1, 8);
         GridPane.setColumnSpan(startSimulationButton, 2);
         startSimulationButton.setDisable(true);
@@ -205,7 +250,7 @@ public class FlatlandNewGui extends Application {
 
     private void halveSecondsPerFrame() {
         refreshRate /= 2;
-        if (refreshRate <= 15) {
+        if (refreshRate <= 3) {
             halveSpfButton.setDisable(true);
         }
         spfDisplay.setText(Double.toString((double) refreshRate / 60));
