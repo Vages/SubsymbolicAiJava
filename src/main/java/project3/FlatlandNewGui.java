@@ -19,38 +19,48 @@ import project2.MatingSelection;
 import java.util.ArrayList;
 
 public class FlatlandNewGui extends Application {
-    private double sizeX = 600;
-    private double sizeY = 600;
-    private double refreshRate = 60;
-    private double crossingRateValue = 0.5,
-            mutationRateValue = 0.8;
+    private double
+            sizeX = 600,
+            sizeY = 600,
+            refreshRate = 60,
+            crossingRateValue = 0.5,
+            mutationRateValue = 0.8,
+            weightSpanValue = 2;
 
     private FlatlandEvolutionWorld world;
 
-    final Label generationsLabel = new Label("Generations: "),
+    final Label
+            generationsLabel = new Label("Generations: "),
             childrenLabel = new Label("Children :"),
             adultsLabel = new Label("Adults :"),
             crossingRateLabel = new Label("Crossing rate:"),
             mutationRateLabel = new Label("Mutation rate:"),
             dynamicLabel = new Label("Dynamic?"),
-            spfLabel = new Label("Seconds per frame: ");
-
-    final Label crossingRateDisplay = new Label(Double.toString(crossingRateValue)),
+            spfLabel = new Label("Seconds per frame: "),
+            numberOfMutationsLabel = new Label("Number of mutations: "),
+            weightSpanLabel = new Label("Weight span: "),
+            crossingRateDisplay = new Label(Double.toString(crossingRateValue)),
             mutationRateDisplay = new Label(Double.toString(mutationRateValue)),
-            spfDisplay = new Label(Double.toString(refreshRate / 60));
+            spfDisplay = new Label(Double.toString(refreshRate / 60)),
+            weightSpanDisplay = new Label(Double.toString(weightSpanValue));
 
-    final Slider crossingRateSlider = new Slider(0, 1, crossingRateValue),
-            mutationRateSlider = new Slider(0, 1, mutationRateValue);
+    final Slider
+            crossingRateSlider = new Slider(0, 1, crossingRateValue),
+            mutationRateSlider = new Slider(0, 1, mutationRateValue),
+            weightSpanSlider = new Slider(0, 5, weightSpanValue);
 
-    final TextField generationsField = new TextField("40"),
+    final TextField
+            generationsField = new TextField("40"),
             childrenField = new TextField("40"),
-            adultsField = new TextField("40");
+            adultsField = new TextField("40"),
+            numberOfMutationsField = new TextField("1");
 
     final CheckBox dynamicButton = new CheckBox();
 
-    final Button startEvolutionButton = new Button("Start Evolution"),
-            halveSpfButton = new Button("/2"),
-            doubleSpfButton = new Button("*2"),
+    final Button
+            startEvolutionButton = new Button("Start Evolution"),
+            halveSpfButton = new Button("Faster"),
+            doubleSpfButton = new Button("Slower"),
             startSimulationButton = new Button("Start simulation"),
             generateNewScenariosButton = new Button("Generate new scenarios");
 
@@ -75,30 +85,37 @@ public class FlatlandNewGui extends Application {
         Canvas canvas = new Canvas(sizeX, sizeY);
 
         GridPane.setConstraints(canvas, 0, 0);
-        GridPane.setRowSpan(canvas, 7);
+        GridPane.setRowSpan(canvas, 9);
         grid.getChildren().add(canvas);
 
         // Text fields
-        GridPane.setConstraints(generationsLabel, 1, 0);
+        int rowNumber = 0;
+        GridPane.setConstraints(generationsLabel, 1, rowNumber);
         grid.getChildren().add(generationsLabel);
 
-        GridPane.setConstraints(generationsField, 2, 0);
+        GridPane.setConstraints(generationsField, 2, rowNumber);
         grid.getChildren().add(generationsField);
 
-        GridPane.setConstraints(childrenLabel, 1, 1);
+        rowNumber++;
+
+        GridPane.setConstraints(childrenLabel, 1, rowNumber);
         grid.getChildren().add(childrenLabel);
 
-        GridPane.setConstraints(childrenField, 2, 1);
+        GridPane.setConstraints(childrenField, 2, rowNumber);
         grid.getChildren().add(childrenField);
 
-        GridPane.setConstraints(adultsLabel, 1, 2);
+        rowNumber++;
+
+        GridPane.setConstraints(adultsLabel, 1, rowNumber);
         grid.getChildren().add(adultsLabel);
 
-        GridPane.setConstraints(adultsField, 2, 2);
+        GridPane.setConstraints(adultsField, 2, rowNumber);
         grid.getChildren().add(adultsField);
 
+        rowNumber++;
+
         // Sliders
-        GridPane.setConstraints(crossingRateLabel, 1, 3);
+        GridPane.setConstraints(crossingRateLabel, 1, rowNumber);
         grid.getChildren().add(crossingRateLabel);
 
         crossingRateSlider.setMajorTickUnit(0.5);
@@ -112,11 +129,13 @@ public class FlatlandNewGui extends Application {
             crossingRateDisplay.setText(String.format("%.1f", crossingRateValue));
         });
 
-        GridPane.setConstraints(crossingRateSlider, 2, 3);
+        GridPane.setConstraints(crossingRateSlider, 2, rowNumber);
         grid.getChildren().add(crossingRateSlider);
 
-        GridPane.setConstraints(crossingRateDisplay, 3, 3);
+        GridPane.setConstraints(crossingRateDisplay, 3, rowNumber);
         grid.getChildren().add(crossingRateDisplay);
+
+        rowNumber++;
 
         mutationRateSlider.setMajorTickUnit(0.5);
         mutationRateSlider.setMinorTickCount(4);
@@ -129,55 +148,94 @@ public class FlatlandNewGui extends Application {
             mutationRateDisplay.setText(String.format("%.1f", mutationRateValue));
         });
 
-        GridPane.setConstraints(mutationRateLabel, 1, 4);
+        GridPane.setConstraints(mutationRateLabel, 1, rowNumber);
         grid.getChildren().add(mutationRateLabel);
 
-        GridPane.setConstraints(mutationRateSlider, 2, 4);
+        GridPane.setConstraints(mutationRateSlider, 2, rowNumber);
         grid.getChildren().add(mutationRateSlider);
 
-        GridPane.setConstraints(mutationRateDisplay, 3, 4);
+        GridPane.setConstraints(mutationRateDisplay, 3, rowNumber);
         grid.getChildren().add(mutationRateDisplay);
 
+        rowNumber++;
+
+        GridPane.setConstraints(numberOfMutationsLabel, 1, rowNumber);
+        grid.getChildren().add(numberOfMutationsLabel);
+
+        GridPane.setConstraints(numberOfMutationsField, 2, rowNumber);
+        grid.getChildren().add(numberOfMutationsField);
+
+        rowNumber++;
+
+        GridPane.setConstraints(weightSpanLabel, 1, rowNumber);
+        grid.getChildren().add(weightSpanLabel);
+
+        weightSpanSlider.setMajorTickUnit(1);
+        weightSpanSlider.setMinorTickCount(1);
+        weightSpanSlider.setSnapToTicks(true);
+        weightSpanSlider.setShowTickLabels(true);
+        weightSpanSlider.setShowTickMarks(true);
+
+        weightSpanSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+            weightSpanValue = (double) newValue;
+            weightSpanDisplay.setText(String.format("%.1f", weightSpanValue));
+        });
+
+        GridPane.setConstraints(weightSpanSlider, 2, rowNumber);
+        grid.getChildren().add(weightSpanSlider);
+
+        GridPane.setConstraints(weightSpanDisplay, 3, rowNumber);
+        grid.getChildren().add(weightSpanDisplay);
+
+        rowNumber++;
         // Toggle Buttons
-        GridPane.setConstraints(dynamicLabel, 1, 5);
+        GridPane.setConstraints(dynamicLabel, 1, rowNumber);
         grid.getChildren().add(dynamicLabel);
 
-        GridPane.setConstraints(dynamicButton, 2, 5);
+        GridPane.setConstraints(dynamicButton, 2, rowNumber);
         grid.getChildren().add(dynamicButton);
+
+        dynamicButton.setSelected(true);
+
+        rowNumber++;
 
         startEvolutionButton.setOnAction(event -> startEvolution());
 
-        GridPane.setConstraints(startEvolutionButton, 1, 6);
+        GridPane.setConstraints(startEvolutionButton, 1, rowNumber);
         GridPane.setColumnSpan(startEvolutionButton, 2);
         grid.getChildren().add(startEvolutionButton);
 
+        rowNumber++;
+
         // Simulation stuff
-        GridPane.setConstraints(spfLabel, 1, 7);
+        GridPane.setConstraints(spfLabel, 1, rowNumber);
         grid.getChildren().add(spfLabel);
 
-        GridPane.setConstraints(spfDisplay, 2, 7);
+        GridPane.setConstraints(spfDisplay, 2, rowNumber);
         grid.getChildren().add(spfDisplay);
 
         halveSpfButton.setOnAction(event -> halveSecondsPerFrame());
 
-        GridPane.setConstraints(halveSpfButton, 3, 7);
+        GridPane.setConstraints(halveSpfButton, 3, rowNumber);
         grid.getChildren().add(halveSpfButton);
 
         doubleSpfButton.setOnAction(event -> doubleSecondsPerFrame());
 
-        GridPane.setConstraints(doubleSpfButton, 4, 7);
+        GridPane.setConstraints(doubleSpfButton, 4, rowNumber);
         grid.getChildren().add(doubleSpfButton);
 
         startSimulationButton.setOnAction(event -> runSimulation(canvas));
 
-        GridPane.setConstraints(startSimulationButton, 1, 8);
+        rowNumber++;
+
+        GridPane.setConstraints(startSimulationButton, 1, rowNumber);
         GridPane.setColumnSpan(startSimulationButton, 2);
         startSimulationButton.setDisable(true);
         grid.getChildren().add(startSimulationButton);
 
         generateNewScenariosButton.setOnAction(event -> world.generateNewScenarios());
 
-        GridPane.setConstraints(generateNewScenariosButton, 3, 8);
+        GridPane.setConstraints(generateNewScenariosButton, 3, rowNumber);
         GridPane.setColumnSpan(generateNewScenariosButton, 2);
         generateNewScenariosButton.setDisable(true);
         grid.getChildren().add(generateNewScenariosButton);
@@ -229,6 +287,7 @@ public class FlatlandNewGui extends Application {
         int noOfGenerations = Integer.parseInt(generationsField.getText());
         int noOfChildren = Integer.parseInt(childrenField.getText());
         int noOfAdults = Integer.parseInt(adultsField.getText());
+        int noOfMutations = Integer.parseInt(numberOfMutationsField.getText());
 
         FlatlandEvolutionWorld.ScenarioPolicy scenarioPolicy = FlatlandEvolutionWorld.ScenarioPolicy.STATIC;
         if (dynamicButton.isSelected()) {
@@ -248,9 +307,9 @@ public class FlatlandNewGui extends Application {
                 new int[]{6, 3},
                 crossingRateValue,
                 mutationRateValue,
-                1,
-                -2,
-                2,
+                noOfMutations,
+                -weightSpanValue,
+                weightSpanValue,
                 new double[]{0.33, 0.33},
                 new double[]{1, -5},
                 5,
