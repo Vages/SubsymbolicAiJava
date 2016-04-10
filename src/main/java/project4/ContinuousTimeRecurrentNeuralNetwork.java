@@ -119,14 +119,41 @@ public class ContinuousTimeRecurrentNeuralNetwork {
      * @return              array of gene values
      */
     private double[] convertGeneRangeToDoublesArray(NeuralNetworkGene[] genes, int start, int noOfElements) {
-        int roof = start+noOfElements;
-        double[] values = new double[roof-start];
+        double[] values = new double[noOfElements];
 
-        for (int i = start; i < roof; i++) {
-            values[i] = genes[i].getValue();
+        for (int i = 1; i < noOfElements; i++) {
+            values[i] = genes[start+i].getValue();
         }
 
         return values;
+    }
+
+    public void setInputActivation(int node, double value) {
+        this.outputActivations[0].putScalar(node, value);
+    }
+
+    @SuppressWarnings("Duplicates")
+    public int getMostActiveOutputNode() {
+        INDArray outputLayer = outputActivations[outputActivations.length-1];
+
+        int maxIndex = -1;
+        double maxOutput = Double.NEGATIVE_INFINITY;
+
+        for (int i = 0; i < outputLayer.length(); i++){
+            double output_i = outputLayer.getDouble(i);
+
+            if (output_i > maxOutput) {
+                maxIndex = i;
+                maxOutput = output_i;
+            }
+        }
+
+        return maxIndex;
+    }
+
+    public double getOutputActivation(int node) {
+        INDArray outputLayer = outputActivations[outputActivations.length-1];
+        return outputLayer.getDouble(node);
     }
 
 }
