@@ -4,6 +4,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import project2.Individual;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 public class FlatlandIndividual extends Individual<Double> {
@@ -34,7 +35,7 @@ public class FlatlandIndividual extends Individual<Double> {
 
     @Override
     public Double[] getGenotype() {
-        return genotype;
+        return Arrays.copyOf(genotype, genotype.length);
     }
 
     @Override
