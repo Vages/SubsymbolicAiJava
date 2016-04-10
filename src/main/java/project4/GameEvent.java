@@ -1,11 +1,12 @@
 package project4;
 
-public enum CaptureEvent {
+public enum GameEvent {
     CAPTURED_SMALL,
     PARTIALLY_CAPTURED_SMALL,
     AVOIDED_SMALL,
     CAPTURED_BIG,
     PARTIALLY_CAPTURED_BIG,
     AVOIDED_BIG,
-    NOTHING
+    NOTHING,
+    GAME_OVER
 }

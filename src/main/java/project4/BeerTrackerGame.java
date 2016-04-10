@@ -33,7 +33,7 @@ public class BeerTrackerGame {
      * @param a         action to be performed
      * @param magnitude the magnitude of the action (used in conjunction with moving left and right)
      */
-    public CaptureEvent performAction(TrackerAction a, int magnitude) {
+    public GameEvent performAction(TrackerAction a, int magnitude) {
         if (a == TrackerAction.MOVE_LEFT || a == TrackerAction.MOVE_RIGHT) {
             moveTracker(a, magnitude);
         }
@@ -41,42 +41,42 @@ public class BeerTrackerGame {
         return moveFallingObjectOneStepAndCheckForCaptures();
     }
 
-    private CaptureEvent moveFallingObjectOneStepAndCheckForCaptures() {
+    private GameEvent moveFallingObjectOneStepAndCheckForCaptures() {
         fallingObjectYPosition--;
 
         if (fallingObjectYPosition == 0) {
-            CaptureEvent captureResults = getCaptureResults();
+            GameEvent captureResults = getCaptureResults();
             spawnNewFallingObject();
             return captureResults;
         }
 
-        return CaptureEvent.NOTHING;
+        return GameEvent.NOTHING;
     }
 
-    private CaptureEvent getCaptureResults() {
+    private GameEvent getCaptureResults() {
         Set<Integer> trackerCells = getCellsOccupiedByObject(trackerPosition, trackerSize);
         Set<Integer> objectCells = getCellsOccupiedByObject(fallingObjectXPosition, fallingObjectSize);
         boolean isBig = fallingObjectSize > trackerSize;
         if (isBig) {
             if (trackerCells.containsAll(objectCells)) {
-                return CaptureEvent.CAPTURED_SMALL;
+                return GameEvent.CAPTURED_SMALL;
             } else {
                 trackerCells.retainAll(objectCells);
                 if (trackerCells.size() == 0) {
-                    return CaptureEvent.AVOIDED_SMALL;
+                    return GameEvent.AVOIDED_SMALL;
                 } else {
-                    return CaptureEvent.PARTIALLY_CAPTURED_SMALL;
+                    return GameEvent.PARTIALLY_CAPTURED_SMALL;
                 }
             }
         } else {
             if (objectCells.containsAll(trackerCells)) {
-                return CaptureEvent.CAPTURED_BIG;
+                return GameEvent.CAPTURED_BIG;
             } else {
                 trackerCells.retainAll(objectCells);
                 if (trackerCells.size() == 0) {
-                    return CaptureEvent.AVOIDED_BIG;
+                    return GameEvent.AVOIDED_BIG;
                 } else {
-                    return CaptureEvent.PARTIALLY_CAPTURED_BIG;
+                    return GameEvent.PARTIALLY_CAPTURED_BIG;
                 }
             }
         }
