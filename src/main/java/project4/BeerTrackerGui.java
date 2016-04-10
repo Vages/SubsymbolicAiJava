@@ -210,6 +210,7 @@ public class BeerTrackerGui extends Application {
 
                     if (lastEvent == GameEvent.GAME_OVER) {
                         this.stop();
+                        startEvolutionButton.setDisable(false);
                     }
                     framesSkipped = 0;
                 } else {
@@ -240,6 +241,7 @@ public class BeerTrackerGui extends Application {
         world.runAllEpochs();
 
         startSimulationButton.setDisable(false);
+        startEvolutionButton.setDisable(true);
     }
 
     private void halveSecondsPerFrame() {
