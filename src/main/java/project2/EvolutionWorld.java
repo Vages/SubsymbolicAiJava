@@ -33,6 +33,20 @@ public abstract class EvolutionWorld<G> {
     public EvolutionWorld(AdultSelection adultSelection, MatingSelection matingSelection,
                           int childPoolSize, int adultPoolSize, int numberOfGenerations, int epochs,
                           int tournamentSize, double tournamentE, String logFileName) {
+
+        this(adultSelection, matingSelection, childPoolSize, adultPoolSize, numberOfGenerations, logFileName);
+
+        children = new ArrayList<>();
+        adults = new ArrayList<>();
+        matingIndividualList = new ArrayList<>();
+
+        this.epochs = epochs;
+        this.tournamentSize = tournamentSize;
+        this.tournamentE = tournamentE;
+    }
+
+    public EvolutionWorld(AdultSelection adultSelection, MatingSelection matingSelection,
+                          int childPoolSize, int adultPoolSize, int numberOfGenerations, String logFileName) {
         children = new ArrayList<>();
         adults = new ArrayList<>();
         matingIndividualList = new ArrayList<>();
@@ -42,9 +56,9 @@ public abstract class EvolutionWorld<G> {
         this.childPoolSize = childPoolSize;
         this.adultPoolSize = adultPoolSize;
         this.numberOfGenerations = numberOfGenerations;
-        this.epochs = epochs;
-        this.tournamentSize = tournamentSize;
-        this.tournamentE = tournamentE;
+        this.epochs = 1;
+        this.tournamentSize = 5;
+        this.tournamentE = 0.1;
         this.logFileName = logFileName;
 
         bestFitnessSums = new double[numberOfGenerations];
@@ -52,7 +66,6 @@ public abstract class EvolutionWorld<G> {
         standardDeviationSums = new double[numberOfGenerations];
 
         statisticsLog = new ArrayList<>();
-
     }
 
     public void oneRoundOfEvolution(){
