@@ -125,7 +125,7 @@ public class BeerTrackerIndividual extends Individual<NeuralNetworkGene> {
         int mostActiveNode = network.getMostActiveOutputNode();
         double activation = network.getOutputActivation(mostActiveNode);
         int magnitude;
-        double threshold = 0.2;
+        double threshold = 0.4;
         if (activation < threshold) {
             magnitude = 0;
         } else {
