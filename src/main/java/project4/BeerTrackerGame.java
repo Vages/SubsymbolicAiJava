@@ -204,4 +204,12 @@ public class BeerTrackerGame {
     public int getTrackerSize() {
         return trackerSize;
     }
+
+    public Set<Integer> getTrackerCells() {
+        return getCellsOccupiedByObject(trackerPosition, trackerSize);
+    }
+
+    public Set<Integer> getFallingObjectCells() {
+        return getCellsOccupiedByObject(fallingObjectXPosition, fallingObjectSize);
+    }
 }

@@ -15,6 +15,7 @@ import project2.MatingSelection;
 import project3.*;
 
 import java.util.ArrayList;
+import java.util.Set;
 
 public class BeerTrackerGui extends Application {
     private double
@@ -271,18 +272,21 @@ public class BeerTrackerGui extends Application {
 
         double visualTrackerStart = trackerPos * horizontalCellSize;
         double visualTrackerSize = trackerSize * horizontalCellSize;
-        gc.fillRect(visualTrackerStart, 0, visualTrackerSize, verticalCellSize);
 
-        int objectXPos = g.getFallingObjectXPosition();
+        Set<Integer> trackerCells = g.getTrackerCells();
+
+        for (Integer c : trackerCells) {
+            gc.fillRect(c*horizontalCellSize, 0, horizontalCellSize, horizontalCellSize);
+        }
+
         int objectYPos = g.getFallingObjectYPosition();
-        int objectSize = g.getFallingObjectSize();
-
-        double visualObjectXPos = objectXPos * horizontalCellSize;
-        double visualObjectSize = objectSize * horizontalCellSize;
         double visualObjectYPos = objectYPos * verticalCellSize;
 
-        gc.fillRect(visualObjectXPos, visualObjectYPos, visualObjectSize, verticalCellSize);
+        Set<Integer> objectCells = g.getFallingObjectCells();
 
+        for (Integer c : objectCells) {
+            gc.fillRect(c*horizontalCellSize, visualObjectYPos, horizontalCellSize, verticalCellSize);
+        }
     }
 
 
