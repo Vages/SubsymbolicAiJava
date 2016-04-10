@@ -3,6 +3,7 @@ package project4;
 import project2.Individual;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class BeerTrackerIndividual extends Individual<NeuralNetworkGene> {
     private NeuralNetworkGene[] genotype;
@@ -73,7 +74,7 @@ public class BeerTrackerIndividual extends Individual<NeuralNetworkGene> {
 
     @Override
     public NeuralNetworkGene[] getGenotype() {
-        return genotype;
+        return Arrays.copyOf(genotype, genotype.length);
     }
 
     @Override
