@@ -76,4 +76,8 @@ public class BeerTrackerEvolutionWorld extends EvolutionWorld<NeuralNetworkGene>
 
         world.runAllEpochs();
     }
+
+    public BeerTrackerIndividual getBestIndividual() {
+        return (BeerTrackerIndividual) adults.get(adults.size() - 1);
+    }
 }

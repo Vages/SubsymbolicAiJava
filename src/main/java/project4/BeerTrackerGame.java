@@ -29,7 +29,7 @@ public class BeerTrackerGame {
     }
 
     public BeerTrackerGame() {
-        this(30, 15, 5, false);
+        this(30, 15, 5, true);
     }
 
     /**
@@ -183,5 +183,25 @@ public class BeerTrackerGame {
         if (trackerPosition == maxTrackerPositionWithoutWrap) readings[1] = true;
 
         return readings;
+    }
+
+    public int getFallingObjectSize() {
+        return fallingObjectSize;
+    }
+
+    public int getFallingObjectYPosition() {
+        return fallingObjectYPosition;
+    }
+
+    public int getFallingObjectXPosition() {
+        return fallingObjectXPosition;
+    }
+
+    public int getTrackerPosition() {
+        return trackerPosition;
+    }
+
+    public int getTrackerSize() {
+        return trackerSize;
     }
 }
