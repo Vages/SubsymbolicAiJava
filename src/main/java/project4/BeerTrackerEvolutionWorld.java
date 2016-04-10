@@ -25,10 +25,10 @@ public class BeerTrackerEvolutionWorld extends EvolutionWorld<NeuralNetworkGene>
         rewards = new HashMap<>();
         rewards.put(GameEvent.CAPTURED_SMALL, 10.0);
         rewards.put(GameEvent.PARTIALLY_CAPTURED_SMALL, 5.0);
-        rewards.put(GameEvent.AVOIDED_SMALL, -1.0);
-        rewards.put(GameEvent.CAPTURED_BIG, -10.0);
-        rewards.put(GameEvent.PARTIALLY_CAPTURED_BIG, -5.0);
-        rewards.put(GameEvent.AVOIDED_BIG, 2.0);
+        rewards.put(GameEvent.AVOIDED_SMALL, 0.0);
+        rewards.put(GameEvent.CAPTURED_BIG, 0.0);
+        rewards.put(GameEvent.PARTIALLY_CAPTURED_BIG, 0.0);
+        rewards.put(GameEvent.AVOIDED_BIG, 0.0);
         rewards.put(GameEvent.NOTHING, 0.0);
         rewards.put(GameEvent.GAME_OVER, 0.0);
     }
