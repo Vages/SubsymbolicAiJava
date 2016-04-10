@@ -20,7 +20,7 @@ public class BeerTrackerEvolutionWorld extends EvolutionWorld<NeuralNetworkGene>
         super(adultSelection, matingSelection, childPoolSize, adultPoolSize, numberOfGenerations, logFileName);
         this.crossBreeder = new NeuralNetworkGeneCrossBreeder(crossingRate);
         this.mutator = new NeuralNetworkGeneMutator(mutateThreshold, numberOfMutations);
-        topology = new int[]{5, 2, 2};
+        topology = new int[]{5, 5, 2};
 
         rewards = new HashMap<>();
         rewards.put(GameEvent.CAPTURED_SMALL, 10.0);
