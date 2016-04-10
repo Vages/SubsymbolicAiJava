@@ -68,7 +68,7 @@ public class ContinuousTimeRecurrentNeuralNetwork {
 
             // Time constants, 1*t_n
             double[] thisLayersTimeConstants = convertGeneRangeToDoublesArray(genes, noOfGenesAdded, neuronsInThisLayer);
-            this.gains[i] = Nd4j.create(thisLayersTimeConstants, new int[]{1, neuronsInThisLayer});
+            this.timeConstants[i] = Nd4j.create(thisLayersTimeConstants, new int[]{1, neuronsInThisLayer});
             noOfGenesAdded += neuronsInThisLayer;
         }
 
@@ -121,7 +121,7 @@ public class ContinuousTimeRecurrentNeuralNetwork {
     private double[] convertGeneRangeToDoublesArray(NeuralNetworkGene[] genes, int start, int noOfElements) {
         double[] values = new double[noOfElements];
 
-        for (int i = 1; i < noOfElements; i++) {
+        for (int i = 0; i < noOfElements; i++) {
             values[i] = genes[start+i].getValue();
         }
 

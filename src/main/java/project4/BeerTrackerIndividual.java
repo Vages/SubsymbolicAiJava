@@ -4,15 +4,23 @@ import project2.Individual;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class BeerTrackerIndividual extends Individual<NeuralNetworkGene> {
+    private final TrackerAction[] availableActions;
     private NeuralNetworkGene[] genotype;
     private int[] topology;
     private ContinuousTimeRecurrentNeuralNetwork network;
+    private int lastRewardVersionNumber = -1;
+    private double lastAssessedFitness = 0;
+    private BeerTrackerEvolutionWorld world;
 
-    public BeerTrackerIndividual(NeuralNetworkGene[] genotype, int[] topology) {
+    public BeerTrackerIndividual(NeuralNetworkGene[] genotype, int[] topology, TrackerAction[] availableActions, BeerTrackerEvolutionWorld world) {
         this.genotype = genotype;
         this.topology = topology;
+        this.availableActions = availableActions;
+        this.world = world;
     }
 
     /**
@@ -79,11 +87,47 @@ public class BeerTrackerIndividual extends Individual<NeuralNetworkGene> {
 
     @Override
     public double getFitness() {
-        return 0;
+        if (world.getRewardVersion() <= this.lastRewardVersionNumber) {
+            return this.lastAssessedFitness;
+        }
+
+        Map<GameEvent, Double> rewards = world.getRewards();
+
+        BeerTrackerGame game = new BeerTrackerGame();
+
+        double fitness = 0;
+        while (true) {
+            GameEvent resultOfMove = doOneMoveInGame(game);
+            if (resultOfMove == GameEvent.GAME_OVER)
+                break;
+            fitness += rewards.get(resultOfMove);
+        }
+
+        this.lastRewardVersionNumber = world.getRewardVersion();
+        this.lastAssessedFitness = fitness;
+        return fitness;
     }
 
     @Override
     public void develop() {
         this.network = new ContinuousTimeRecurrentNeuralNetwork(topology, genotype);
+    }
+
+    public GameEvent doOneMoveInGame(BeerTrackerGame g) {
+        boolean[] sensings = g.getShadowSensings();
+
+        for (int i = 0; i < sensings.length; i++) {
+            double activation = 0;
+            if (sensings[i]) activation = 1;
+            network.setInputActivation(i, activation);
+        }
+
+        network.propagate();
+        int mostActiveNode = network.getMostActiveOutputNode();
+        double activation = network.getOutputActivation(mostActiveNode);
+        int magnitude = (int) (activation*5);
+
+        TrackerAction move = availableActions[mostActiveNode];
+        return g.performAction(move, magnitude);
     }
 }

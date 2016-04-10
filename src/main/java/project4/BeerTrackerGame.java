@@ -13,6 +13,7 @@ public class BeerTrackerGame {
     private int fallingObjectYPosition;
     private int fallingObjectSize;
     private final int maxTrackerPositionWithoutWrap;
+    private int timeStepsLeft = 600;
 
     public BeerTrackerGame(int width, int height, int trackerSize, boolean wrappingAllowed) {
         this.width = width;
@@ -27,6 +28,10 @@ public class BeerTrackerGame {
         spawnNewFallingObject();
     }
 
+    public BeerTrackerGame() {
+        this(30, 15, 5, false);
+    }
+
     /**
      * Performs an action requested by the player
      *
@@ -34,9 +39,14 @@ public class BeerTrackerGame {
      * @param magnitude the magnitude of the action (used in conjunction with moving left and right)
      */
     public GameEvent performAction(TrackerAction a, int magnitude) {
+        if (timeStepsLeft == 0) {
+            return GameEvent.GAME_OVER;
+        }
         if (a == TrackerAction.MOVE_LEFT || a == TrackerAction.MOVE_RIGHT) {
             moveTracker(a, magnitude);
         }
+
+        timeStepsLeft--;
 
         return moveFallingObjectOneStepAndCheckForCaptures();
     }

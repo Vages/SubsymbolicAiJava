@@ -46,4 +46,9 @@ public class NeuralNetworkGene {
     public void mutate() {
         value = Math.random() * (maxMutationValue - minMutationValue) + minMutationValue;
     }
+
+    @Override
+    public String toString(){
+        return Double.toString(value);
+    }
 }
