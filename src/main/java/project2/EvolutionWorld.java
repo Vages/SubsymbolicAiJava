@@ -133,7 +133,7 @@ public abstract class EvolutionWorld<G> {
 
     protected void assessFitness() {
         for (Individual c: children) {
-            c.getFitness();
+            c.assessFitness();
         }
     }
 

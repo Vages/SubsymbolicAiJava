@@ -40,12 +40,7 @@ public class FlatlandIndividual extends Individual<Double> {
 
     @Override
     public double getFitness() {
-        if (this.lastScenariosVersionAssessed == world.getScenariosVersion())
-            return fitness;
-        double f = assessFitnessForAllWorldScenarios(false);
-        this.fitness = f > 0 ? f : 0; // Cannot be smaller than 0, to avoid errors.
-        this.lastScenariosVersionAssessed = world.getScenariosVersion();
-        return this.fitness;
+        return fitness;
     }
 
     public double assessFitnessForAllWorldScenarios(boolean guiOn) {
@@ -96,6 +91,15 @@ public class FlatlandIndividual extends Individual<Double> {
     public void develop() {
         if (this.network == null) {
             this.network = new FlatlandNeuralNetwork(topology, ArrayUtils.toPrimitive(genotype));
+        }
+    }
+
+    @Override
+    public void assessFitness() {
+        if (this.lastScenariosVersionAssessed != world.getScenariosVersion()) {
+            double f = assessFitnessForAllWorldScenarios(false);
+            this.fitness = f > 0 ? f : 0; // Cannot be smaller than 0, to avoid errors.
+            this.lastScenariosVersionAssessed = world.getScenariosVersion();
         }
     }
 

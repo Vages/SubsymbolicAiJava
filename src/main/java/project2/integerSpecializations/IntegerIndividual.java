@@ -27,6 +27,13 @@ public class IntegerIndividual extends Individual<Integer> {
 
     }
 
+    @Override
+    public void assessFitness() {
+        if (this.fitness == null) {
+            this.fitness = this.evaluator.evaluate(this.getPhenotype());
+        }
+    }
+
     public Integer[] getGenotype() {
         Integer [] a = new Integer[genotype.length];
         System.arraycopy(genotype, 0, a, 0, genotype.length);
@@ -34,10 +41,6 @@ public class IntegerIndividual extends Individual<Integer> {
     }
 
     public double getFitness() {
-        if (this.fitness == null) {
-            this.fitness = this.evaluator.evaluate(this.getPhenotype());
-        }
-
         return this.fitness;
     }
 

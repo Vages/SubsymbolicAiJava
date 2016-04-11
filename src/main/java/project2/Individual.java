@@ -9,6 +9,8 @@ public abstract class Individual<G> implements Comparable<Individual> {
 
     public abstract void develop();
 
+    public abstract void assessFitness();
+
     @Override
     public int compareTo(Individual o) {
         double otherObjectFitness = o.getFitness();

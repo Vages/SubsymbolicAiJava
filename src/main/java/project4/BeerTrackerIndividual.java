@@ -86,8 +86,18 @@ public class BeerTrackerIndividual extends Individual<NeuralNetworkGene> {
 
     @Override
     public double getFitness() {
+        return lastAssessedFitness;
+    }
+
+    @Override
+    public void develop() {
+        this.network = new ContinuousTimeRecurrentNeuralNetwork(topology, genotype);
+    }
+
+    @Override
+    public void assessFitness() {
         if (this.lastRewardVersionNumber == world.getRewardVersion()) {
-            return this.lastAssessedFitness;
+            return;
         }
 
         Map<GameEvent, Double> rewards = world.getRewards();
@@ -104,12 +114,6 @@ public class BeerTrackerIndividual extends Individual<NeuralNetworkGene> {
 
         this.lastRewardVersionNumber = world.getRewardVersion();
         this.lastAssessedFitness = fitness;
-        return fitness;
-    }
-
-    @Override
-    public void develop() {
-        this.network = new ContinuousTimeRecurrentNeuralNetwork(topology, genotype);
     }
 
     public GameEvent doOneMoveInGame(BeerTrackerGame g) {
