@@ -29,7 +29,7 @@ public class BeerTrackerGame {
     }
 
     public BeerTrackerGame(boolean noWrap) {
-        this(30, 1, 5, noWrap);
+        this(30, 15, 5, noWrap);
     }
 
     public BeerTrackerGame() {
