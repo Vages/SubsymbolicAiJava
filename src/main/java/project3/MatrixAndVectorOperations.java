@@ -23,6 +23,17 @@ public class MatrixAndVectorOperations {
         return result;
     }
 
+    public static int[] addIntArrays(int[] left, int[] right) {
+        int length = left.length;
+        int[] result = new int[length];
+
+        for (int i = 0; i < length; i++) {
+            result[i] = left[i] + right[i];
+        }
+
+        return result;
+    }
+
     public static double[] addArrays(double[] left, double[] right) {
         int length = left.length;
         double[] result = new double[length];
