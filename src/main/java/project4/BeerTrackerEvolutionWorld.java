@@ -39,7 +39,7 @@ public class BeerTrackerEvolutionWorld extends EvolutionWorld<NeuralNetworkGene>
 
         for (int i = 0; i < childPoolSize; i++) {
             NeuralNetworkGene[] genotype = BeerTrackerIndividual.generateRandomGenotype(topology);
-            children.add(new BeerTrackerIndividual(genotype, topology, new TrackerAction[]{TrackerAction.MOVE_LEFT, TrackerAction.MOVE_RIGHT}, this));
+            children.add(new BeerTrackerIndividual(genotype, topology, new TrackerAction[]{TrackerAction.MOVE_LEFT, TrackerAction.MOVE_RIGHT}, this, false));
         }
     }
 
@@ -49,8 +49,8 @@ public class BeerTrackerEvolutionWorld extends EvolutionWorld<NeuralNetworkGene>
 
         for (int i = 0; i < matingGenotypeList.size(); i = i + 2) {
             NeuralNetworkGene[][] childPair = crossBreeder.crossBreed(matingGenotypeList.get(i), matingGenotypeList.get(i+1));
-            children.add(new BeerTrackerIndividual(mutator.mutate(childPair[0]), topology, new TrackerAction[]{TrackerAction.MOVE_LEFT, TrackerAction.MOVE_RIGHT}, this));
-            children.add(new BeerTrackerIndividual(mutator.mutate(childPair[1]), topology, new TrackerAction[]{TrackerAction.MOVE_LEFT, TrackerAction.MOVE_RIGHT}, this));
+            children.add(new BeerTrackerIndividual(mutator.mutate(childPair[0]), topology, new TrackerAction[]{TrackerAction.MOVE_LEFT, TrackerAction.MOVE_RIGHT}, this, false));
+            children.add(new BeerTrackerIndividual(mutator.mutate(childPair[1]), topology, new TrackerAction[]{TrackerAction.MOVE_LEFT, TrackerAction.MOVE_RIGHT}, this, false));
         }
 
         rewardVersion++; // todo: make this a separate variable

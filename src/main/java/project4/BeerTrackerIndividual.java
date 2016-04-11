@@ -8,6 +8,7 @@ import java.util.Map;
 
 public class BeerTrackerIndividual extends Individual<NeuralNetworkGene> {
     private final TrackerAction[] availableActions;
+    private final boolean noWrap;
     private NeuralNetworkGene[] genotype;
     private int[] topology;
     private ContinuousTimeRecurrentNeuralNetwork network;
@@ -15,11 +16,12 @@ public class BeerTrackerIndividual extends Individual<NeuralNetworkGene> {
     private double lastAssessedFitness = 0;
     private BeerTrackerEvolutionWorld world;
 
-    public BeerTrackerIndividual(NeuralNetworkGene[] genotype, int[] topology, TrackerAction[] availableActions, BeerTrackerEvolutionWorld world) {
+    public BeerTrackerIndividual(NeuralNetworkGene[] genotype, int[] topology, TrackerAction[] availableActions, BeerTrackerEvolutionWorld world, boolean noWrap) {
         this.genotype = genotype;
         this.topology = topology;
         this.availableActions = availableActions;
         this.world = world;
+        this.noWrap = noWrap;
     }
 
     /**
@@ -102,7 +104,7 @@ public class BeerTrackerIndividual extends Individual<NeuralNetworkGene> {
 
         Map<GameEvent, Double> rewards = world.getRewards();
 
-        BeerTrackerGame game = new BeerTrackerGame();
+        BeerTrackerGame game = new BeerTrackerGame(noWrap);
 
         double fitness = 0;
         while (true) {
@@ -117,12 +119,23 @@ public class BeerTrackerIndividual extends Individual<NeuralNetworkGene> {
     }
 
     public GameEvent doOneMoveInGame(BeerTrackerGame g) {
-        boolean[] sensings = g.getShadowSensings();
+        boolean[] shadowSensings = g.getShadowSensings();
 
-        for (int i = 0; i < sensings.length; i++) {
+        for (int i = 0; i < shadowSensings.length; i++) {
             double activation = 0;
-            if (sensings[i]) activation = 1;
+            if (shadowSensings[i]) activation = 1;
             network.setInputActivation(i, activation);
+        }
+
+        if (noWrap) {
+            boolean[] edgeSensings = g.getEdgeTouchSensings();
+
+            for (int i = 0; i < edgeSensings.length; i++) {
+                double activation = 0;
+                if (edgeSensings[i]) activation = 1;
+                network.setInputActivation(shadowSensings.length + i, activation);
+            }
+
         }
 
         network.propagate();
@@ -133,9 +146,9 @@ public class BeerTrackerIndividual extends Individual<NeuralNetworkGene> {
         if (activation < threshold) {
             magnitude = 0;
         } else {
-            double stepSize = (1-threshold) / 4;
-            magnitude = 1 + (int) ((activation-threshold)/stepSize);
-            if (magnitude > 4){
+            double stepSize = (1 - threshold) / 4;
+            magnitude = 1 + (int) ((activation - threshold) / stepSize);
+            if (magnitude > 4) {
                 magnitude = 4;
             }
         }
