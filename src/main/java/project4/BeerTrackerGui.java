@@ -207,6 +207,9 @@ public class BeerTrackerGui extends Application {
                 if (framesSkipped >= refreshRate) {
                     drawGame(g, gc);
                     GameEvent lastEvent = bestIndividual.doOneMoveInGame(g);
+                    if (lastEvent != GameEvent.NOTHING) {
+                        System.out.println(lastEvent);
+                    }
 
                     if (lastEvent == GameEvent.GAME_OVER) {
                         this.stop();
