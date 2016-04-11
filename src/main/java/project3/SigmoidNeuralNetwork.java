@@ -1,22 +1,29 @@
 package project3;
 
-import static project3.MatrixAndVectorOperations.*;
+import org.nd4j.linalg.api.ndarray.INDArray;
+import org.nd4j.linalg.api.ops.impl.transforms.Sigmoid;
+import org.nd4j.linalg.factory.Nd4j;
+import org.nd4j.linalg.ops.transforms.Transforms;
 
 import java.util.Arrays;
 
 public class SigmoidNeuralNetwork {
-    protected double[][]biasWeights;
+    private final INDArray[] biasWeights;
     protected int[] topology;
-    protected double[][] activations;
-    protected double[][][] weights;
-    protected boolean biasOn;
+    protected INDArray[] activations;
+    protected INDArray[] weights;
+    protected INDArray biasNode;
 
     protected SigmoidNeuralNetwork(int[] topology, double[] weightDoubles, boolean biasOn) {
         this.topology = topology;
-        this.activations = new double[topology.length][];
-        this.weights = new double[topology.length-1][][];
-        this.biasWeights = new double[topology.length-1][];
-        this.biasOn = biasOn;
+        this.activations = new INDArray[topology.length];
+        this.weights = new INDArray[topology.length-1];
+        this.biasWeights = new INDArray[topology.length-1];
+        if (biasOn){
+            this.biasNode = Nd4j.ones(1);
+        } else {
+            this.biasNode = Nd4j.zeros(1);
+        }
 
         int noOfWeightsAddedSoFar = 0;
 
@@ -25,40 +32,40 @@ public class SigmoidNeuralNetwork {
             int activationsInNextLayer = topology[i+1];
             int weightsToBeGotten = activationsInThisLayer*activationsInNextLayer;
 
-            this.activations[i] = new double[activationsInThisLayer];
+            this.activations[i] = Nd4j.zeros(activationsInThisLayer);
 
             double[] thisLayersWeights = Arrays.copyOfRange(weightDoubles, noOfWeightsAddedSoFar, noOfWeightsAddedSoFar+weightsToBeGotten);
-            this.weights[i] = createTwoDimensionalMatrix(thisLayersWeights, activationsInThisLayer, activationsInNextLayer);
             noOfWeightsAddedSoFar += weightsToBeGotten;
+            this.weights[i] = Nd4j.create(thisLayersWeights, new int[]{activationsInThisLayer, activationsInNextLayer});
 
-            this.biasWeights[i] = Arrays.copyOfRange(weightDoubles, noOfWeightsAddedSoFar, noOfWeightsAddedSoFar+weightsToBeGotten);
+            double[] thisLayersBiasWeights = Arrays.copyOfRange(weightDoubles, noOfWeightsAddedSoFar, noOfWeightsAddedSoFar+weightsToBeGotten);
             noOfWeightsAddedSoFar += activationsInNextLayer;
+            this.biasWeights[i] = Nd4j.create(thisLayersBiasWeights, new int[]{1, activationsInNextLayer});
         }
 
         // Add output layer without bias node
-        activations[topology.length-1] = new double[topology[topology.length-1]];
+        activations[topology.length-1] = Nd4j.zeros(topology[topology.length-1]);
     }
 
     public void propagate() {
         for (int i = 0; i < this.weights.length; i++) {
-            double[] currentLayer = this.activations[i];
-            double[][] transitionWeights = this.weights[i];
-            double[] biasWeights = this.biasWeights[i];
+            INDArray currentLayer = this.activations[i];
+            INDArray transitionWeights = this.weights[i];
+            INDArray biasWeights = this.biasWeights[i];
 
-            double[] newActivation = multiplyVectorByMatrix(currentLayer, transitionWeights);
-            if (biasOn) {
-                newActivation = addArrays(newActivation, biasWeights);
-            }
+            INDArray activationFromCurrentLayer = currentLayer.mmul(transitionWeights);
+            INDArray activationFromBiasNode = biasNode.mmul(biasWeights);
+            INDArray unscaledActivation = activationFromCurrentLayer.add(activationFromBiasNode);
 
-            this.activations[i+1] = applySigmoid(newActivation);
+            this.activations[i+1] = Transforms.sigmoid(unscaledActivation);
         }
     }
 
     public void setInput(int index, double value){
-        this.activations[0][index] = value;
+        this.activations[0].putScalar(index, value);
     }
 
-    public double[] getOutputs() {
+    public INDArray getOutputs() {
         return this.activations[activations.length-1];
     }
 }
