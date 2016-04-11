@@ -1,74 +1,67 @@
 package project4;
 
-import org.nd4j.linalg.api.ndarray.INDArray;
-import org.nd4j.linalg.factory.Nd4j;
-import org.nd4j.linalg.ops.transforms.Transforms;
-
 public class ContinuousTimeRecurrentNeuralNetwork {
     protected int[] topology;
-    
-    protected INDArray[] internalActivations;
-    protected INDArray[] outputActivations;
-    
-    protected INDArray[] transitionWeights;
-    protected INDArray[] internalLayerWeights;
-    protected INDArray[] biasWeights;
-    protected INDArray[] gains;
-    protected INDArray[] timeConstants;
-    
-    protected INDArray biasNode;
+
+    protected double[][] internalActivations;
+    protected double[][] outputActivations;
+
+    protected double[][][] transitionWeights;
+    protected double[][][] internalLayerWeights;
+    protected double[][] biasWeights;
+    protected double[][] gains;
+    protected double[][] timeConstants;
+
+    protected double[] biasNode;
 
     protected ContinuousTimeRecurrentNeuralNetwork(int[] topology, NeuralNetworkGene[] genes) {
         this.topology = topology;
-        this.outputActivations = new INDArray[topology.length];
-        this.internalActivations = new INDArray[topology.length];
+        this.outputActivations = new double[topology.length][];
+        this.internalActivations = new double[topology.length][];
 
         // All of these arrays will have an empty first index. This will make the code for them simpler.
-        this.transitionWeights = new INDArray[topology.length];
-        this.internalLayerWeights = new INDArray[topology.length];
-        this.biasWeights = new INDArray[topology.length];
-        this.gains = new INDArray[topology.length];
-        this.timeConstants = new INDArray[topology.length];
+        this.transitionWeights = new double[topology.length][][];
+        this.internalLayerWeights = new double[topology.length][][];
+        this.biasWeights = new double[topology.length][];
+        this.gains = new double[topology.length][];
+        this.timeConstants = new double[topology.length][];
 
-        this.biasNode = Nd4j.ones(1);
+        this.biasNode = new double[]{1.0};
 
         int noOfGenesAdded = 0;
 
-        this.outputActivations[0] = Nd4j.zeros(topology[0]); // Add outputActivations for first layer
+        this.outputActivations[0] = new double[topology[0]]; // Add outputActivations for first layer
 
         for (int i = 1; i < topology.length; i++) {
             // Set internal and output activations
             int neuronsInThisLayer = topology[i];
-            this.internalActivations[i] = Nd4j.zeros(neuronsInThisLayer);
-            this.outputActivations[i] = Nd4j.zeros(neuronsInThisLayer);
+            this.internalActivations[i] = new double[neuronsInThisLayer];
+            this.outputActivations[i] = new double[neuronsInThisLayer];
 
             // Transition weights, t_(n-1)*t_n
-            int neuronsInPreviousLayer = topology[i-1];
-            int noOfTransitionWeights = neuronsInPreviousLayer*neuronsInThisLayer;
+            int neuronsInPreviousLayer = topology[i - 1];
+            int noOfTransitionWeights = neuronsInPreviousLayer * neuronsInThisLayer;
 
             double[] thisLayersTransitionWeights = convertGeneRangeToDoublesArray(genes, noOfGenesAdded, noOfTransitionWeights);
-            this.transitionWeights[i] = Nd4j.create(thisLayersTransitionWeights, new int[]{neuronsInPreviousLayer, neuronsInThisLayer});
+            this.transitionWeights[i] = createTwoDimensionalMatrix(thisLayersTransitionWeights, neuronsInPreviousLayer, neuronsInThisLayer);
             noOfGenesAdded += noOfTransitionWeights;
 
             // Current layer weights, t_n**2
-            int noOfInternalLayerWeights = neuronsInThisLayer*neuronsInThisLayer;
+            int noOfInternalLayerWeights = neuronsInThisLayer * neuronsInThisLayer;
             double[] thisLayersCurrentLayerWeights = convertGeneRangeToDoublesArray(genes, noOfGenesAdded, noOfInternalLayerWeights);
-            this.internalLayerWeights[i] = Nd4j.create(thisLayersCurrentLayerWeights, new int[]{neuronsInThisLayer, neuronsInThisLayer});
+            this.internalLayerWeights[i] = createTwoDimensionalMatrix(thisLayersCurrentLayerWeights, neuronsInThisLayer, neuronsInThisLayer);
             noOfGenesAdded += noOfInternalLayerWeights;
 
             // Biases, 1*t_n
-            double[] thisLayersBiasWeights = convertGeneRangeToDoublesArray(genes, noOfGenesAdded, neuronsInThisLayer);
-            this.biasWeights[i] = Nd4j.create(thisLayersBiasWeights, new int[]{1, neuronsInThisLayer});
+            this.biasWeights[i] = convertGeneRangeToDoublesArray(genes, noOfGenesAdded, neuronsInThisLayer);
             noOfGenesAdded += neuronsInThisLayer;
 
             // Gains, 1*t_n
-            double[] thisLayersGains = convertGeneRangeToDoublesArray(genes, noOfGenesAdded, neuronsInThisLayer);
-            this.gains[i] = Nd4j.create(thisLayersGains, new int[]{1, neuronsInThisLayer});
+            this.gains[i] = convertGeneRangeToDoublesArray(genes, noOfGenesAdded, neuronsInThisLayer);
             noOfGenesAdded += neuronsInThisLayer;
 
             // Time constants, 1*t_n
-            double[] thisLayersTimeConstants = convertGeneRangeToDoublesArray(genes, noOfGenesAdded, neuronsInThisLayer);
-            this.timeConstants[i] = Nd4j.create(thisLayersTimeConstants, new int[]{1, neuronsInThisLayer});
+            this.timeConstants[i] = convertGeneRangeToDoublesArray(genes, noOfGenesAdded, neuronsInThisLayer);
             noOfGenesAdded += neuronsInThisLayer;
         }
 
@@ -78,69 +71,69 @@ public class ContinuousTimeRecurrentNeuralNetwork {
      * Propagates the information in the input nodes through the network.
      */
     public void propagate() {
-        for (int i = 1; i < this.outputActivations.length; i++){
+        for (int i = 1; i < this.outputActivations.length; i++) {
             // Get internal and external activations
-            INDArray previousLayerOutputActivations = this.outputActivations[i-1];
-            INDArray thisLayerOutputActivations = this.outputActivations[i];
-            INDArray lastTimeStepInternalActivations = this.internalActivations[i];
+            double[] previousLayerOutputActivations = this.outputActivations[i - 1];
+            double[] thisLayerOutputActivations = this.outputActivations[i];
+            double[] lastTimeStepInternalActivations = this.internalActivations[i];
 
             // Get all weights related to this layer
-            INDArray previousLayerTransitionWeights = this.transitionWeights[i];
-            INDArray thisInternalWeights = this.internalLayerWeights[i];
-            INDArray thisLayerBiases = this.biasWeights[i];
-            INDArray thisLayerGain = this.gains[i];
-            INDArray thisLayerTimeConstants = this.timeConstants[i];
+            double[][] previousLayerTransitionWeights = this.transitionWeights[i];
+            double[][] thisInternalWeights = this.internalLayerWeights[i];
+            double[] thisLayerBiases = this.biasWeights[i];
+            double[] thisLayerGain = this.gains[i];
+            double[] thisLayerTimeConstants = this.timeConstants[i];
 
             // Calculate contributions from other nodes (including bias)
-            INDArray contributionFromPreviousLayer = previousLayerOutputActivations.mmul(previousLayerTransitionWeights);
-            INDArray contributionFromCurrentLayer = thisLayerOutputActivations.mmul(thisInternalWeights);
-            INDArray contributionFromBias = biasNode.mmul(thisLayerBiases);
+            double[] contributionFromPreviousLayer = multiplyVectorByMatrix(previousLayerOutputActivations, previousLayerTransitionWeights);
+            double[] contributionFromCurrentLayer = multiplyVectorByMatrix(thisLayerOutputActivations, thisInternalWeights);
 
-            INDArray sumOfContributions = contributionFromBias.add(contributionFromCurrentLayer).add(contributionFromPreviousLayer);
+            double[] sumOfContributions = addArrays(contributionFromPreviousLayer, contributionFromCurrentLayer);
+            sumOfContributions = addArrays(sumOfContributions, thisLayerBiases);
 
             // Update the internal activation
-            INDArray differenceFromLastStep = sumOfContributions.sub(lastTimeStepInternalActivations);
-            INDArray derivative = differenceFromLastStep.div(thisLayerTimeConstants);
-            INDArray newInternalActivation = lastTimeStepInternalActivations.add(derivative);
+            double[] differenceFromLastStep = subtractArrays(sumOfContributions, lastTimeStepInternalActivations);
+            double[] derivative = divideArrays(differenceFromLastStep, thisLayerTimeConstants);
+            double[] newInternalActivation = addArrays(lastTimeStepInternalActivations, derivative);
             this.internalActivations[i] = newInternalActivation;
 
             // Set output activation
-            INDArray gainedInternalActivations = newInternalActivation.mul(thisLayerGain);
-            this.outputActivations[i] = Transforms.sigmoid(gainedInternalActivations);
+            double[] gainedInternalActivation = multiplyArrays(newInternalActivation, thisLayerGain);
+            this.outputActivations[i] = applySigmoid(gainedInternalActivation);
         }
     }
 
     /**
      * Converts a certain number of genes to an array of doubles, starting with the start index.
      *
-     * @param genes         a gene array to copy from
-     * @param start         start index, inclusive
-     * @param noOfElements  number of elements to be gotten
-     * @return              array of gene values
+     * @param genes        a gene array to copy from
+     * @param start        start index, inclusive
+     * @param noOfElements number of elements to be gotten
+     * @return array of gene values
      */
     private double[] convertGeneRangeToDoublesArray(NeuralNetworkGene[] genes, int start, int noOfElements) {
         double[] values = new double[noOfElements];
 
         for (int i = 0; i < noOfElements; i++) {
-            values[i] = genes[start+i].getValue();
+            values[i] = genes[start + i].getValue();
         }
 
         return values;
     }
 
     public void setInputActivation(int node, double value) {
-        this.outputActivations[0].putScalar(node, value);
+        this.outputActivations[0][node] = value;
     }
 
     @SuppressWarnings("Duplicates")
     public int getMostActiveOutputNode() {
-        INDArray outputLayer = outputActivations[outputActivations.length-1];
+        double[] outputLayer = outputActivations[outputActivations.length - 1];
 
         int maxIndex = -1;
         double maxOutput = Double.NEGATIVE_INFINITY;
 
-        for (int i = 0; i < outputLayer.length(); i++){
-            double output_i = outputLayer.getDouble(i);
+        for (int i = 0; i < outputLayer.length; i++) {
+            double output_i = outputLayer[i];
 
             if (output_i > maxOutput) {
                 maxIndex = i;
@@ -152,8 +145,85 @@ public class ContinuousTimeRecurrentNeuralNetwork {
     }
 
     public double getOutputActivation(int node) {
-        INDArray outputLayer = outputActivations[outputActivations.length-1];
-        return outputLayer.getDouble(node);
+        double[] outputLayer = outputActivations[outputActivations.length - 1];
+        return outputLayer[node];
+    }
+
+    public double[][] createTwoDimensionalMatrix(double[] data, int rows, int columns) {
+        double[][] results = new double[rows][columns];
+
+        for (int i = 0; i < rows; i++) {
+            System.arraycopy(data, i * columns + 0, results[i], 0, columns);
+        }
+
+        return results;
+    }
+
+    public double[] multiplyVectorByMatrix(double[] vector, double[][] matrix) {
+        double[] result = new double[matrix[0].length];
+
+        for (double[] aMatrix : matrix) {
+            for (int j = 0; j < matrix[0].length; j++) {
+                result[j] += vector[j] * aMatrix[j];
+            }
+        }
+
+        return result;
+    }
+
+    public double[] addArrays(double[] left, double[] right) {
+        int length = left.length;
+        double[] result = new double[length];
+
+        for (int i = 0; i < length; i++) {
+            result[i] = left[i] + right[i];
+        }
+
+        return result;
+    }
+
+    public double[] subtractArrays(double[] left, double[] right) {
+        int length = left.length;
+        double[] result = new double[length];
+
+        for (int i = 0; i < length; i++) {
+            result[i] = left[i] - right[i];
+        }
+
+        return result;
+    }
+
+    public double[] divideArrays(double[] dividend, double[] divisor) {
+        int length = dividend.length;
+        double[] result = new double[length];
+
+        for (int i = 0; i < length; i++) {
+            result[i] = dividend[i] / divisor[i];
+        }
+
+        return result;
+    }
+
+    public double[] multiplyArrays(double[] left, double[] right) {
+        int length = left.length;
+        double[] result = new double[length];
+
+        for (int i = 0; i < length; i++) {
+            result[i] = left[i] * right[i];
+        }
+
+        return result;
+    }
+
+    public double[] applySigmoid(double[] array) {
+        int length = array.length;
+        double[] result = new double[length];
+
+        for (int i = 0; i < length; i++) {
+            result[i] = (1 / (1 + Math.pow(Math.E, (-1 * array[i]))));
+        }
+
+        return result;
     }
 
 }
