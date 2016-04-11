@@ -12,12 +12,13 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import project2.AdultSelection;
 import project2.MatingSelection;
-import project3.*;
 
-import java.util.ArrayList;
 import java.util.Set;
 
 public class BeerTrackerGui extends Application {
+    private boolean noWrapValue = true;
+    private boolean pullAllowedValue = false;
+
     private double
             sizeX = 800,
             sizeY = 400,
@@ -26,6 +27,10 @@ public class BeerTrackerGui extends Application {
             mutationRateValue = 0.8;
 
     private BeerTrackerEvolutionWorld world;
+
+    final CheckBox
+            noWrapCheckbox = new CheckBox(),
+            pullAllowedCheckbox = new CheckBox();
 
     final Label
             generationsLabel = new Label("Generations: "),
@@ -37,6 +42,8 @@ public class BeerTrackerGui extends Application {
             numberOfMutationsLabel = new Label("Number of mutations: "),
             crossingRateDisplay = new Label(Double.toString(crossingRateValue)),
             mutationRateDisplay = new Label(Double.toString(mutationRateValue)),
+            noWrapLabel = new Label("No wrap?: "),
+            pullAllowedLabel = new Label("Pull allowed?: "),
             spfDisplay = new Label(Double.toString(refreshRate / 60));
 
     final Slider
@@ -72,7 +79,7 @@ public class BeerTrackerGui extends Application {
         Canvas canvas = new Canvas(sizeX, sizeY);
 
         GridPane.setConstraints(canvas, 0, 0);
-        GridPane.setRowSpan(canvas, 7);
+        GridPane.setRowSpan(canvas, 9);
         grid.getChildren().add(canvas);
 
         // Text fields
@@ -154,6 +161,28 @@ public class BeerTrackerGui extends Application {
 
         rowNumber++;
 
+        GridPane.setConstraints(noWrapLabel, 1, rowNumber);
+        grid.getChildren().add(noWrapLabel);
+
+        GridPane.setConstraints(noWrapCheckbox, 2, rowNumber);
+        grid.getChildren().add(noWrapCheckbox);
+
+        noWrapCheckbox.setSelected(noWrapValue);
+        noWrapCheckbox.setOnAction(event -> noWrapValue = noWrapCheckbox.isSelected());
+
+        rowNumber++;
+
+        GridPane.setConstraints(pullAllowedLabel, 1, rowNumber);
+        grid.getChildren().add(pullAllowedLabel);
+
+        GridPane.setConstraints(pullAllowedCheckbox, 2, rowNumber);
+        grid.getChildren().add(pullAllowedCheckbox);
+
+        pullAllowedCheckbox.setSelected(pullAllowedValue);
+        pullAllowedCheckbox.setOnAction(event -> pullAllowedValue = pullAllowedCheckbox.isSelected());
+
+        rowNumber++;
+
         startEvolutionButton.setOnAction(event -> startEvolution());
 
         GridPane.setConstraints(startEvolutionButton, 1, rowNumber);
@@ -197,7 +226,7 @@ public class BeerTrackerGui extends Application {
 
         bestIndividual = world.getBestIndividual();
 
-        BeerTrackerGame g = new BeerTrackerGame();
+        BeerTrackerGame g = new BeerTrackerGame(noWrapValue);
 
         new AnimationTimer() {
             int framesSkipped = 0;
@@ -239,7 +268,7 @@ public class BeerTrackerGui extends Application {
                 "project4/log",
                 crossingRateValue,
                 mutationRateValue,
-                noOfMutations);
+                noOfMutations, noWrapValue);
 
         world.runAllEpochs();
 
