@@ -189,6 +189,13 @@ public class BeerTrackerGame {
         return readings;
     }
 
+    public double[] getEdgeProximities() {
+        double closenessToRightEdge = (double) trackerPosition/maxTrackerPositionWithoutWrap;
+        double closenessToLeftEdge = 1-closenessToRightEdge;
+
+        return new double[]{closenessToLeftEdge, closenessToRightEdge};
+    }
+
     public int getFallingObjectSize() {
         return fallingObjectSize;
     }

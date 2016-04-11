@@ -128,12 +128,20 @@ public class BeerTrackerIndividual extends Individual<NeuralNetworkGene> {
         }
 
         if (noWrap) {
+            /*
             boolean[] edgeSensings = g.getEdgeTouchSensings();
 
             for (int i = 0; i < edgeSensings.length; i++) {
                 double activation = 0;
                 if (edgeSensings[i]) activation = 1;
                 network.setInputActivation(shadowSensings.length + i, activation);
+            }
+            */
+
+            double[] edgeProximities = g.getEdgeProximities();
+
+            for (int i = 0; i < edgeProximities.length; i++) {
+                network.setInputActivation(shadowSensings.length + i, edgeProximities[i]);
             }
 
         }
