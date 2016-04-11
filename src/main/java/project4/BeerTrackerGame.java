@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class BeerTrackerGame {
-    private final boolean wrappingAllowed;
+    private final boolean noWrap;
     private final int width;
     private final int height;
     private int trackerPosition;
@@ -15,21 +15,21 @@ public class BeerTrackerGame {
     private final int maxTrackerPositionWithoutWrap;
     private int timeStepsLeft = 600;
 
-    public BeerTrackerGame(int width, int height, int trackerSize, boolean wrappingAllowed) {
+    public BeerTrackerGame(int width, int height, int trackerSize, boolean noWrap) {
         this.width = width;
         this.height = height;
         this.trackerSize = trackerSize;
-        this.wrappingAllowed = wrappingAllowed;
+        this.noWrap = noWrap;
         maxTrackerPositionWithoutWrap = width - trackerSize;
         int spawnPositionRoof = width;
-        if (!wrappingAllowed)
+        if (noWrap)
             spawnPositionRoof = maxTrackerPositionWithoutWrap + 1;
         this.trackerPosition = (int) (Math.random()*spawnPositionRoof);
         spawnNewFallingObject();
     }
 
     public BeerTrackerGame() {
-        this(30, 15, 5, true);
+        this(30, 15, 5, false);
     }
 
     /**
@@ -99,16 +99,7 @@ public class BeerTrackerGame {
      * @param magnitude number of steps to move
      */
     private void moveTracker(TrackerAction a, int magnitude) {
-        if (wrappingAllowed) {
-            if (a == TrackerAction.MOVE_LEFT) {
-                trackerPosition -= magnitude;
-            } else {
-                trackerPosition += magnitude;
-            }
-
-            // Modulo operation to ensure wraparound
-            trackerPosition = (trackerPosition + width) % width;
-        } else {
+        if (noWrap) {
             if (a == TrackerAction.MOVE_LEFT) {
                 trackerPosition -= magnitude;
                 if (trackerPosition < 0) {
@@ -120,6 +111,15 @@ public class BeerTrackerGame {
                     trackerPosition = maxTrackerPositionWithoutWrap;
                 }
             }
+        } else {
+            if (a == TrackerAction.MOVE_LEFT) {
+                trackerPosition -= magnitude;
+            } else {
+                trackerPosition += magnitude;
+            }
+
+            // Modulo operation to ensure wraparound
+            trackerPosition = (trackerPosition + width) % width;
         }
     }
 
@@ -146,10 +146,10 @@ public class BeerTrackerGame {
     private void spawnNewFallingObject() {
         fallingObjectYPosition = height;
         fallingObjectSize = 1 + (int) (Math.random() * 6); // A random number from 1 to 6
-        if (wrappingAllowed) {
-            fallingObjectXPosition = (int) (Math.random() * width);
-        } else {
+        if (noWrap) {
             fallingObjectXPosition = (int) (Math.random() * (width - fallingObjectSize));
+        } else {
+            fallingObjectXPosition = (int) (Math.random() * width);
         }
     }
 
