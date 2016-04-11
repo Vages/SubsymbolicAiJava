@@ -312,7 +312,7 @@ public class BeerTrackerGui extends Application {
         }
 
         int objectYPos = g.getFallingObjectYPosition();
-        double visualObjectYPos = (15-objectYPos) * verticalCellSize;
+        double visualObjectYPos = (14-objectYPos) * verticalCellSize;
 
         Set<Integer> objectCells = g.getFallingObjectCells();
 
