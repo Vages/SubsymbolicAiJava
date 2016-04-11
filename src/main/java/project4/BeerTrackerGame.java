@@ -66,7 +66,7 @@ public class BeerTrackerGame {
     private GameEvent getCaptureResults() {
         Set<Integer> trackerCells = getCellsOccupiedByObject(trackerPosition, trackerSize);
         Set<Integer> objectCells = getCellsOccupiedByObject(fallingObjectXPosition, fallingObjectSize);
-        boolean isBig = fallingObjectSize > trackerSize;
+        boolean isBig = fallingObjectSize > 4;
         if (isBig) {
             if (trackerCells.containsAll(objectCells)) {
                 return GameEvent.CAPTURED_SMALL;
