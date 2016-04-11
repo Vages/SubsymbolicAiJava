@@ -1,7 +1,6 @@
 package project3;
 
 import org.nd4j.linalg.api.ndarray.INDArray;
-import org.nd4j.linalg.api.ops.impl.transforms.Sigmoid;
 import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.ops.transforms.Transforms;
 
@@ -67,5 +66,23 @@ public class SigmoidNeuralNetwork {
 
     public INDArray getOutputs() {
         return this.activations[activations.length-1];
+    }
+
+    protected int getMaxOutput(){
+        INDArray outputLayer = activations[activations.length-1];
+
+        int maxIndex = -1;
+        double maxOutput = Double.NEGATIVE_INFINITY;
+
+        for (int i = 0; i < outputLayer.length(); i++){
+            double output_i = outputLayer.getDouble(i);
+
+            if (output_i > maxOutput) {
+                maxIndex = i;
+                maxOutput = output_i;
+            }
+        }
+
+        return maxIndex;
     }
 }
