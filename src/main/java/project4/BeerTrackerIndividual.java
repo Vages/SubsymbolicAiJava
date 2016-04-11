@@ -86,7 +86,7 @@ public class BeerTrackerIndividual extends Individual<NeuralNetworkGene> {
 
     @Override
     public double getFitness() {
-        if (world.getRewardVersion() <= this.lastRewardVersionNumber) {
+        if (this.lastRewardVersionNumber == world.getRewardVersion()) {
             return this.lastAssessedFitness;
         }
 
