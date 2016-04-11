@@ -20,14 +20,14 @@ public class BeerTrackerEvolutionWorld extends EvolutionWorld<NeuralNetworkGene>
         super(adultSelection, matingSelection, childPoolSize, adultPoolSize, numberOfGenerations, logFileName);
         this.crossBreeder = new NeuralNetworkGeneCrossBreeder(crossingRate);
         this.mutator = new NeuralNetworkGeneMutator(mutateThreshold, numberOfMutations);
-        topology = new int[]{5, 5, 2};
+        topology = new int[]{5, 2, 2};
 
         rewards = new HashMap<>();
         rewards.put(GameEvent.CAPTURED_SMALL, 50.0);
         rewards.put(GameEvent.PARTIALLY_CAPTURED_SMALL, 0.0);
         rewards.put(GameEvent.AVOIDED_SMALL, 0.0);
-        rewards.put(GameEvent.CAPTURED_BIG, 50.0);
-        rewards.put(GameEvent.PARTIALLY_CAPTURED_BIG, 0.0);
+        rewards.put(GameEvent.CAPTURED_BIG, -100.0);
+        rewards.put(GameEvent.PARTIALLY_CAPTURED_BIG, -100.0);
         rewards.put(GameEvent.AVOIDED_BIG, 0.0);
         rewards.put(GameEvent.NOTHING, 0.0);
         rewards.put(GameEvent.GAME_OVER, 0.0);
@@ -55,11 +55,13 @@ public class BeerTrackerEvolutionWorld extends EvolutionWorld<NeuralNetworkGene>
 
         rewardVersion++; // todo: make this a separate variable
 
+        /*
         // Try at adaptive rewards
         if (rewardVersion > numberOfGenerations/2) {
             rewards.put(GameEvent.CAPTURED_BIG, 0.0);
             rewards.put(GameEvent.AVOIDED_BIG, 1.0);
         }
+        */
     }
 
     public int getRewardVersion() {
