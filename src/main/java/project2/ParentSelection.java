@@ -67,7 +67,7 @@ public class ParentSelection {
             }
 
             if (Math.random() > tournamentE) {
-                double maxFitness = 0;
+                double maxFitness = Double.NEGATIVE_INFINITY;
                 Individual maxIndividual = null;
 
                 for (Individual a: tournament) {
