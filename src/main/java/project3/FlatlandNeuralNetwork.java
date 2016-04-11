@@ -1,7 +1,5 @@
 package project3;
 
-import org.nd4j.linalg.api.ndarray.INDArray;
-
 public class FlatlandNeuralNetwork extends SigmoidNeuralNetwork{
     private MoveDirection[] dirs = {MoveDirection.LEFT, MoveDirection.FORWARD, MoveDirection.RIGHT};
 
@@ -10,13 +8,13 @@ public class FlatlandNeuralNetwork extends SigmoidNeuralNetwork{
     }
 
     private int getMaxOutput(){
-        INDArray outputLayer = activations[activations.length-1];
+        double[] outputLayer = activations[activations.length-1];
 
         int maxIndex = -1;
         double maxOutput = Double.NEGATIVE_INFINITY;
 
-        for (int i = 0; i < outputLayer.length(); i++){
-            double output_i = outputLayer.getDouble(i);
+        for (int i = 0; i < outputLayer.length; i++){
+            double output_i = outputLayer[i];
 
             if (output_i > maxOutput) {
                 maxIndex = i;
