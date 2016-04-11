@@ -12,11 +12,11 @@ public class MatrixAndVectorOperations {
     }
 
     public static double[] multiplyVectorByMatrix(double[] vector, double[][] matrix) {
-        double[] result = new double[matrix[0].length];
+        double[] result = new double[vector.length];
 
-        for (double[] aMatrix : matrix) {
-            for (int j = 0; j < matrix[0].length; j++) {
-                result[j] += vector[j] * aMatrix[j];
+        for (int i = 0; i < result.length; i++) {
+            for (int j = 0; j < matrix.length; j++) {
+                result[i] += vector[j]*matrix[j][i];
             }
         }
 
