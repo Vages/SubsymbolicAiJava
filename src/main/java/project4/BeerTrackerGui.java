@@ -275,8 +275,6 @@ public class BeerTrackerGui extends Application {
         int trackerPos = g.getTrackerPosition();
         int trackerSize = g.getTrackerSize();
 
-        double visualTrackerStart = trackerPos * horizontalCellSize;
-        double visualTrackerSize = trackerSize * horizontalCellSize;
 
         Set<Integer> trackerCells = g.getTrackerCells();
 
@@ -285,14 +283,14 @@ public class BeerTrackerGui extends Application {
         }
 
         int objectYPos = g.getFallingObjectYPosition();
-        double visualObjectYPos = (14-objectYPos) * verticalCellSize;
+        double visualObjectYPos = (15-objectYPos) * verticalCellSize;
 
         Set<Integer> objectCells = g.getFallingObjectCells();
 
         if (objectCells.size() > 4) {
-            gc.setFill(new Color(1, 0, 0, 1));
+            gc.setFill(new Color(1, 0, 0, 0.5));
         } else {
-            gc.setFill(new Color(0, 0, 1, 1));
+            gc.setFill(new Color(0, 0, 1, 0.5));
         }
 
         for (Integer c : objectCells) {
