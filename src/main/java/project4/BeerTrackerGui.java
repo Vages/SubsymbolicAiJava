@@ -270,7 +270,7 @@ public class BeerTrackerGui extends Application {
         gc.setFill(new Color(0.9, 0.9, 0.9, 1));
         gc.fillRect(0, 0, sizeX, sizeY);
 
-        gc.setFill(new Color(0.5, 0, 0, 1));
+        gc.setFill(new Color(0, 0, 0, 1));
 
         int trackerPos = g.getTrackerPosition();
         int trackerSize = g.getTrackerSize();
@@ -281,13 +281,19 @@ public class BeerTrackerGui extends Application {
         Set<Integer> trackerCells = g.getTrackerCells();
 
         for (Integer c : trackerCells) {
-            gc.fillRect(c*horizontalCellSize, 0, horizontalCellSize, horizontalCellSize);
+            gc.fillRect(c*horizontalCellSize, 14*verticalCellSize, horizontalCellSize, horizontalCellSize);
         }
 
         int objectYPos = g.getFallingObjectYPosition();
-        double visualObjectYPos = objectYPos * verticalCellSize;
+        double visualObjectYPos = (14-objectYPos) * verticalCellSize;
 
         Set<Integer> objectCells = g.getFallingObjectCells();
+
+        if (objectCells.size() > 4) {
+            gc.setFill(new Color(1, 0, 0, 1));
+        } else {
+            gc.setFill(new Color(0, 0, 1, 1));
+        }
 
         for (Integer c : objectCells) {
             gc.fillRect(c*horizontalCellSize, visualObjectYPos, horizontalCellSize, verticalCellSize);
