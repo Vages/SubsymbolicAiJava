@@ -44,9 +44,9 @@ public class BeerTrackerGui extends Application {
             mutationRateSlider = new Slider(0, 1, mutationRateValue);
 
     final TextField
-            generationsField = new TextField("10"),
-            childrenField = new TextField("40"),
-            adultsField = new TextField("40"),
+            generationsField = new TextField("80"),
+            childrenField = new TextField("400"),
+            adultsField = new TextField("200"),
             numberOfMutationsField = new TextField("1");
 
     final Button
