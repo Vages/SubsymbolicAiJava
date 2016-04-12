@@ -4,6 +4,7 @@ import project2.Individual;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 public class BeerTrackerIndividual extends Individual<NeuralNetworkGene> {
@@ -101,17 +102,35 @@ public class BeerTrackerIndividual extends Individual<NeuralNetworkGene> {
         if (this.lastRewardVersionNumber == world.getRewardVersion()) {
             return;
         }
+        double fitness = 0;
+        BeerTrackerGame game = new BeerTrackerGame(noWrap);
 
         Map<GameEvent, Double> rewards = world.getRewards();
 
-        BeerTrackerGame game = new BeerTrackerGame(noWrap);
+        int numberOfSuccesses = 0;
+        int numberOfErrors = 0;
+        List<GameEvent> errors = Arrays.asList(GameEvent.PARTIALLY_CAPTURED_BIG, GameEvent.PARTIALLY_CAPTURED_SMALL, GameEvent.CAPTURED_BIG, GameEvent.AVOIDED_SMALL);
+        List<GameEvent> successes = Arrays.asList(GameEvent.AVOIDED_BIG, GameEvent.CAPTURED_SMALL);
 
-        double fitness = 0;
         while (true) {
+            int positionBeforemove = game.getTrackerPosition();
             GameEvent resultOfMove = doOneMoveInGame(game);
             if (resultOfMove == GameEvent.GAME_OVER)
                 break;
-            fitness += rewards.get(resultOfMove);
+            if (noWrap) {
+                fitness += rewards.get(resultOfMove);
+                fitness += (double) Math.abs(game.getTrackerPosition()-positionBeforemove)/2;
+            } else {
+                if (successes.contains(resultOfMove)) {
+                    numberOfSuccesses++;
+                } else if (errors.contains(resultOfMove)) {
+                    numberOfErrors++;
+                }
+            }
+        }
+
+        if (!noWrap){
+            fitness = 100*(double) numberOfSuccesses/(numberOfErrors+numberOfSuccesses);
         }
 
         this.lastRewardVersionNumber = world.getRewardVersion();
