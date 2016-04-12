@@ -16,13 +16,15 @@ public class BeerTrackerIndividual extends Individual<NeuralNetworkGene> {
     private int lastRewardVersionNumber = -1;
     private double lastAssessedFitness = 0;
     private BeerTrackerEvolutionWorld world;
+    private boolean pullAllowed;
 
-    public BeerTrackerIndividual(NeuralNetworkGene[] genotype, int[] topology, TrackerAction[] availableActions, BeerTrackerEvolutionWorld world, boolean noWrap) {
+    public BeerTrackerIndividual(NeuralNetworkGene[] genotype, int[] topology, TrackerAction[] availableActions, BeerTrackerEvolutionWorld world, boolean noWrap, boolean pullAllowed) {
         this.genotype = genotype;
         this.topology = topology;
         this.availableActions = availableActions;
         this.world = world;
         this.noWrap = noWrap;
+        this.pullAllowed = pullAllowed;
     }
 
     /**
@@ -110,8 +112,13 @@ public class BeerTrackerIndividual extends Individual<NeuralNetworkGene> {
         int numberOfSuccesses = 0;
         int numberOfErrors = 0;
         int numberOfTimesWithMove = 0;
+
         int zoneBuffer = 3;
         int timesInLeftZone = 0, timesInRightZone = 0;
+
+        int numberOfTimesPullUsed = 0, numberOfSuccessfulPulls = 0;
+        boolean waitingForPull = false;
+
         boolean lastVisitedRight = false;
 
         List<GameEvent> errors = Arrays.asList(GameEvent.PARTIALLY_CAPTURED_BIG, GameEvent.PARTIALLY_CAPTURED_SMALL, GameEvent.CAPTURED_BIG, GameEvent.AVOIDED_SMALL);
@@ -124,6 +131,19 @@ public class BeerTrackerIndividual extends Individual<NeuralNetworkGene> {
 
             if (resultOfMove == GameEvent.GAME_OVER)
                 break;
+
+            if (waitingForPull) {
+                waitingForPull = false;
+                if (successes.contains(resultOfMove)) {
+                    numberOfSuccessfulPulls++;
+                }
+            }
+
+            if (resultOfMove == GameEvent.WAITING_FOR_PULL) {
+                waitingForPull = true;
+                numberOfTimesPullUsed++;
+            }
+
             if (Math.abs(positionAfterMove -positionBeforemove) != 0)
                 numberOfTimesWithMove++;
             if ((positionAfterMove <= zoneBuffer) && (positionBeforemove > zoneBuffer) && lastVisitedRight){
@@ -153,6 +173,13 @@ public class BeerTrackerIndividual extends Individual<NeuralNetworkGene> {
             if (timesCrossed > 10) timesCrossed = 10;
             fitness += (double) timesCrossed/10;
         }
+
+        if (pullAllowed) {
+            if (numberOfTimesPullUsed != 0) {
+                fitness += 6*(double) numberOfSuccessfulPulls/numberOfTimesPullUsed;
+            }
+        }
+
         fitness *= 100;
 
         this.lastRewardVersionNumber = world.getRewardVersion();

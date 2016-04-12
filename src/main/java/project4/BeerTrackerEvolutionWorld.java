@@ -11,6 +11,7 @@ public class BeerTrackerEvolutionWorld extends EvolutionWorld<NeuralNetworkGene>
     private final NeuralNetworkGeneMutator mutator;
     private final NeuralNetworkGeneCrossBreeder crossBreeder;
     private final int[] topology;
+    private final boolean pullAllowed;
     private int rewardVersion = 0;
     private Map<GameEvent, Double> rewards;
     private boolean noWrap;
@@ -23,6 +24,7 @@ public class BeerTrackerEvolutionWorld extends EvolutionWorld<NeuralNetworkGene>
         this.noWrap = noWrap;
         this.crossBreeder = new NeuralNetworkGeneCrossBreeder(crossingRate);
         this.mutator = new NeuralNetworkGeneMutator(mutateThreshold, numberOfMutations);
+        this.pullAllowed = pullAllowed;
 
         int inputNodes = 5;
         if (noWrap) {
@@ -66,7 +68,7 @@ public class BeerTrackerEvolutionWorld extends EvolutionWorld<NeuralNetworkGene>
 
         for (int i = 0; i < childPoolSize; i++) {
             NeuralNetworkGene[] genotype = BeerTrackerIndividual.generateRandomGenotype(topology);
-            children.add(new BeerTrackerIndividual(genotype, topology, availableActions, this, noWrap));
+            children.add(new BeerTrackerIndividual(genotype, topology, availableActions, this, noWrap, pullAllowed));
         }
     }
 
@@ -76,8 +78,8 @@ public class BeerTrackerEvolutionWorld extends EvolutionWorld<NeuralNetworkGene>
 
         for (int i = 0; i < matingGenotypeList.size(); i = i + 2) {
             NeuralNetworkGene[][] childPair = crossBreeder.crossBreed(matingGenotypeList.get(i), matingGenotypeList.get(i+1));
-            children.add(new BeerTrackerIndividual(mutator.mutate(childPair[0]), topology, availableActions, this, noWrap));
-            children.add(new BeerTrackerIndividual(mutator.mutate(childPair[1]), topology, availableActions, this, noWrap));
+            children.add(new BeerTrackerIndividual(mutator.mutate(childPair[0]), topology, availableActions, this, noWrap, pullAllowed));
+            children.add(new BeerTrackerIndividual(mutator.mutate(childPair[1]), topology, availableActions, this, noWrap, pullAllowed));
         }
 
         rewardVersion++; // todo: make this a separate variable
