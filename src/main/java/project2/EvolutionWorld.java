@@ -154,6 +154,9 @@ public abstract class EvolutionWorld<G> {
                 }
                 break;
             case GENERATIONAL_MIXING:
+                for (Individual a: adults) {
+                    a.assessFitness();
+                }
                 for (Individual c: children){
                     adults.add(c);
                 }
