@@ -190,10 +190,26 @@ public class BeerTrackerGame {
     }
 
     public double[] getEdgeProximities() {
-        double closenessToRightEdge = (double) trackerPosition/maxTrackerPositionWithoutWrap;
-        double closenessToLeftEdge = 1-closenessToRightEdge;
+        //double closenessToRightEdge = (double) trackerPosition/maxTrackerPositionWithoutWrap;
+        //double closenessToLeftEdge = 1-closenessToRightEdge;
+
+        double closenessToLeftEdge = 0, closenessToRightEdge = 0;
+
+        int distanceToRightEdge = trackerPosition - maxTrackerPositionWithoutWrap;
+        if (distanceToRightEdge < trackerSize) {
+            closenessToRightEdge = 1 - (double) distanceToRightEdge / trackerSize;
+        }
+
+
+        if (trackerPosition < trackerSize) {
+            closenessToLeftEdge = 1 - (double) trackerPosition / trackerSize;
+        }
 
         return new double[]{closenessToLeftEdge, closenessToRightEdge};
+    }
+
+    public double getOscillatingForce() {
+        return Math.sin(timeStepsLeft*2/32*Math.PI);
     }
 
     public int getFallingObjectSize() {

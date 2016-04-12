@@ -144,6 +144,9 @@ public class BeerTrackerIndividual extends Individual<NeuralNetworkGene> {
                 network.setInputActivation(shadowSensings.length + i, edgeProximities[i]);
             }
 
+            network.setInputActivation(shadowSensings.length+edgeProximities.length, g.getOscillatingForce());
+
+
         }
 
         network.propagate();
