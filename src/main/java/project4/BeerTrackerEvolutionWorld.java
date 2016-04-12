@@ -14,10 +14,11 @@ public class BeerTrackerEvolutionWorld extends EvolutionWorld<NeuralNetworkGene>
     private int rewardVersion = 0;
     private Map<GameEvent, Double> rewards;
     private boolean noWrap;
+    private TrackerAction[] availableActions;
 
     public BeerTrackerEvolutionWorld(AdultSelection adultSelection, MatingSelection matingSelection, int childPoolSize,
                                      int adultPoolSize, int numberOfGenerations, String logFileName,
-                                     double crossingRate, double mutateThreshold, int numberOfMutations, boolean noWrap, int hiddenNodes) {
+                                     double crossingRate, double mutateThreshold, int numberOfMutations, boolean noWrap, boolean pullAllowed, int hiddenNodes) {
         super(adultSelection, matingSelection, childPoolSize, adultPoolSize, numberOfGenerations, logFileName);
         this.noWrap = noWrap;
         this.crossBreeder = new NeuralNetworkGeneCrossBreeder(crossingRate);
@@ -28,10 +29,18 @@ public class BeerTrackerEvolutionWorld extends EvolutionWorld<NeuralNetworkGene>
             inputNodes += 2; // Add two nodes for edge sensings
         }
 
+        int outputNodes = 2;
+        if (pullAllowed){
+            availableActions = new TrackerAction[]{TrackerAction.MOVE_LEFT, TrackerAction.MOVE_RIGHT, TrackerAction.PULL};
+            outputNodes += 1;
+        } else {
+            availableActions = new TrackerAction[]{TrackerAction.MOVE_LEFT, TrackerAction.MOVE_RIGHT};
+        }
+
         if (hiddenNodes == 0)
-            topology = new int[]{inputNodes, 2};
+            topology = new int[]{inputNodes, outputNodes};
         else
-            topology = new int[]{inputNodes, hiddenNodes, 2};
+            topology = new int[]{inputNodes, hiddenNodes, outputNodes};
 
         rewards = new HashMap<>();
         rewards.put(GameEvent.CAPTURED_SMALL, 50.0);
@@ -57,7 +66,7 @@ public class BeerTrackerEvolutionWorld extends EvolutionWorld<NeuralNetworkGene>
 
         for (int i = 0; i < childPoolSize; i++) {
             NeuralNetworkGene[] genotype = BeerTrackerIndividual.generateRandomGenotype(topology);
-            children.add(new BeerTrackerIndividual(genotype, topology, new TrackerAction[]{TrackerAction.MOVE_LEFT, TrackerAction.MOVE_RIGHT}, this, noWrap));
+            children.add(new BeerTrackerIndividual(genotype, topology, availableActions, this, noWrap));
         }
     }
 
@@ -67,8 +76,8 @@ public class BeerTrackerEvolutionWorld extends EvolutionWorld<NeuralNetworkGene>
 
         for (int i = 0; i < matingGenotypeList.size(); i = i + 2) {
             NeuralNetworkGene[][] childPair = crossBreeder.crossBreed(matingGenotypeList.get(i), matingGenotypeList.get(i+1));
-            children.add(new BeerTrackerIndividual(mutator.mutate(childPair[0]), topology, new TrackerAction[]{TrackerAction.MOVE_LEFT, TrackerAction.MOVE_RIGHT}, this, noWrap));
-            children.add(new BeerTrackerIndividual(mutator.mutate(childPair[1]), topology, new TrackerAction[]{TrackerAction.MOVE_LEFT, TrackerAction.MOVE_RIGHT}, this, noWrap));
+            children.add(new BeerTrackerIndividual(mutator.mutate(childPair[0]), topology, availableActions, this, noWrap));
+            children.add(new BeerTrackerIndividual(mutator.mutate(childPair[1]), topology, availableActions, this, noWrap));
         }
 
         rewardVersion++; // todo: make this a separate variable
@@ -92,7 +101,7 @@ public class BeerTrackerEvolutionWorld extends EvolutionWorld<NeuralNetworkGene>
                 "project4/log",
                 0.8,
                 1,
-                3, false, 2);
+                3, false, false, 2);
 
         world.runAllEpochs();
     }

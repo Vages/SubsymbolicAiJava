@@ -14,6 +14,7 @@ public class BeerTrackerGame {
     private int fallingObjectSize;
     private final int maxTrackerPositionWithoutWrap;
     private int timeStepsLeft = 600;
+    private boolean waitingForPull = false;
 
     public BeerTrackerGame(int width, int height, int trackerSize, boolean noWrap) {
         this.width = width;
@@ -46,8 +47,16 @@ public class BeerTrackerGame {
         if (timeStepsLeft == 0) {
             return GameEvent.GAME_OVER;
         }
-        if (a == TrackerAction.MOVE_LEFT || a == TrackerAction.MOVE_RIGHT) {
-            moveTracker(a, magnitude);
+        if (!waitingForPull){
+            if (a == TrackerAction.MOVE_LEFT || a == TrackerAction.MOVE_RIGHT) {
+                moveTracker(a, magnitude);
+            } else if ( a == TrackerAction.PULL) {
+                waitingForPull = true;
+                return GameEvent.WAITING_FOR_PULL;
+            }
+        } else {
+            fallingObjectYPosition = 1;
+            waitingForPull = false;
         }
 
         timeStepsLeft--;
@@ -58,7 +67,7 @@ public class BeerTrackerGame {
     private GameEvent moveFallingObjectOneStepAndCheckForCaptures() {
         fallingObjectYPosition--;
 
-        if (fallingObjectYPosition == 0) {
+        if (fallingObjectYPosition <= 0) {
             GameEvent captureResults = getCaptureResults();
             spawnNewFallingObject();
             return captureResults;

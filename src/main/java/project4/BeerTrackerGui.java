@@ -300,7 +300,7 @@ public class BeerTrackerGui extends Application {
                 "project4/log-" + timeStamp + wrapString + pullString + "-HN" + hiddenNodesField.getText() + "-G" + generationsField.getText() + "-C" + childrenField.getText() + "-A" + adultsField.getText() + "-CR" + Double.toString(crossingRateValue) + "-MR" + Double.toString(mutationRateValue),
                 crossingRateValue,
                 mutationRateValue,
-                noOfMutations, noWrapValue, hiddenNodes);
+                noOfMutations, noWrapValue, pullAllowedValue, hiddenNodes);
 
         world.runAllEpochs();
 

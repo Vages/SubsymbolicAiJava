@@ -8,5 +8,6 @@ public enum GameEvent {
     PARTIALLY_CAPTURED_BIG,
     AVOIDED_BIG,
     NOTHING,
-    GAME_OVER
+    GAME_OVER,
+    WAITING_FOR_PULL
 }
