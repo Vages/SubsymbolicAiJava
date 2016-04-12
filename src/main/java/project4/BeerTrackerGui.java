@@ -13,6 +13,8 @@ import javafx.stage.Stage;
 import project2.AdultSelection;
 import project2.MatingSelection;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Set;
 
 public class BeerTrackerGui extends Application {
@@ -44,6 +46,7 @@ public class BeerTrackerGui extends Application {
             mutationRateDisplay = new Label(Double.toString(mutationRateValue)),
             noWrapLabel = new Label("No wrap?: "),
             pullAllowedLabel = new Label("Pull allowed?: "),
+            hiddenNodesLabel = new Label("Hidden nodes: "),
             spfDisplay = new Label(Double.toString(refreshRate / 60));
 
     final Slider
@@ -54,7 +57,8 @@ public class BeerTrackerGui extends Application {
             generationsField = new TextField("80"),
             childrenField = new TextField("400"),
             adultsField = new TextField("200"),
-            numberOfMutationsField = new TextField("1");
+            numberOfMutationsField = new TextField("1"),
+            hiddenNodesField = new TextField("5");
 
     final Button
             startEvolutionButton = new Button("Start Evolution"),
@@ -79,7 +83,7 @@ public class BeerTrackerGui extends Application {
         Canvas canvas = new Canvas(sizeX, sizeY);
 
         GridPane.setConstraints(canvas, 0, 0);
-        GridPane.setRowSpan(canvas, 9);
+        GridPane.setRowSpan(canvas, 10);
         grid.getChildren().add(canvas);
 
         // Text fields
@@ -183,6 +187,14 @@ public class BeerTrackerGui extends Application {
 
         rowNumber++;
 
+        GridPane.setConstraints(hiddenNodesLabel, 1, rowNumber);
+        grid.getChildren().add(hiddenNodesLabel);
+
+        GridPane.setConstraints(hiddenNodesField, 2, rowNumber);
+        grid.getChildren().add(hiddenNodesField);
+
+        rowNumber++;
+
         startEvolutionButton.setOnAction(event -> startEvolution());
 
         GridPane.setConstraints(startEvolutionButton, 1, rowNumber);
@@ -258,6 +270,12 @@ public class BeerTrackerGui extends Application {
         int noOfChildren = Integer.parseInt(childrenField.getText());
         int noOfAdults = Integer.parseInt(adultsField.getText());
         int noOfMutations = Integer.parseInt(numberOfMutationsField.getText());
+        int hiddenNodes = Integer.parseInt(hiddenNodesField.getText());
+
+        String timeStamp = new SimpleDateFormat("yyyy-MM-dd-HH:mm").format(new Date());
+
+        String wrapString = noWrapValue ? "-NOWRAP" : "-WRAP";
+        String pullString = pullAllowedValue ? "-PULL" : "-NOPULL";
 
         world = new BeerTrackerEvolutionWorld(
                 AdultSelection.GENERATIONAL_MIXING,
@@ -265,10 +283,10 @@ public class BeerTrackerGui extends Application {
                 noOfChildren,
                 noOfAdults,
                 noOfGenerations,
-                "project4/log",
+                "project4/log-" + timeStamp + wrapString + pullString + "-HN" + hiddenNodesField.getText() + "-G" + generationsField.getText() + "-C" + childrenField.getText() + "-A" + adultsField.getText() + "-CR" + Double.toString(crossingRateValue) + "-MR" + Double.toString(mutationRateValue),
                 crossingRateValue,
                 mutationRateValue,
-                noOfMutations, noWrapValue);
+                noOfMutations, noWrapValue, hiddenNodes);
 
         world.runAllEpochs();
 
@@ -308,11 +326,11 @@ public class BeerTrackerGui extends Application {
         Set<Integer> trackerCells = g.getTrackerCells();
 
         for (Integer c : trackerCells) {
-            gc.fillRect(c*horizontalCellSize, 14*verticalCellSize, horizontalCellSize, horizontalCellSize);
+            gc.fillRect(c * horizontalCellSize, 14 * verticalCellSize, horizontalCellSize, horizontalCellSize);
         }
 
         int objectYPos = g.getFallingObjectYPosition();
-        double visualObjectYPos = (14-objectYPos) * verticalCellSize;
+        double visualObjectYPos = (14 - objectYPos) * verticalCellSize;
 
         Set<Integer> objectCells = g.getFallingObjectCells();
 
@@ -323,7 +341,7 @@ public class BeerTrackerGui extends Application {
         }
 
         for (Integer c : objectCells) {
-            gc.fillRect(c*horizontalCellSize, visualObjectYPos, horizontalCellSize, verticalCellSize);
+            gc.fillRect(c * horizontalCellSize, visualObjectYPos, horizontalCellSize, verticalCellSize);
         }
     }
 

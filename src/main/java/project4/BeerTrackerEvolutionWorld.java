@@ -17,7 +17,7 @@ public class BeerTrackerEvolutionWorld extends EvolutionWorld<NeuralNetworkGene>
 
     public BeerTrackerEvolutionWorld(AdultSelection adultSelection, MatingSelection matingSelection, int childPoolSize,
                                      int adultPoolSize, int numberOfGenerations, String logFileName,
-                                     double crossingRate, double mutateThreshold, int numberOfMutations, boolean noWrap) {
+                                     double crossingRate, double mutateThreshold, int numberOfMutations, boolean noWrap, int hiddenNodes) {
         super(adultSelection, matingSelection, childPoolSize, adultPoolSize, numberOfGenerations, logFileName);
         this.noWrap = noWrap;
         this.crossBreeder = new NeuralNetworkGeneCrossBreeder(crossingRate);
@@ -28,7 +28,10 @@ public class BeerTrackerEvolutionWorld extends EvolutionWorld<NeuralNetworkGene>
             inputNodes += 3; // Add two nodes for edge sensings
         }
 
-        topology = new int[]{inputNodes, 30, 2};
+        if (hiddenNodes == 0)
+            topology = new int[]{inputNodes, 2};
+        else
+            topology = new int[]{inputNodes, hiddenNodes, 2};
 
         rewards = new HashMap<>();
         rewards.put(GameEvent.CAPTURED_SMALL, 50.0);
@@ -41,8 +44,8 @@ public class BeerTrackerEvolutionWorld extends EvolutionWorld<NeuralNetworkGene>
         rewards.put(GameEvent.GAME_OVER, 0.0);
 
         if (noWrap) {
-            //rewards.put(GameEvent.AVOIDED_SMALL, -10.0);
-            //rewards.put(GameEvent.PARTIALLY_CAPTURED_SMALL, -10.0);
+            rewards.put(GameEvent.AVOIDED_SMALL, -25.0);
+            rewards.put(GameEvent.PARTIALLY_CAPTURED_SMALL, -25.0);
         }
     }
 
@@ -87,7 +90,7 @@ public class BeerTrackerEvolutionWorld extends EvolutionWorld<NeuralNetworkGene>
                 "project4/log",
                 0.8,
                 1,
-                3, false);
+                3, false, 2);
 
         world.runAllEpochs();
     }
