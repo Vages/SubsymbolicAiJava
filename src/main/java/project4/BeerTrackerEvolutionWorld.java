@@ -25,7 +25,7 @@ public class BeerTrackerEvolutionWorld extends EvolutionWorld<NeuralNetworkGene>
 
         int inputNodes = 5;
         if (noWrap) {
-            inputNodes += 3; // Add two nodes for edge sensings
+            inputNodes += 2; // Add two nodes for edge sensings
         }
 
         if (hiddenNodes == 0)
@@ -43,10 +43,12 @@ public class BeerTrackerEvolutionWorld extends EvolutionWorld<NeuralNetworkGene>
         rewards.put(GameEvent.NOTHING, 0.0);
         rewards.put(GameEvent.GAME_OVER, 0.0);
 
+        /*
         if (noWrap) {
             rewards.put(GameEvent.AVOIDED_SMALL, -25.0);
             rewards.put(GameEvent.PARTIALLY_CAPTURED_SMALL, -25.0);
         }
+        */
     }
 
 

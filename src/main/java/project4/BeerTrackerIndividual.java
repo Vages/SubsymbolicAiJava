@@ -109,29 +109,51 @@ public class BeerTrackerIndividual extends Individual<NeuralNetworkGene> {
 
         int numberOfSuccesses = 0;
         int numberOfErrors = 0;
+        int numberOfTimesWithMove = 0;
+        int zoneBuffer = 3;
+        int timesInLeftZone = 0, timesInRightZone = 0;
+        boolean lastVisitedRight = false;
+
         List<GameEvent> errors = Arrays.asList(GameEvent.PARTIALLY_CAPTURED_BIG, GameEvent.PARTIALLY_CAPTURED_SMALL, GameEvent.CAPTURED_BIG, GameEvent.AVOIDED_SMALL);
         List<GameEvent> successes = Arrays.asList(GameEvent.AVOIDED_BIG, GameEvent.CAPTURED_SMALL);
 
         while (true) {
             int positionBeforemove = game.getTrackerPosition();
             GameEvent resultOfMove = doOneMoveInGame(game);
+            int positionAfterMove = game.getTrackerPosition();
+
             if (resultOfMove == GameEvent.GAME_OVER)
                 break;
-            if (noWrap) {
-                fitness += rewards.get(resultOfMove);
-                fitness += (double) Math.abs(game.getTrackerPosition()-positionBeforemove)/2;
-            } else {
-                if (successes.contains(resultOfMove)) {
-                    numberOfSuccesses++;
-                } else if (errors.contains(resultOfMove)) {
-                    numberOfErrors++;
-                }
+            if (Math.abs(positionAfterMove -positionBeforemove) != 0)
+                numberOfTimesWithMove++;
+            if ((positionAfterMove <= zoneBuffer) && (positionBeforemove > zoneBuffer) && lastVisitedRight){
+                timesInLeftZone++;
+                lastVisitedRight = false;
+            }
+            if ((positionAfterMove >= 25-zoneBuffer) && (positionBeforemove < 25-zoneBuffer) && !lastVisitedRight){
+                timesInRightZone++;
+                lastVisitedRight = true;
+            }
+            if (successes.contains(resultOfMove)) {
+                numberOfSuccesses++;
+            } else if (errors.contains(resultOfMove)) {
+                numberOfErrors++;
             }
         }
 
-        if (!noWrap){
-            fitness = 100*(double) numberOfSuccesses/(numberOfErrors+numberOfSuccesses);
+        fitness = 5*(double) numberOfSuccesses/(numberOfErrors+numberOfSuccesses);
+        if (noWrap) {
+            /*
+            int numberOfMovesThreshold = 100;
+            if (numberOfTimesWithMove > numberOfMovesThreshold)
+                numberOfTimesWithMove = numberOfMovesThreshold;
+            fitness += (double) numberOfTimesWithMove/600;
+            */
+            int timesCrossed = (timesInLeftZone < timesInRightZone) ? timesInLeftZone : timesInRightZone;
+            if (timesCrossed > 10) timesCrossed = 10;
+            fitness += (double) timesCrossed/10;
         }
+        fitness *= 100;
 
         this.lastRewardVersionNumber = world.getRewardVersion();
         this.lastAssessedFitness = fitness;
@@ -163,7 +185,7 @@ public class BeerTrackerIndividual extends Individual<NeuralNetworkGene> {
                 network.setInputActivation(shadowSensings.length + i, edgeProximities[i]);
             }
 
-            network.setInputActivation(shadowSensings.length+edgeProximities.length, g.getOscillatingForce());
+            //network.setInputActivation(shadowSensings.length+edgeProximities.length, g.getOscillatingForce());
 
 
         }
