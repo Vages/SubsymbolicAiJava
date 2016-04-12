@@ -14,7 +14,9 @@ import project2.AdultSelection;
 import project2.MatingSelection;
 
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 public class BeerTrackerGui extends Application {
@@ -220,7 +222,7 @@ public class BeerTrackerGui extends Application {
         GridPane.setConstraints(doubleSpfButton, 4, rowNumber);
         grid.getChildren().add(doubleSpfButton);
 
-        startSimulationButton.setOnAction(event -> runSimulation(canvas));
+        startSimulationButton.setOnAction(event -> runSimulation(canvas, primaryStage));
 
         rowNumber++;
 
@@ -233,7 +235,7 @@ public class BeerTrackerGui extends Application {
 
     }
 
-    private void runSimulation(Canvas canvas) {
+    private void runSimulation(Canvas canvas, Stage stage) {
         GraphicsContext gc = canvas.getGraphicsContext2D();
 
         bestIndividual = world.getBestIndividual();
@@ -242,6 +244,11 @@ public class BeerTrackerGui extends Application {
 
         new AnimationTimer() {
             int framesSkipped = 0;
+            int noOfSuccesses = 0;
+            int noOfErrors = 0;
+
+            List<GameEvent> errors = Arrays.asList(GameEvent.PARTIALLY_CAPTURED_BIG, GameEvent.PARTIALLY_CAPTURED_SMALL, GameEvent.CAPTURED_BIG, GameEvent.AVOIDED_SMALL);
+            List<GameEvent> successes = Arrays.asList(GameEvent.AVOIDED_BIG, GameEvent.CAPTURED_SMALL);
 
             @Override
             public void handle(long now) {
@@ -250,6 +257,11 @@ public class BeerTrackerGui extends Application {
                     GameEvent lastEvent = bestIndividual.doOneMoveInGame(g);
                     if (lastEvent != GameEvent.NOTHING) {
                         System.out.println(lastEvent);
+                        if (errors.contains(lastEvent)) {
+                            noOfErrors++;
+                        } else if (successes.contains(lastEvent)) {
+                            noOfSuccesses++;
+                        }
                     }
 
                     if (lastEvent == GameEvent.GAME_OVER) {
@@ -257,6 +269,8 @@ public class BeerTrackerGui extends Application {
                         startEvolutionButton.setDisable(false);
                     }
                     framesSkipped = 0;
+
+                    stage.setTitle("Beer Tracker - Successes: " + Integer.toString(noOfSuccesses) + " - Errors: " + Integer.toString(noOfErrors));
                 } else {
                     framesSkipped++;
                 }
@@ -318,10 +332,6 @@ public class BeerTrackerGui extends Application {
         gc.fillRect(0, 0, sizeX, sizeY);
 
         gc.setFill(new Color(0, 0, 0, 1));
-
-        int trackerPos = g.getTrackerPosition();
-        int trackerSize = g.getTrackerSize();
-
 
         Set<Integer> trackerCells = g.getTrackerCells();
 
