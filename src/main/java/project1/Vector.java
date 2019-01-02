@@ -1,5 +1,6 @@
 package project1;
 
+// Shamelessly copied from https://introcs.cs.princeton.edu/java/33design/Vector.java.html
 /******************************************************************************
  *  Compilation:  javac Vector.java
  *  Execution:    java Vector
